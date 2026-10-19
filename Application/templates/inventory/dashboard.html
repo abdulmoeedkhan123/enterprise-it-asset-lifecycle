@@ -9,11 +9,79 @@
   </div>
   <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong></div>
 </section>
+<section class="panel">
+  <form class="filter-form" method="get" aria-label="Filter dashboard reporting">
+    <label for="dashboard-site">Site
+      <select id="dashboard-site" name="site">
+        <option value="">All sites</option>
+        {% for site in sites %}<option value="{{ site }}" {% if selected_site == site %}selected{% endif %}>{{ site }}</option>{% endfor %}
+      </select>
+    </label>
+    <label for="dashboard-status">Lifecycle status
+      <select id="dashboard-status" name="status">
+        <option value="">All statuses</option>
+        {% for value, label in statuses %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </label>
+    <button class="primary-button" type="submit">Apply filters</button>
+    <a class="secondary-button" href="{% url 'inventory:dashboard' %}">Reset</a>
+  </form>
+  <p class="muted">Operational and quality metrics below use the selected filters. Pipeline and integration history is system-wide.</p>
+</section>
 <section class="kpi-grid" aria-label="Asset key performance indicators">
   <article class="kpi-card"><span>Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states</small></article>
   <article class="kpi-card"><span>Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned</small></article>
   <article class="kpi-card warning"><span>Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date</small></article>
   <article class="kpi-card alert"><span>Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen</small></article>
+</section>
+<section class="two-column" aria-label="Data quality and pipeline reporting">
+  <article class="panel">
+    <div class="panel-heading">
+      <div><p class="eyebrow">DATA QUALITY</p><h2>Current record checks</h2></div>
+      <strong>{{ quality_report.assets_with_issues }} / {{ quality_report.asset_count }} assets flagged</strong>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Check</th><th>Records</th></tr></thead>
+      <tbody>
+        {% for check in quality_report.checks %}
+        <tr><td>{{ check.label }}</td><td>{{ check.count }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    <p class="muted">Checks identify records for investigation; they do not confirm defects or policy breaches.</p>
+  </article>
+  <article class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">DATA PIPELINE</p><h2>Recent asset import runs</h2></div>
+      {% if request.user.is_staff %}<a href="{% url 'admin:inventory_importrun_changelist' %}">Run history</a>{% endif %}
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Run</th><th>Status</th><th>Rows</th><th>Created</th><th>Updated</th><th>Unchanged</th><th>Rejected</th></tr></thead>
+      <tbody>
+        {% for run in recent_import_runs %}
+        <tr>
+          <td>{{ run.started_at|date:"j M Y H:i" }}</td><td>{{ run.get_status_display }}</td>
+          <td>{{ run.rows_seen }}</td><td>{{ run.rows_created }}</td><td>{{ run.rows_updated }}</td>
+          <td>{{ run.rows_unchanged }}</td><td>{{ run.rows_rejected }}</td>
+        </tr>
+        {% empty %}<tr><td colspan="7">No asset import runs recorded.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </article>
+</section>
+<section class="panel">
+  <div class="panel-heading"><div><p class="eyebrow">INTEGRATION MONITORING</p><h2>Recent identity sync runs</h2></div>
+    {% if request.user.is_staff %}<a href="{% url 'admin:inventory_integrationrun_changelist' %}">Integration history</a>{% endif %}
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Provider</th><th>Status</th><th>Started</th><th>Identities received</th><th>Matched</th><th>Review items created</th><th>Unmapped inactive</th></tr></thead>
+    <tbody>
+      {% for run in recent_integration_runs %}
+      <tr><td>{{ run.provider }}</td><td>{{ run.get_status_display }}</td><td>{{ run.started_at|date:"j M Y H:i" }}</td>
+        <td>{{ run.records_received }}</td><td>{{ run.identities_matched }}</td>
+        <td>{{ run.work_items_created }}</td><td>{{ run.identities_unmatched }}</td></tr>
+      {% empty %}<tr><td colspan="7">No identity integration runs recorded.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
 </section>
 <section class="two-column">
   <article class="panel">

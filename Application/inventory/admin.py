@@ -88,6 +88,7 @@ class ImportRunAdmin(admin.ModelAdmin):
         "rows_seen",
         "rows_created",
         "rows_updated",
+        "rows_rejected",
         "started_at",
         "completed_at",
     )

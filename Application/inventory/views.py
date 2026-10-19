@@ -13,7 +13,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import AssetForm, TransitionForm
-from .models import Asset, LifecycleEvent, LifecycleStatus, ReturnWorkItem
+from .models import (
+    Asset,
+    ImportRun,
+    IntegrationRun,
+    LifecycleEvent,
+    LifecycleStatus,
+    ReturnWorkItem,
+)
+from .reporting import build_asset_quality_report
 from .services import transition_asset
 
 
@@ -38,7 +46,20 @@ def health_check(request):
 @login_required
 @permission_required("inventory.view_asset", raise_exception=True)
 def dashboard(request):
-    assets = Asset.objects.all()
+    all_assets = Asset.objects.all()
+    sites = list(all_assets.order_by("site").values_list("site", flat=True).distinct())
+    selected_site = request.GET.get("site", "").strip()
+    selected_status = request.GET.get("status", "").strip()
+    valid_statuses = {value for value, _label in LifecycleStatus.choices}
+    if selected_site not in sites:
+        selected_site = ""
+    if selected_status not in valid_statuses:
+        selected_status = ""
+    assets = all_assets
+    if selected_site:
+        assets = assets.filter(site=selected_site)
+    if selected_status:
+        assets = assets.filter(lifecycle_status=selected_status)
     status_counts = add_bar_widths(list(
         assets.values("lifecycle_status")
         .annotate(total=Count("pk"))
@@ -62,6 +83,13 @@ def dashboard(request):
         "status_counts": status_counts,
         "site_counts": site_counts,
         "report_date": today,
+        "sites": sites,
+        "statuses": LifecycleStatus.choices,
+        "selected_site": selected_site,
+        "selected_status": selected_status,
+        "quality_report": build_asset_quality_report(assets, as_of=today),
+        "recent_import_runs": ImportRun.objects.all()[:5],
+        "recent_integration_runs": IntegrationRun.objects.all()[:5],
         "review_queue": assets.filter(
             Q(lifecycle_status=LifecycleStatus.RETURN_PENDING, return_due_date__lt=today)
             | Q(lifecycle_status=LifecycleStatus.ASSIGNED, custodian_ref="")

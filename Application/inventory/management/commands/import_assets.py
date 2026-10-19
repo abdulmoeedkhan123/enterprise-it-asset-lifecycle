@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 from datetime import date
+from io import StringIO
 from pathlib import Path
 
 from django.core.exceptions import ValidationError
@@ -11,6 +12,7 @@ from django.db import DatabaseError, transaction
 from django.utils import timezone
 
 from inventory.models import Asset, ImportRun, LifecycleEvent, LifecycleStatus
+from inventory.reporting import profile_asset_rows
 
 
 REQUIRED_COLUMNS = {
@@ -47,48 +49,86 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         source_path: Path = options["input"]
-        if not source_path.is_file():
-            raise CommandError(f"Input file does not exist: {source_path}")
-
-        try:
-            file_bytes = source_path.read_bytes()
-            source_hash = hashlib.sha256(file_bytes).hexdigest()
-            with source_path.open(newline="", encoding="utf-8") as source_file:
-                reader = csv.DictReader(source_file)
-                headers = set(reader.fieldnames or [])
-                missing = sorted(REQUIRED_COLUMNS - headers)
-                if missing:
-                    raise CommandError(
-                        "Input is missing required columns: " + ", ".join(missing)
-                    )
-                rows = list(reader)
-        except (OSError, UnicodeError, csv.Error) as error:
-            raise CommandError(f"Could not read asset CSV: {error}") from error
-
         if not options["confirm_authorized_source"]:
             raise CommandError(
                 "Import requires --confirm-authorized-source. Confirm source ownership, "
                 "authorization, privacy, access, and retention requirements before "
                 "loading any data. Use only synthetic data for this portfolio exercise."
             )
+        if not source_path.is_file():
+            raise CommandError(f"Input file does not exist: {source_path}")
+
+        try:
+            file_bytes = source_path.read_bytes()
+            source_hash = hashlib.sha256(file_bytes).hexdigest()
+            reader = csv.DictReader(
+                StringIO(file_bytes.decode("utf-8-sig"), newline="")
+            )
+            fieldnames = reader.fieldnames or []
+            duplicate_headers = sorted(
+                {field for field in fieldnames if fieldnames.count(field) > 1}
+            )
+            missing = sorted(REQUIRED_COLUMNS - set(fieldnames))
+            rows = list(reader)
+        except (OSError, UnicodeError, csv.Error) as error:
+            raise CommandError(f"Could not read asset CSV: {error}") from error
+
+        if duplicate_headers:
+            summary = "Input contains duplicate columns: " + ", ".join(duplicate_headers)
+            self._record_failed_run(
+                source_path,
+                source_hash,
+                rows_seen=len(rows),
+                rows_rejected=len(rows),
+                error_summary=summary,
+            )
+            raise CommandError(summary)
+        if missing:
+            summary = "Input is missing required columns: " + ", ".join(missing)
+            self._record_failed_run(
+                source_path,
+                source_hash,
+                rows_seen=len(rows),
+                rows_rejected=len(rows),
+                error_summary=summary,
+            )
+            raise CommandError(
+                "Input is missing required columns: " + ", ".join(missing)
+            )
         if not rows:
+            self._record_failed_run(
+                source_path,
+                source_hash,
+                rows_seen=0,
+                rows_rejected=0,
+                error_summary="Input CSV contains no data rows.",
+            )
             raise CommandError("Input CSV contains no data rows.")
         if any(
             None in row or any(value is None for value in row.values())
             for row in rows
         ):
+            self._record_failed_run(
+                source_path,
+                source_hash,
+                rows_seen=len(rows),
+                rows_rejected=len(rows),
+                error_summary="Input CSV has a row with an invalid number of fields.",
+            )
             raise CommandError("Input CSV has a row with an invalid number of fields.")
 
+        rows = [{field: value.strip() for field, value in row.items()} for row in rows]
+        quality_summary = profile_asset_rows(rows, as_of=timezone.localdate())
         validation_errors = self._validate_rows(rows)
         if validation_errors:
             summary = "\n".join(validation_errors[:20])
-            ImportRun.objects.create(
-                source_name=source_path.name,
-                source_sha256=source_hash,
-                status=ImportRun.Status.FAILED,
+            self._record_failed_run(
+                source_path,
+                source_hash,
                 rows_seen=len(rows),
+                rows_rejected=len(rows),
                 error_summary=summary[:4000],
-                completed_at=timezone.now(),
+                quality_summary=quality_summary,
             )
             raise CommandError(
                 f"Input validation failed with {len(validation_errors)} issue(s):\n{summary}"
@@ -147,10 +187,19 @@ class Command(BaseCommand):
         except (DatabaseError, ValidationError, ValueError) as error:
             run.status = ImportRun.Status.FAILED
             run.rows_seen = len(rows)
+            run.rows_rejected = len(rows)
+            run.quality_summary = quality_summary
             run.error_summary = str(error)[:4000]
             run.completed_at = timezone.now()
             run.save(
-                update_fields=("status", "rows_seen", "error_summary", "completed_at")
+                update_fields=(
+                    "status",
+                    "rows_seen",
+                    "rows_rejected",
+                    "quality_summary",
+                    "error_summary",
+                    "completed_at",
+                )
             )
             raise CommandError(f"Import run {run.pk} failed: {error}") from error
 
@@ -159,6 +208,8 @@ class Command(BaseCommand):
         run.rows_created = created_count
         run.rows_updated = updated_count
         run.rows_unchanged = unchanged_count
+        run.rows_rejected = 0
+        run.quality_summary = quality_summary
         run.completed_at = timezone.now()
         run.save(
             update_fields=(
@@ -167,14 +218,38 @@ class Command(BaseCommand):
                 "rows_created",
                 "rows_updated",
                 "rows_unchanged",
+                "rows_rejected",
+                "quality_summary",
                 "completed_at",
             )
         )
         self.stdout.write(
             self.style.SUCCESS(
                 f"Import run {run.pk}: {created_count} created, "
-                f"{updated_count} updated, {unchanged_count} unchanged."
+                f"{updated_count} updated, {unchanged_count} unchanged, "
+                f"{run.rows_rejected} rejected."
             )
+        )
+
+    @staticmethod
+    def _record_failed_run(
+        source_path: Path,
+        source_hash: str,
+        *,
+        rows_seen: int,
+        rows_rejected: int,
+        error_summary: str,
+        quality_summary: dict | None = None,
+    ) -> None:
+        ImportRun.objects.create(
+            source_name=source_path.name,
+            source_sha256=source_hash,
+            status=ImportRun.Status.FAILED,
+            rows_seen=rows_seen,
+            rows_rejected=rows_rejected,
+            quality_summary=quality_summary or {},
+            error_summary=error_summary[:4000],
+            completed_at=timezone.now(),
         )
 
     @staticmethod

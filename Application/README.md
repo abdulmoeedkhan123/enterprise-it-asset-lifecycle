@@ -51,6 +51,19 @@ Stop the services with Ctrl+C or `docker compose down`. The named PostgreSQL vol
 
 The Compose configuration disables secure cookies only for its loopback-bound local HTTP setup. For any real deployment, use HTTPS, secure cookies, managed secrets, a controlled migration/release process, backups, monitoring, and a reviewed security/privacy design. Do not expose this local Compose configuration to a network or load real organizational data.
 
+## ETL and reporting
+
+The first asset ETL source is the synthetic CSV in the portfolio folder. `import_assets` performs these stages:
+
+1. **Extract:** read the UTF-8 CSV, calculate a SHA-256 source fingerprint, and check the declared columns and row shape.
+2. **Validate and transform:** validate lifecycle values, dates, and required attributes; trim text fields and convert dates/boolean fields to application types. The import is all-or-nothing when validation fails.
+3. **Profile:** calculate record-level quality findings for missing custodian/return/disposal evidence, stale source dates (over 90 days), warranty dates before purchase, and duplicate serial references.
+4. **Load:** transactionally upsert on `asset_id`, write lifecycle events for created/changed records, and record created/updated/unchanged/rejected counts on the import run. Replaying an unchanged file is idempotent. A missing source row does not delete or retire an existing asset.
+
+Each run records its source filename and hash, start/completion status, row counts, quality summary, and a bounded error summary. Identity values and bearer tokens are not included in dashboard reporting. The dashboard combines a site/status-filtered operational snapshot with current data-quality exception counts, the most recent asset import runs, and SCIM integration-run summaries. Data-quality counts are investigation prompts, not proof of a business-policy breach.
+
+Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
+
 ## Integrations
 
 ### SCIM 2.0 deactivation review
