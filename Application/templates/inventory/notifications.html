@@ -1,0 +1,36 @@
+{% extends "inventory/base.html" %}
+{% block title %}Notifications | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">OPERATIONS / ASSET TRACKER</p>
+    <h1>Notifications</h1>
+    <p class="muted">Live rule-based prompts from current asset records. Resolve the underlying record to clear an alert.</p>
+  </div>
+  <div class="report-date"><strong>{{ notifications|length }}</strong> active alert{{ notifications|length|pluralize }}</div>
+</section>
+<div class="notice" role="note">
+  These are in-app operational prompts only; they do not send email or push notifications and are not verified incidents.
+</div>
+<section class="panel notification-panel" aria-label="Asset notifications">
+  {% for notification in notifications %}
+  <article class="notification-item severity-{{ notification.severity }}">
+    <span class="notification-indicator" aria-hidden="true"></span>
+    <div class="notification-copy">
+      <div class="notification-heading">
+        <strong>{{ notification.title }}</strong>
+        <span class="severity-label">{{ notification.severity|title }}</span>
+      </div>
+      <p>{{ notification.message }}</p>
+      <small>{{ notification.asset.site }} · {{ notification.asset.lifecycle_status }}</small>
+    </div>
+    <a class="secondary-button" href="{% url 'inventory:asset-detail' notification.asset.pk %}">View {{ notification.asset.asset_id }}</a>
+  </article>
+  {% empty %}
+  <div class="empty-state">
+    <strong>You’re all caught up</strong>
+    <p class="muted">No assets currently match the notification rules.</p>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

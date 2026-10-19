@@ -23,6 +23,7 @@ from .models import (
     LifecycleStatus,
     ReturnWorkItem,
 )
+from .notifications import build_asset_notifications
 from .reporting import build_asset_quality_report
 from .services import transition_asset
 
@@ -158,6 +159,16 @@ def asset_list(request):
         "search": search,
     }
     return render(request, "inventory/asset_list.html", context)
+
+
+@login_required
+@permission_required("inventory.view_asset", raise_exception=True)
+def notifications(request):
+    return render(
+        request,
+        "inventory/notifications.html",
+        {"notifications": build_asset_notifications()},
+    )
 
 
 @login_required

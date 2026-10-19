@@ -7,7 +7,7 @@
     <h1>Lifecycle overview</h1>
     <p class="muted">Operational view of registered assets and items requiring follow-up.</p>
   </div>
-  <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong></div>
+  <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong><a href="{% url 'inventory:notifications' %}">{{ asset_notification_count }} active notifications</a></div>
 </section>
 <section class="panel">
   <form class="filter-form" method="get" aria-label="Filter dashboard reporting">
