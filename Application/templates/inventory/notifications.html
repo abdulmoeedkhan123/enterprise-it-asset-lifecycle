@@ -7,7 +7,7 @@
     <h1>Notifications</h1>
     <p class="muted">Live rule-based prompts from current asset records. Resolve the underlying record to clear an alert.</p>
   </div>
-  <div class="report-date"><strong>{{ notifications|length }}</strong> active alert{{ notifications|length|pluralize }}</div>
+  <div class="report-date"><strong>{{ notification_page.paginator.count }}</strong> active alert{{ notification_page.paginator.count|pluralize }}{% if notification_page.has_other_pages %}<span>Page {{ notification_page.number }} of {{ notification_page.paginator.num_pages }}</span>{% endif %}</div>
 </section>
 <div class="notice" role="note">
   These are in-app operational prompts only; they do not send email or push notifications and are not verified incidents.
@@ -32,5 +32,12 @@
     <p class="muted">No assets currently match the notification rules.</p>
   </div>
   {% endfor %}
+  {% if notification_page.has_other_pages %}
+  <nav class="pagination" aria-label="Notification pages">
+    {% if notification_page.has_previous %}<a href="?page={{ notification_page.previous_page_number }}">Previous</a>{% endif %}
+    <span>Page {{ notification_page.number }} of {{ notification_page.paginator.num_pages }}</span>
+    {% if notification_page.has_next %}<a href="?page={{ notification_page.next_page_number }}">Next</a>{% endif %}
+  </nav>
+  {% endif %}
 </section>
 {% endblock %}

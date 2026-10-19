@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 from typing import Any
 
-from django.db.models import Q, QuerySet
+from django.db.models import Q
 from django.utils import timezone
 
 from .models import Asset, LifecycleStatus
@@ -63,7 +63,7 @@ def build_asset_notifications(*, as_of: date | None = None) -> list[dict[str, An
             alert = {
                 "severity": "critical",
                 "title": "Return overdue",
-                "message": f"Return was due {asset.return_due_date:%-d %b %Y}.",
+                "message": f"Return was due {asset.return_due_date.isoformat()}.",
                 "sort_date": asset.return_due_date,
                 "priority": 0,
             }
@@ -75,7 +75,7 @@ def build_asset_notifications(*, as_of: date | None = None) -> list[dict[str, An
             alert = {
                 "severity": "warning",
                 "title": "Return due soon",
-                "message": f"Return is due {asset.return_due_date:%-d %b %Y}.",
+                "message": f"Return is due {asset.return_due_date.isoformat()}.",
                 "sort_date": asset.return_due_date,
                 "priority": 4,
             }
@@ -87,7 +87,7 @@ def build_asset_notifications(*, as_of: date | None = None) -> list[dict[str, An
             alert = {
                 "severity": "high",
                 "title": "Warranty expired",
-                "message": f"Warranty expired {asset.warranty_end:%-d %b %Y}.",
+                "message": f"Warranty expired {asset.warranty_end.isoformat()}.",
                 "sort_date": asset.warranty_end,
                 "priority": 1,
             }
@@ -99,7 +99,7 @@ def build_asset_notifications(*, as_of: date | None = None) -> list[dict[str, An
             alert = {
                 "severity": "notice",
                 "title": "Warranty expiring",
-                "message": f"Warranty ends {asset.warranty_end:%-d %b %Y}.",
+                "message": f"Warranty ends {asset.warranty_end.isoformat()}.",
                 "sort_date": asset.warranty_end,
                 "priority": 5,
             }

@@ -80,6 +80,8 @@ The first asset ETL source is the synthetic CSV in the portfolio folder. `import
 
 Each run records its source filename and hash, start/completion status, row counts, quality summary, and a bounded error summary. Identity values and bearer tokens are not included in dashboard reporting. The dashboard combines a site/status-filtered operational snapshot with current data-quality exception counts, the most recent asset import runs, and SCIM integration-run summaries. Data-quality counts are investigation prompts, not proof of a business-policy breach.
 
+The signed-in application also has a live in-app notification page. It flags overdue/soon-due returns, expired/soon-expiring active-asset warranties, and selected missing asset references or disposal evidence. Notifications are computed from current records and disappear when the underlying condition is resolved; they do not send email or push messages.
+
 Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
 
 ## Integrations

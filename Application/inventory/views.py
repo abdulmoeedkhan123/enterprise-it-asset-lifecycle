@@ -164,10 +164,16 @@ def asset_list(request):
 @login_required
 @permission_required("inventory.view_asset", raise_exception=True)
 def notifications(request):
+    page = Paginator(build_asset_notifications(), 50).get_page(
+        request.GET.get("page")
+    )
     return render(
         request,
         "inventory/notifications.html",
-        {"notifications": build_asset_notifications()},
+        {
+            "notifications": page.object_list,
+            "notification_page": page,
+        },
     )
 
 

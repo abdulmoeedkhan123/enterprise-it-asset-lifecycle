@@ -27,6 +27,7 @@ button, input, select { font: inherit; }
 .brand small { margin-top: .14rem; color: var(--muted); font-size: .72rem; }
 .nav, .user-menu, .actions { display: flex; align-items: center; gap: 1rem; }
 .nav a, .user-menu { font-size: .8rem; font-weight: 650; }
+.notification-count { display: inline-grid; min-width: 1.2rem; height: 1.2rem; place-items: center; margin-left: .2rem; padding: 0 .25rem; border-radius: 99px; background: #b33f45; color: white; font-size: .65rem; }
 .user-menu { color: var(--muted); }
 .user-menu form { margin: 0; }
 .link-button { padding: 0; border: 0; background: none; color: var(--blue); cursor: pointer; font-weight: 700; }
@@ -51,6 +52,19 @@ h2 { margin: 0; font-size: 1.02rem; }
 .panel { margin-bottom: .9rem; padding: 1.1rem 1.2rem; }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .9rem; }
 .panel-heading .eyebrow { margin-bottom: .2rem; }
+.notification-panel { padding: 0 1.2rem; }
+.notification-item { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .85rem; padding: 1rem 0; border-bottom: 1px solid #edf0f4; }
+.notification-item:last-child { border-bottom: 0; }
+.notification-indicator { width: .62rem; height: .62rem; border-radius: 50%; background: var(--blue); }
+.severity-critical .notification-indicator, .severity-high .notification-indicator { background: var(--red); }
+.severity-warning .notification-indicator { background: #c1841c; }
+.notification-copy { min-width: 0; }
+.notification-heading { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; font-size: .82rem; }
+.severity-label { color: var(--muted); font-size: .65rem; font-weight: 700; }
+.notification-copy p { margin: .25rem 0; color: #40516a; font-size: .76rem; }
+.notification-copy small { color: var(--muted); font-size: .68rem; }
+.empty-state { padding: 2rem 1rem; text-align: center; }
+.empty-state > strong { font-size: .95rem; }
 .panel > .muted { margin: -.25rem 0 .85rem; }
 .bar-list { display: grid; gap: .8rem; margin-top: 1rem; }
 .bar-row { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(70px, 2fr) 2rem; align-items: center; gap: .65rem; font-size: .74rem; }
@@ -115,6 +129,8 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
   .kpi-grid { grid-template-columns: 1fr 1fr; }
   .two-column { grid-template-columns: 1fr; }
   .integration-grid { grid-template-columns: 1fr; }
+  .notification-item { grid-template-columns: auto 1fr; }
+  .notification-item .secondary-button { grid-column: 2; justify-self: start; }
   .filter-form { grid-template-columns: 1fr 1fr; }
   .search-field { grid-column: 1 / -1; }
   .form-grid { grid-template-columns: 1fr; }

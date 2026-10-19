@@ -30,6 +30,7 @@ from .models import (
     LifecycleStatus,
     ReturnWorkItem,
 )
+from .notifications import build_asset_notifications
 from .reporting import build_asset_quality_report
 from .services import transition_asset
 
@@ -116,6 +117,77 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(response.context["asset_count"], 1)
         self.assertEqual(response.context["assigned_count"], 1)
         self.assertEqual(response.context["quality_report"]["asset_count"], 1)
+
+    def test_notifications_show_due_and_expiring_assets_and_navigation_count(self):
+        self.user.user_permissions.add(self.view_permission)
+        today = timezone.localdate()
+        self.create_asset(
+            asset_id="AST-OVERDUE",
+            lifecycle_status=LifecycleStatus.RETURN_PENDING,
+            return_due_date=today - timedelta(days=2),
+            warranty_end=today + timedelta(days=90),
+        )
+        self.create_asset(
+            asset_id="AST-WARRANTY-SOON",
+            lifecycle_status=LifecycleStatus.IN_STOCK,
+            custodian_ref="",
+            warranty_end=today + timedelta(days=10),
+        )
+
+        response = self.client.get(reverse("inventory:notifications"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Return overdue")
+        self.assertContains(response, "Warranty expiring")
+        self.assertEqual(len(response.context["notifications"]), 2)
+        self.assertEqual(response.context["asset_notification_count"], 2)
+        self.assertContains(response, "Notifications")
+
+    def test_notifications_are_live_and_clear_when_asset_record_is_resolved(self):
+        self.user.user_permissions.add(self.view_permission)
+        today = timezone.localdate()
+        asset = self.create_asset(
+            asset_id="AST-RESOLVE-ALERT",
+            lifecycle_status=LifecycleStatus.RETURN_PENDING,
+            return_due_date=today - timedelta(days=1),
+            warranty_end=today + timedelta(days=90),
+        )
+        self.assertEqual(len(build_asset_notifications(as_of=today)), 1)
+
+        asset.lifecycle_status = LifecycleStatus.ASSIGNED
+        asset.return_due_date = None
+        asset.save(update_fields=("lifecycle_status", "return_due_date"))
+        response = self.client.get(reverse("inventory:notifications"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You’re all caught up")
+        self.assertEqual(response.context["asset_notification_count"], 0)
+
+    def test_notifications_require_asset_view_permission(self):
+        response = self.client.get(reverse("inventory:notifications"))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_notifications_are_paginated(self):
+        self.user.user_permissions.add(self.view_permission)
+        today = timezone.localdate()
+        for index in range(51):
+            self.create_asset(
+                asset_id=f"AST-WARRANTY-{index:03}",
+                lifecycle_status=LifecycleStatus.IN_STOCK,
+                custodian_ref="",
+                warranty_end=today + timedelta(days=10),
+            )
+
+        first_page = self.client.get(reverse("inventory:notifications"))
+        second_page = self.client.get(
+            reverse("inventory:notifications"),
+            {"page": 2},
+        )
+
+        self.assertEqual(first_page.context["notification_page"].paginator.count, 51)
+        self.assertEqual(len(first_page.context["notifications"]), 50)
+        self.assertEqual(len(second_page.context["notifications"]), 1)
 
     def test_allowed_transition_updates_asset_and_writes_event(self):
         self.user.user_permissions.add(self.transition_permission)
