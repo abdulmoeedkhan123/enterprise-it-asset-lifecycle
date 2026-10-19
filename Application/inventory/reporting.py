@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 from typing import Any
 
-from django.db.models import Count, Q, QuerySet, Subquery
+from django.db.models import Count, F, Q, QuerySet, Subquery
 
 from .models import Asset, LifecycleStatus
 
@@ -59,12 +59,12 @@ def build_asset_quality_report(
         (
             "stale_source_records",
             "Source records not updated in the last 90 days",
-            Q(source_last_updated__lt=as_of.fromordinal(as_of.toordinal() - 90)),
+            Q(source_last_updated__lt=stale_cutoff),
         ),
         (
             "warranty_before_purchase",
             "Warranty end date before purchase date",
-            Q(warranty_end__lt=models.F("purchase_date")),
+            Q(warranty_end__lt=F("purchase_date")),
         ),
         (
             "duplicate_serial_assets",
@@ -74,6 +74,7 @@ def build_asset_quality_report(
     )
     checks_report = []
     issue_filter = Q(pk__in=[])
+    stale_cutoff = as_of - timedelta(days=90)
     for code, label, condition in checks:
         checks_report.append(
             {"code": code, "label": label, "count": assets.filter(condition).count()}
@@ -99,7 +100,7 @@ def profile_asset_rows(rows: list[dict[str, str]], *, as_of: date) -> dict[str, 
         "warranty_before_purchase": 0,
         "duplicate_serial_assets": 0,
     }
-    stale_cutoff = date.fromordinal(as_of.toordinal() - 90)
+    stale_cutoff = as_of - timedelta(days=90)
     for row in rows:
         status = row["lifecycle_status"]
         serial_ref = row["serial_ref"].strip()
