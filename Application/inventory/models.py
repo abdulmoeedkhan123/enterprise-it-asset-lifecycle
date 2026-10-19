@@ -412,6 +412,34 @@ class ProcurementQuote(models.Model):
         return f"{self.supplier}: {self.unit_cost}"
 
 
+class ProcurementReceipt(models.Model):
+    request = models.ForeignKey(
+        ProcurementRequest, on_delete=models.PROTECT, related_name="receipts"
+    )
+    receipt_reference = models.CharField(max_length=64)
+    quantity = models.PositiveSmallIntegerField()
+    received_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="procurement_receipts",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", "-pk")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("request", "receipt_reference"),
+                name="unique_procurement_receipt_reference",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.request}: {self.receipt_reference} ({self.quantity})"
+
+
 class ProcurementEvent(models.Model):
     class EventType(models.TextChoices):
         CREATED = "created", "Request created"

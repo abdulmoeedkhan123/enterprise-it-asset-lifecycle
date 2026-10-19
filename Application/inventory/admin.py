@@ -13,6 +13,7 @@ from .models import (
     MaintenanceWorkOrderEvent,
     ProcurementEvent,
     ProcurementQuote,
+    ProcurementReceipt,
     ProcurementRequest,
     ReturnWorkItem,
 )
@@ -31,7 +32,12 @@ class AssetAdmin(admin.ModelAdmin):
     )
     list_filter = ("site", "lifecycle_status", "asset_type", "department")
     search_fields = ("asset_id", "serial_ref", "custodian_ref")
-    readonly_fields = ("created_at", "updated_at", "lifecycle_status")
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "lifecycle_status",
+        "procurement_request",
+    )
     ordering = ("asset_id",)
 
     @transaction.atomic
@@ -269,6 +275,23 @@ class ProcurementQuoteAdmin(admin.ModelAdmin):
     list_filter = ("supplier", "created_at")
     search_fields = ("request__title", "supplier", "quote_reference")
     readonly_fields = tuple(field.name for field in ProcurementQuote._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ProcurementReceipt)
+class ProcurementReceiptAdmin(admin.ModelAdmin):
+    list_display = ("request", "receipt_reference", "quantity", "received_by", "created_at")
+    list_filter = ("created_at",)
+    search_fields = ("request__title", "receipt_reference")
+    readonly_fields = tuple(field.name for field in ProcurementReceipt._meta.fields)
 
     def has_add_permission(self, request):
         return False

@@ -44,6 +44,7 @@ from .models import (
     MaintenanceWorkOrderEvent,
     ProcurementEvent,
     ProcurementQuote,
+    ProcurementReceipt,
     ProcurementRequest,
     ReturnWorkItem,
 )
@@ -402,6 +403,9 @@ def procurement_detail(request, pk: int):
             "purchase_order_form": PurchaseOrderForm(),
             "receipt_form": ProcurementReceiptForm(),
             "delivery_form": ProcurementDeliveryUpdateForm(),
+            "can_manage_draft": _procurement_owner_or_changer(
+                request, purchase_request
+            ),
             "quoted_total": (
                 purchase_request.selected_quote.unit_cost * purchase_request.quantity
                 if purchase_request.selected_quote_id
@@ -411,6 +415,7 @@ def procurement_detail(request, pk: int):
                 purchase_request.quantity - purchase_request.quantity_received,
                 0,
             ),
+            "receipts": purchase_request.receipts.select_related("received_by").all(),
             "remaining_to_register": max(
                 purchase_request.quantity_received
                 - purchase_request.registered_assets.count(),
@@ -487,7 +492,6 @@ def procurement_quote_select(request, pk: int, quote_pk: int):
 
 
 @login_required
-@permission_required("inventory.change_procurementrequest", raise_exception=True)
 @require_POST
 def procurement_submit(request, pk: int):
     with transaction.atomic():
@@ -572,6 +576,8 @@ def procurement_order(request, pk: int):
         )
         if purchase_request.status != ProcurementRequest.Status.APPROVED:
             messages.error(request, "Only approved requests can be ordered.")
+        elif not purchase_request.selected_quote_id:
+            messages.error(request, "An approved request must have a selected supplier quote.")
         elif not form.is_valid():
             messages.error(request, form.errors.as_text())
         else:
@@ -687,6 +693,11 @@ def procurement_receive(request, pk: int):
             messages.error(request, "Only an open purchase order can be received.")
         elif not form.is_valid():
             messages.error(request, form.errors.as_text())
+        elif ProcurementReceipt.objects.filter(
+            request=purchase_request,
+            receipt_reference=form.cleaned_data["receipt_reference"],
+        ).exists():
+            messages.error(request, "That receipt reference has already been recorded.")
         elif (
             purchase_request.quantity_received + form.cleaned_data["quantity"]
             > purchase_request.quantity
@@ -694,6 +705,12 @@ def procurement_receive(request, pk: int):
             messages.error(request, "Received quantity cannot exceed the requested amount.")
         else:
             received_now = form.cleaned_data["quantity"]
+            ProcurementReceipt.objects.create(
+                request=purchase_request,
+                receipt_reference=form.cleaned_data["receipt_reference"],
+                quantity=received_now,
+                received_by=request.user,
+            )
             purchase_request.quantity_received += received_now
             complete = purchase_request.quantity_received == purchase_request.quantity
             purchase_request.status = (
@@ -841,6 +858,14 @@ def disposal_complete(request, pk: int):
         )
         if case.status != DisposalCase.Status.APPROVED:
             messages.error(request, "Only an approved disposal request can be completed.")
+        elif case.events.filter(
+            event_type=DisposalEvent.EventType.APPROVED,
+            actor=request.user,
+        ).exists():
+            messages.error(
+                request,
+                "The disposal approver cannot also complete the disposal.",
+            )
         elif not form.is_valid():
             messages.error(request, form.errors.as_text())
         else:

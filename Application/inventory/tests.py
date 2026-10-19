@@ -272,6 +272,26 @@ class AssetLifecycleTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    def test_barcode_lookup_matches_asset_identifier_or_serial_reference(self):
+        self.user.user_permissions.add(self.view_permission)
+        asset = self.create_asset(asset_id="AST-BARCODE", serial_ref="BAR-123")
+
+        response = self.client.get(
+            reverse("inventory:asset-barcode-lookup"),
+            {"code": "BAR-123"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["matches"][0]["asset_id"],
+            asset.asset_id,
+        )
+        invalid_response = self.client.get(
+            reverse("inventory:asset-barcode-lookup"),
+            {"code": " "},
+        )
+        self.assertEqual(invalid_response.status_code, 400)
+
     def test_maintenance_work_order_cannot_be_created_for_disposed_asset(self):
         self.user.user_permissions.add(
             Permission.objects.get(
@@ -326,6 +346,10 @@ class AssetLifecycleTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         purchase_request = ProcurementRequest.objects.get()
+        detail_response = self.client.get(
+            reverse("inventory:procurement-detail", args=[purchase_request.pk])
+        )
+        self.assertEqual(detail_response.status_code, 200)
 
         for supplier, cost in (("Supplier A", "1200.00"), ("Supplier B", "1150.00")):
             self.client.post(
@@ -423,6 +447,11 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(purchase_request.delivery_status, "partially_received")
 
         self.client.force_login(self.user)
+        registration_page = self.client.get(
+            f"{reverse('inventory:asset-create')}?procurement_id={purchase_request.pk}"
+        )
+        self.assertEqual(registration_page.status_code, 200)
+        self.assertContains(registration_page, "Use camera")
         asset_payload = {
             "asset_type": "Laptop",
             "manufacturer": "Example",
@@ -496,6 +525,10 @@ class AssetLifecycleTests(TestCase):
         )
         case = DisposalCase.objects.get(asset=asset)
         self.assertEqual(case.status, DisposalCase.Status.PENDING_APPROVAL)
+        self.assertEqual(
+            self.client.get(reverse("inventory:disposal-list")).status_code,
+            200,
+        )
         self.client.post(
             reverse("inventory:disposal-review", args=[case.pk]),
             {"decision": "approve", "note": "Self approval."},
@@ -511,12 +544,22 @@ class AssetLifecycleTests(TestCase):
             Permission.objects.get(
                 content_type__app_label="inventory",
                 codename="approve_disposalcase",
-            )
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="complete_disposalcase",
+            ),
         )
         self.client.force_login(reviewer)
         self.client.post(
             reverse("inventory:disposal-review", args=[case.pk]),
             {"decision": "approve", "note": "Approved."},
+        )
+        case.refresh_from_db()
+        self.assertEqual(case.status, DisposalCase.Status.APPROVED)
+        self.client.post(
+            reverse("inventory:disposal-complete", args=[case.pk]),
+            {"disposal_evidence_ref": "DISP-REVIEWER"},
         )
         case.refresh_from_db()
         self.assertEqual(case.status, DisposalCase.Status.APPROVED)
