@@ -11,7 +11,8 @@
       "justMyCode": true,
       "cwd": "${workspaceFolder}/Application",
       "env": {
-        "DJANGO_DEBUG": "1"
+        "DJANGO_DEBUG": "1",
+        "DJANGO_CSRF_TRUSTED_ORIGINS": "https://localhost:8001"
       },
       "preLaunchTask": "Migrate application database"
     }
