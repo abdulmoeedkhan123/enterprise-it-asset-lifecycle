@@ -167,7 +167,7 @@ class CopilotQueryTests(TestCase):
 
         response = self.client.post(
             reverse("inventory:copilot"),
-            {"query": "Show laptops assigned in our regional office"},
+            {"query": "Find devices allocated to our regional office"},
         )
 
         self.assertEqual(response.status_code, 200)

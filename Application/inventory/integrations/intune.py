@@ -14,6 +14,7 @@ from django.utils.dateparse import parse_datetime
 
 GRAPH_API_ROOT = "https://graph.microsoft.com/v1.0"
 GRAPH_DEVICES_PATH = "/deviceManagement/managedDevices"
+GRAPH_DEVICES_URL_PATH = f"/v1.0{GRAPH_DEVICES_PATH}"
 MAX_PAGES = 500
 
 
@@ -138,16 +139,20 @@ class IntuneGraphClient:
 
     @staticmethod
     def _validate_next_url(url: str) -> None:
-        parsed = urlsplit(url)
-        if (
-            parsed.scheme != "https"
-            or parsed.hostname != "graph.microsoft.com"
-            or parsed.port not in (None, 443)
-            or parsed.username
-            or parsed.password
-            or parsed.path.rstrip("/") != GRAPH_DEVICES_PATH
-            or parsed.fragment
-        ):
+        try:
+            parsed = urlsplit(url)
+            safe_url = (
+                parsed.scheme == "https"
+                and parsed.hostname == "graph.microsoft.com"
+                and parsed.port in (None, 443)
+                and not parsed.username
+                and not parsed.password
+                and parsed.path.rstrip("/") == GRAPH_DEVICES_URL_PATH
+                and not parsed.fragment
+            )
+        except ValueError:
+            safe_url = False
+        if not safe_url:
             raise IntuneError("Microsoft Graph returned an unsafe managed-device pagination URL.")
 
     @staticmethod

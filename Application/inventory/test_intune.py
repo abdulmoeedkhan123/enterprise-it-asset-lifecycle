@@ -1,5 +1,5 @@
 import json
-from datetime import date, datetime, timedelta, timezone as datetime_timezone
+from datetime import date
 from unittest.mock import MagicMock, patch
 from urllib.error import HTTPError
 
@@ -64,8 +64,12 @@ class IntuneGraphClientTests(TestCase):
 
         self.assertEqual([device.managed_device_id for device in devices], ["managed-1", "managed-2"])
         self.assertTrue(all(call.args[0].method == "GET" for call in mocked_urlopen.call_args_list))
+        self.assertEqual(
+            mocked_urlopen.call_args_list[0].args[0].get_header("Authorization"),
+            "Bearer access-token",
+        )
         selected_fields = mocked_urlopen.call_args_list[0].args[0].full_url
-        self.assertIn("$select=id%2CdeviceName%2CserialNumber", selected_fields)
+        self.assertIn("%24select=id%2CdeviceName%2CserialNumber", selected_fields)
         self.assertNotIn("userPrincipalName", selected_fields)
 
     @patch("inventory.integrations.intune.urlopen")
@@ -86,6 +90,37 @@ class IntuneGraphClientTests(TestCase):
                 "@odata.nextLink": (
                     "https://attacker.example/deviceManagement/managedDevices"
                     "?token=steal"
+                ),
+            }
+        )
+        with self.assertRaisesMessage(IntuneError, "unsafe"):
+            IntuneGraphClient(access_token="access-token").list_managed_devices()
+        self.assertEqual(mocked_urlopen.call_count, 1)
+
+    @patch("inventory.integrations.intune.urlopen")
+    def test_rejects_malformed_pagination_port_as_intune_error(self, mocked_urlopen):
+        mocked_urlopen.return_value = self.response(
+            {
+                "value": [],
+                "@odata.nextLink": (
+                    "https://graph.microsoft.com:not-a-port/v1.0"
+                    "/deviceManagement/managedDevices"
+                ),
+            }
+        )
+        with self.assertRaisesMessage(IntuneError, "unsafe"):
+            IntuneGraphClient(access_token="access-token").list_managed_devices()
+        self.assertEqual(mocked_urlopen.call_count, 1)
+
+    @patch("inventory.integrations.intune.urlopen")
+    def test_rejects_malformed_pagination_authority_as_intune_error(
+        self, mocked_urlopen
+    ):
+        mocked_urlopen.return_value = self.response(
+            {
+                "value": [],
+                "@odata.nextLink": (
+                    "https://[invalid/v1.0/deviceManagement/managedDevices"
                 ),
             }
         )

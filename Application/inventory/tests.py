@@ -866,6 +866,8 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "SCIM 2.0 user status")
         self.assertContains(response, "Available - generic connector")
+        self.assertContains(response, "Microsoft Intune")
+        self.assertContains(response, "Implemented - read-only sync")
         self.assertContains(response, "Microsoft Entra ID / Microsoft Graph")
         self.assertContains(response, "Adapter required")
         self.assertContains(response, "Blancco")

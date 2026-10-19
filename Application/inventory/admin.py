@@ -8,6 +8,8 @@ from .models import (
     IdentityLink,
     ImportRun,
     IntegrationRun,
+    IntuneDevice,
+    IntuneSyncRun,
     LifecycleEvent,
     MaintenanceWorkOrder,
     MaintenanceWorkOrderEvent,
@@ -184,6 +186,59 @@ class IntegrationRunAdmin(admin.ModelAdmin):
     )
     list_filter = ("provider", "status", "started_at")
     readonly_fields = tuple(field.name for field in IntegrationRun._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(IntuneSyncRun)
+class IntuneSyncRunAdmin(admin.ModelAdmin):
+    list_display = (
+        "status",
+        "records_received",
+        "devices_matched",
+        "devices_duplicate",
+        "devices_unmatched",
+        "started_at",
+        "completed_at",
+    )
+    list_filter = ("status", "started_at")
+    readonly_fields = tuple(field.name for field in IntuneSyncRun._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(IntuneDevice)
+class IntuneDeviceAdmin(admin.ModelAdmin):
+    list_display = (
+        "device_name",
+        "serial_number",
+        "compliance_state",
+        "match_status",
+        "matched_asset",
+        "last_seen_run",
+    )
+    list_filter = ("match_status", "compliance_state")
+    search_fields = (
+        "managed_device_id",
+        "device_name",
+        "serial_number",
+        "matched_asset__asset_id",
+    )
+    readonly_fields = tuple(field.name for field in IntuneDevice._meta.fields)
 
     def has_add_permission(self, request):
         return False

@@ -71,16 +71,41 @@ The Compose configuration disables secure cookies only for its loopback-bound lo
 
 ## Read-only asset copilot (MVP)
 
-The **AI Copilot** page is an initial, read-only question interface available to signed-in users with the existing `inventory.view_asset` permission. It currently uses deterministic intent matching rather than an external language model. Supported questions include:
+The **AI Copilot** page is available to signed-in users with the existing `inventory.view_asset` permission. Deterministic Python query handling runs first for common questions:
 
 - Show overdue returns.
 - Show warranties expiring soon, or within a specified number of days (up to 365).
 - List assets in a supported lifecycle status, such as assigned or in repair.
 - Find an asset by its exact asset ID, serial reference, or custodian reference.
 
-Results are limited to the first 10 matching assets and link to the existing asset detail page. Unsupported prompts return guidance instead of attempting an action. The copilot does not call an external AI provider, write to the database, reassign assets, approve requests, initiate disposal, or certify sanitisation. This intentionally keeps the first iteration low-risk while the query interface and permission boundary are validated.
+When deterministic matching cannot handle a question, an optional OpenAI-compatible LLM can propose one bounded JSON intent for a search, overdue-return query, warranty window, or lifecycle status. The application validates the exact intent shape and its values, then executes a read-only Django ORM query; the LLM never receives asset records and cannot run SQL, access tools, or perform mutations. Results are limited to the first 10 matching assets and link to the existing asset detail page. Without an LLM configuration the deterministic questions remain available. Provider failures are surfaced without changing records.
 
-**Approval-first AI roadmap:** if an LLM is added later, it should only propose a validated structured intent. Server-side permissions and business rules remain authoritative. Any write operation must be shown as a proposed action with the target records and consequences, then require explicit approval from an authorised human; sensitive disposal and sanitisation actions must never be executed solely on an AI decision. Configure provider credentials and data-sharing approvals separately before sending any organizational data to an external service.
+Configure the optional provider using environment variables (never commit credentials):
+
+```bash
+export COPILOT_LLM_API_KEY="<approved-provider-key>"
+# Optional; defaults to the OpenAI-compatible Chat Completions endpoint/model.
+export COPILOT_LLM_API_URL="https://api.openai.com/v1/chat/completions"
+export COPILOT_LLM_MODEL="gpt-4o-mini"
+```
+
+Only the user's question text is sent to this endpoint. Obtain organizational approval before enabling the provider; users should not include secrets or sensitive personal details in questions. All results remain subject to Django's `inventory.view_asset` permission. The copilot cannot reassign assets, approve requests, initiate disposal, certify sanitisation, or execute remote device actions. Any future write capability must require a server-side policy check and explicit approval from an authorized human.
+
+## Read-only Microsoft Intune sync
+
+The optional Intune connector uses Microsoft Graph client credentials and only reads managed-device fields. Obtain tenant/security approval and grant the application the Microsoft Graph **application** permission `DeviceManagementManagedDevices.Read.All` with administrator consent. Configure credentials in the deployment secret store or environment:
+
+```bash
+export INTUNE_TENANT_ID="<tenant-id-or-domain>"
+export INTUNE_CLIENT_ID="<application-client-id>"
+export INTUNE_CLIENT_SECRET="<managed-secret>"
+python Application/manage.py sync_intune_devices \
+  --confirm-read-only-authorized
+```
+
+The confirmation flag is required on every command invocation. No Graph write or remote device-management API is used. The connector requests only device ID/name, serial number, manufacturer, model, OS/version, compliance state, and last device sync time. The Django permission `inventory.view_intunedevice` controls the device review page. There is no web-triggered sync action; restrict access to the management command and its configured secrets at the deployment/host level.
+
+Each attempt is recorded in Intune sync history. A failed Graph request does not replace the last successful snapshot. Records seen in the latest successful run are current; previously-seen records remain available and are marked as absent from that latest snapshot rather than silently deleted. Matching is limited to normalized, case-insensitive exact serial references and is made only when both the Intune serial and asset serial are unique. Duplicate and unmatched devices require human review. Intune attributes never overwrite asset-owned fields, and device names/models are never used to guess a match.
 
 ## ETL and reporting
 
@@ -112,6 +137,7 @@ Create Django Groups and assign these permissions in Django Admin; grant only th
 | Software asset manager | `inventory.view_softwareproduct`, `inventory.add_softwareproduct`, `inventory.view_softwarecontract`, `inventory.add_softwarecontract` |
 | Licence administrator | `inventory.view_softwareproduct`, `inventory.view_softwarecontract`, `inventory.add_softwarelicenseassignment`, `inventory.change_softwarelicenseassignment` |
 | Software contract reviewer | `inventory.view_softwareproduct`, `inventory.view_softwarecontract` |
+| Intune device reviewer | `inventory.view_intunedevice` |
 
 The requester manages their own procurement draft. Managing another user's request requires both `inventory.change_procurementrequest` and `inventory.view_all_procurementrequests`; approval and buyer/receiver actions likewise require their action permission plus view-all access. Approval policies and Groups shown here are implementation controls, not company-specific delegated financial authorities. Test permission combinations using non-superuser accounts before deployment.
 
