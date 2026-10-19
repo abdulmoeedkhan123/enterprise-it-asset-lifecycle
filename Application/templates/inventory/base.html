@@ -10,31 +10,35 @@
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="topbar">
-    <a class="brand" href="{% url 'inventory:dashboard' %}">
-      <span class="brand-mark" aria-hidden="true">AL</span>
-      <span><strong>Asset Lifecycle</strong><small>Management workspace</small></span>
-    </a>
+    <div class="topbar-main">
+      <a class="brand" href="{% url 'inventory:dashboard' %}">
+        <span class="brand-mark" aria-hidden="true">AL</span>
+        <span><strong>Asset Lifecycle</strong><small>Management workspace</small></span>
+      </a>
+      {% if request.user.is_authenticated %}
+      <div class="user-menu">
+        <span class="user-name">{{ request.user.get_username }}</span>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="link-button" type="submit">Sign out</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
     {% if request.user.is_authenticated %}
     <nav class="nav" aria-label="Main navigation">
-      <a href="{% url 'inventory:dashboard' %}">Overview</a>
-      <a href="{% url 'inventory:asset-list' %}">Assets</a>
-      {% if perms.inventory.view_asset %}<a href="{% url 'inventory:copilot' %}">AI Copilot</a>{% endif %}
-      {% if perms.inventory.view_asset %}<a href="{% url 'inventory:notifications' %}" aria-label="Notifications, {{ asset_notification_count }} active">Notifications{% if asset_notification_count %} <span class="notification-count">{{ asset_notification_count }}</span>{% endif %}</a>{% endif %}
-      {% if perms.inventory.view_maintenanceworkorder %}<a href="{% url 'inventory:maintenance-work-orders' %}">Maintenance</a>{% endif %}
-      {% if perms.inventory.view_procurementrequest %}<a href="{% url 'inventory:procurement-list' %}">Procurement</a>{% endif %}
-      {% if perms.inventory.view_disposalcase %}<a href="{% url 'inventory:disposal-list' %}">Disposals</a>{% endif %}
-      {% if perms.inventory.view_returnworkitem %}<a href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
-      {% if perms.inventory.view_asset %}<a href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
-      {% if perms.inventory.add_asset %}<a href="{% url 'inventory:asset-create' %}">Register asset</a>{% endif %}
+      <a {% if request.resolver_match.url_name == "dashboard" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:dashboard' %}">Overview</a>
+      <a {% if request.resolver_match.url_name == "asset-list" or request.resolver_match.url_name == "asset-detail" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:asset-list' %}">Assets</a>
+      {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "copilot" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:copilot' %}">AI Copilot</a>{% endif %}
+      {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "notifications" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:notifications' %}" aria-label="Notifications, {{ asset_notification_count }} active">Notifications{% if asset_notification_count %} <span class="notification-count">{{ asset_notification_count }}</span>{% endif %}</a>{% endif %}
+      {% if perms.inventory.view_maintenanceworkorder %}<a {% if request.resolver_match.url_name == "maintenance-work-orders" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:maintenance-work-orders' %}">Maintenance</a>{% endif %}
+      {% if perms.inventory.view_procurementrequest %}<a {% if request.resolver_match.url_name == "procurement-list" or request.resolver_match.url_name == "procurement-detail" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:procurement-list' %}">Procurement</a>{% endif %}
+      {% if perms.inventory.view_disposalcase %}<a {% if request.resolver_match.url_name == "disposal-list" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:disposal-list' %}">Disposals</a>{% endif %}
+      {% if perms.inventory.view_returnworkitem %}<a {% if request.resolver_match.url_name == "return-work-queue" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
+      {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "integration-catalog" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
+      {% if perms.inventory.add_asset %}<a class="nav-action" {% if request.resolver_match.url_name == "asset-create" %}aria-current="page"{% endif %} href="{% url 'inventory:asset-create' %}">+ Register asset</a>{% endif %}
       {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
     </nav>
-    <div class="user-menu">
-      <span>{{ request.user.get_username }}</span>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button class="link-button" type="submit">Sign out</button>
-      </form>
-    </div>
     {% endif %}
   </header>
   <main id="main-content" class="page-shell">
