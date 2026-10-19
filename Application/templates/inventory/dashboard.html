@@ -5,9 +5,62 @@
   <div>
     <p class="eyebrow">OPERATIONS / ASSET INVENTORY</p>
     <h1>Lifecycle overview</h1>
-    <p class="muted">Operational view of registered assets and items requiring follow-up.</p>
+    <p class="muted">Welcome, {{ request.user.get_username }}. Find an asset or continue a workflow.</p>
   </div>
   <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong><a href="{% url 'inventory:notifications' %}">{{ asset_notification_count }} active notifications</a></div>
+</section>
+<section class="panel quick-actions-panel" aria-labelledby="quick-actions-title">
+  <div class="panel-heading">
+    <div><p class="eyebrow">GET STARTED</p><h2 id="quick-actions-title">What would you like to do?</h2></div>
+  </div>
+  <div class="quick-actions">
+    <a class="quick-action" href="{% url 'inventory:asset-list' %}">
+      <span class="quick-action-icon" aria-hidden="true">A</span>
+      <span><strong>Find an asset</strong><small>Search and review inventory</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% if perms.inventory.add_asset %}
+    <a class="quick-action" href="{% url 'inventory:asset-create' %}">
+      <span class="quick-action-icon" aria-hidden="true">+</span>
+      <span><strong>Register an asset</strong><small>Add or scan a new item</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
+    {% if perms.inventory.view_asset %}
+    <a class="quick-action" href="{% url 'inventory:notifications' %}">
+      <span class="quick-action-icon quick-action-alert" aria-hidden="true">!</span>
+      <span><strong>Review notifications</strong><small>{{ asset_notification_count }} active item{{ asset_notification_count|pluralize }} to check</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
+    {% if perms.inventory.add_procurementrequest %}
+    <a class="quick-action" href="{% url 'inventory:procurement-create' %}">
+      <span class="quick-action-icon" aria-hidden="true">P</span>
+      <span><strong>Request a purchase</strong><small>Create a procurement draft</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% elif perms.inventory.view_procurementrequest %}
+    <a class="quick-action" href="{% url 'inventory:procurement-list' %}">
+      <span class="quick-action-icon" aria-hidden="true">P</span>
+      <span><strong>Open procurement</strong><small>Review purchase requests</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
+    {% if perms.inventory.view_maintenanceworkorder %}
+    <a class="quick-action" href="{% url 'inventory:maintenance-work-orders' %}">
+      <span class="quick-action-icon" aria-hidden="true">M</span>
+      <span><strong>View maintenance</strong><small>Track repairs and work orders</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
+    {% if perms.inventory.view_disposalcase %}
+    <a class="quick-action" href="{% url 'inventory:disposal-list' %}">
+      <span class="quick-action-icon" aria-hidden="true">D</span>
+      <span><strong>Review disposals</strong><small>Manage end-of-life approvals</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
+  </div>
 </section>
 <section class="panel">
   <form class="filter-form" method="get" aria-label="Filter dashboard reporting">
@@ -23,7 +76,7 @@
         {% for value, label in statuses %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
       </select>
     </label>
-    <button class="primary-button" type="submit">Apply filters</button>
+    <button class="primary-button" type="submit">Update overview</button>
     <a class="secondary-button" href="{% url 'inventory:dashboard' %}">Reset</a>
   </form>
   <p class="muted">Operational and quality metrics below use the selected filters. Pipeline and integration history is system-wide.</p>
