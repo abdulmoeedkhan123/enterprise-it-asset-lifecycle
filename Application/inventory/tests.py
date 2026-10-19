@@ -29,6 +29,10 @@ from .models import (
     LifecycleEvent,
     LifecycleStatus,
     MaintenanceWorkOrder,
+    ProcurementEvent,
+    ProcurementRequest,
+    DisposalCase,
+    DisposalEvent,
     ReturnWorkItem,
 )
 from .notifications import build_asset_notifications
@@ -286,6 +290,286 @@ class AssetLifecycleTests(TestCase):
 
         self.assertRedirects(response, reverse("inventory:asset-detail", args=[asset.pk]))
         self.assertFalse(MaintenanceWorkOrder.objects.exists())
+
+    def test_procurement_quote_approval_order_delivery_and_receiving_workflow(self):
+        add_permissions = [
+            "view_purchaserequest",
+            "add_purchaserequest",
+            "change_purchaserequest",
+            "add_asset",
+            "view_asset",
+            "approve_procurementrequest",
+        ]
+        self.user.user_permissions.add(
+            *[
+                Permission.objects.get(
+                    content_type__app_label="inventory",
+                    codename=codename,
+                )
+                for codename in add_permissions
+            ]
+        )
+        required_by = timezone.localdate() + timedelta(days=20)
+        response = self.client.post(
+            reverse("inventory:procurement-create"),
+            {
+                "title": "Replacement laptops",
+                "description": "Two standard laptops.",
+                "justification": "Replace failed devices.",
+                "quantity": 2,
+                "required_by": required_by.isoformat(),
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        purchase_request = ProcurementRequest.objects.get()
+
+        for supplier, cost in (("Supplier A", "1200.00"), ("Supplier B", "1150.00")):
+            self.client.post(
+                reverse("inventory:procurement-quote-add", args=[purchase_request.pk]),
+                {
+                    "supplier": supplier,
+                    "quote_reference": f"Q-{supplier[-1]}",
+                    "unit_cost": cost,
+                    "delivery_days": 8,
+                    "notes": "Synthetic quote for testing.",
+                },
+            )
+        selected_quote = purchase_request.quotes.get(supplier="Supplier B")
+        self.client.post(
+            reverse(
+                "inventory:procurement-quote-select",
+                args=[purchase_request.pk, selected_quote.pk],
+            )
+        )
+        self.client.post(
+            reverse("inventory:procurement-submit", args=[purchase_request.pk])
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(
+            purchase_request.status,
+            ProcurementRequest.Status.PENDING_APPROVAL,
+        )
+
+        self.client.post(
+            reverse("inventory:procurement-review", args=[purchase_request.pk]),
+            {"decision": "approve", "note": "Self approval must be blocked."},
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(
+            purchase_request.status,
+            ProcurementRequest.Status.PENDING_APPROVAL,
+        )
+
+        approver = get_user_model().objects.create_user(
+            username="procurement-approver",
+            ******,
+        )
+        approver.user_permissions.add(
+            *[
+                Permission.objects.get(
+                    content_type__app_label="inventory",
+                    codename=codename,
+                )
+                for codename in (
+                    "view_purchaserequest",
+                    "approve_procurementrequest",
+                    "manage_procurementrequest",
+                )
+            ]
+        )
+        self.client.force_login(approver)
+        self.client.post(
+            reverse("inventory:procurement-review", args=[purchase_request.pk]),
+            {"decision": "approve", "note": "Approved for test."},
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(purchase_request.status, ProcurementRequest.Status.APPROVED)
+        self.client.post(
+            reverse("inventory:procurement-order", args=[purchase_request.pk]),
+            {
+                "purchase_order_reference": "PO-TEST-1",
+                "expected_delivery_date": required_by.isoformat(),
+                "tracking_reference": "TRACK-TEST",
+            },
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(purchase_request.status, ProcurementRequest.Status.ORDERED)
+        self.assertEqual(purchase_request.delivery_status, "ordered")
+        self.client.post(
+            reverse(
+                "inventory:procurement-delivery-update",
+                args=[purchase_request.pk],
+            ),
+            {
+                "delivery_status": "in_transit",
+                "expected_delivery_date": required_by.isoformat(),
+                "tracking_reference": "TRACK-UPDATED",
+            },
+        )
+        self.client.post(
+            reverse("inventory:procurement-receive", args=[purchase_request.pk]),
+            {"quantity": 1, "receipt_reference": "GRN-1"},
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(
+            purchase_request.status,
+            ProcurementRequest.Status.PARTIALLY_RECEIVED,
+        )
+        self.assertEqual(purchase_request.quantity_received, 1)
+        self.assertEqual(purchase_request.delivery_status, "partially_received")
+
+        self.client.force_login(self.user)
+        asset_payload = {
+            "asset_type": "Laptop",
+            "manufacturer": "Example",
+            "model": "Business Laptop",
+            "site": "Sydney",
+            "department": "IT",
+            "custodian_ref": "",
+            "purchase_date": timezone.localdate().isoformat(),
+            "warranty_end": (timezone.localdate() + timedelta(days=365)).isoformat(),
+            "return_due_date": "",
+            "sanitisation_required": "",
+            "sanitisation_result": "",
+            "sanitisation_evidence_ref": "",
+            "disposal_evidence_ref": "",
+            "source_last_updated": timezone.localdate().isoformat(),
+            "procurement_id": purchase_request.pk,
+        }
+        self.client.post(
+            f"{reverse('inventory:asset-create')}?procurement_id={purchase_request.pk}",
+            {**asset_payload, "asset_id": "AST-PROC-1", "serial_ref": "BAR-PROC-1"},
+        )
+        self.assertEqual(purchase_request.registered_assets.count(), 1)
+
+        self.client.force_login(approver)
+        self.client.post(
+            reverse("inventory:procurement-receive", args=[purchase_request.pk]),
+            {"quantity": 2, "receipt_reference": "GRN-OVER"},
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(purchase_request.quantity_received, 1)
+        self.client.post(
+            reverse("inventory:procurement-receive", args=[purchase_request.pk]),
+            {"quantity": 1, "receipt_reference": "GRN-2"},
+        )
+        purchase_request.refresh_from_db()
+        self.assertEqual(purchase_request.status, ProcurementRequest.Status.RECEIVED)
+        self.assertEqual(purchase_request.delivery_status, "received")
+        self.assertEqual(
+            purchase_request.events.filter(
+                event_type=ProcurementEvent.EventType.ASSET_REGISTERED
+            ).count(),
+            1,
+        )
+        self.assertEqual(purchase_request.events.count(), 8)
+
+    def test_disposal_requires_independent_approval_and_evidence_to_complete(self):
+        requester_permissions = [
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename=codename,
+            )
+            for codename in (
+                "view_disposalcase",
+                "add_disposalcase",
+                "approve_disposalcase",
+            )
+        ]
+        self.user.user_permissions.add(*requester_permissions)
+        asset = self.create_asset(
+            lifecycle_status=LifecycleStatus.READY_FOR_DISPOSAL,
+            custodian_ref="",
+        )
+        self.client.post(
+            reverse("inventory:disposal-create", args=[asset.pk]),
+            {
+                "reason": "End of supported life.",
+                "method": DisposalCase.Method.RECYCLE,
+                "sanitisation_result": "",
+                "sanitisation_evidence_ref": "",
+            },
+        )
+        case = DisposalCase.objects.get(asset=asset)
+        self.assertEqual(case.status, DisposalCase.Status.PENDING_APPROVAL)
+        self.client.post(
+            reverse("inventory:disposal-review", args=[case.pk]),
+            {"decision": "approve", "note": "Self approval."},
+        )
+        case.refresh_from_db()
+        self.assertEqual(case.status, DisposalCase.Status.PENDING_APPROVAL)
+
+        reviewer = get_user_model().objects.create_user(
+            username="disposal-reviewer",
+            ******,
+        )
+        reviewer.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="approve_disposalcase",
+            )
+        )
+        self.client.force_login(reviewer)
+        self.client.post(
+            reverse("inventory:disposal-review", args=[case.pk]),
+            {"decision": "approve", "note": "Approved."},
+        )
+        case.refresh_from_db()
+        self.assertEqual(case.status, DisposalCase.Status.APPROVED)
+
+        executor = get_user_model().objects.create_user(
+            username="disposal-executor",
+            ******,
+        )
+        executor.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="complete_disposalcase",
+            )
+        )
+        self.client.force_login(executor)
+        self.client.post(
+            reverse("inventory:disposal-complete", args=[case.pk]),
+            {"disposal_evidence_ref": ""},
+        )
+        case.refresh_from_db()
+        self.assertEqual(case.status, DisposalCase.Status.APPROVED)
+        self.client.post(
+            reverse("inventory:disposal-complete", args=[case.pk]),
+            {"disposal_evidence_ref": "DISP-EVIDENCE-001"},
+        )
+        case.refresh_from_db()
+        asset.refresh_from_db()
+        self.assertEqual(case.status, DisposalCase.Status.COMPLETED)
+        self.assertEqual(asset.lifecycle_status, LifecycleStatus.DISPOSED)
+        self.assertEqual(asset.disposal_evidence_ref, "DISP-EVIDENCE-001")
+        self.assertEqual(case.events.count(), 3)
+
+    def test_disposal_request_requires_sanitisation_evidence_when_flagged(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="add_disposalcase",
+            )
+        )
+        asset = self.create_asset(
+            lifecycle_status=LifecycleStatus.READY_FOR_DISPOSAL,
+            custodian_ref="",
+            sanitisation_required=True,
+            sanitisation_result="",
+            sanitisation_evidence_ref="",
+        )
+        response = self.client.post(
+            reverse("inventory:disposal-create", args=[asset.pk]),
+            {
+                "reason": "Retire the asset.",
+                "method": DisposalCase.Method.SECURE_DESTRUCTION,
+                "sanitisation_result": "",
+                "sanitisation_evidence_ref": "",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(DisposalCase.objects.exists())
 
     def test_allowed_transition_updates_asset_and_writes_event(self):
         self.user.user_permissions.add(self.transition_permission)
