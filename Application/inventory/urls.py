@@ -9,6 +9,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("notifications/", views.notifications, name="notifications"),
     path("copilot/", views.copilot, name="copilot"),
+    path("settings/", views.application_settings, name="application-settings"),
     path("assets/barcode-lookup/", views.asset_barcode_lookup, name="asset-barcode-lookup"),
     path("assets/", views.asset_list, name="asset-list"),
     path("assets/new/", views.asset_create, name="asset-create"),

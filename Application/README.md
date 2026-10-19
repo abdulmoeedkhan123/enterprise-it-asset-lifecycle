@@ -69,6 +69,10 @@ Stop the services with Ctrl+C or `docker compose down`. The named PostgreSQL vol
 
 The Compose configuration disables secure cookies only for its loopback-bound local HTTP setup. For any real deployment, use HTTPS, secure cookies, managed secrets, a controlled migration/release process, backups, monitoring, and a reviewed security/privacy design. Do not expose this local Compose configuration to a network or load real organizational data.
 
+## Application settings
+
+Staff users can open **Settings** in the application navigation for a redacted configuration status and setup instructions for the optional Copilot LLM and Intune integrations. The page never shows secret values or endpoint addresses. Configure credentials in the deployment environment or managed secret store and restart the application to apply changes; the page is not a credential editor.
+
 ## Read-only asset copilot (MVP)
 
 The **AI Copilot** page is available to signed-in users with the existing `inventory.view_asset` permission. Deterministic Python query handling runs first for common questions:

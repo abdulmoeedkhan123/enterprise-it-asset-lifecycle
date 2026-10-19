@@ -1,0 +1,63 @@
+{% extends "inventory/base.html" %}
+{% block title %}Application settings | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">ADMINISTRATION</p>
+    <h1>Application settings</h1>
+    <p class="muted">Integration configuration and health. Secret values are never shown or stored here.</p>
+  </div>
+  <span class="status-pill">Staff only</span>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div><p class="eyebrow">AI COPILOT</p><h2>Optional language model</h2></div>
+    {% if llm_api_key_configured %}<span class="status-tag">Configured</span>{% else %}<span class="status-tag renewal-alert">Not configured</span>{% endif %}
+  </div>
+  <p>The deterministic asset queries remain available either way. When enabled, only the user's question is sent to the configured provider for a validated, read-only search intent.</p>
+  <dl class="settings-list">
+    <div><dt>API credential</dt><dd>{% if llm_api_key_configured %}Present (hidden){% else %}Missing{% endif %}</dd></div>
+    <div><dt>Model</dt><dd>{{ llm_model }}</dd></div>
+    <div><dt>Endpoint</dt><dd>{% if llm_custom_endpoint %}Custom HTTPS endpoint configured (address hidden){% else %}Default provider endpoint{% endif %}</dd></div>
+  </dl>
+  <details>
+    <summary>Configure Copilot provider</summary>
+    <p>Add the following values to the application environment or deployment secret manager, then restart the web application. Never paste a real key into chat or commit it to source control.</p>
+    <pre><code>COPILOT_LLM_API_KEY=&lt;approved-provider-key&gt;
+COPILOT_LLM_API_URL=https://api.openai.com/v1/chat/completions
+COPILOT_LLM_MODEL=gpt-4o-mini</code></pre>
+    <p>Obtain organizational approval before sending users' questions to an external provider.</p>
+  </details>
+</section>
+
+<section class="panel">
+  <div class="panel-heading">
+    <div><p class="eyebrow">ENDPOINT MANAGEMENT</p><h2>Microsoft Intune</h2></div>
+    {% if intune_configured %}<span class="status-tag">Credentials present</span>{% else %}<span class="status-tag renewal-alert">Incomplete configuration</span>{% endif %}
+  </div>
+  <p>Intune sync reads managed-device data from Microsoft Graph and stores a local review snapshot. It does not make changes to devices or perform remote actions.</p>
+  <dl class="settings-list">
+    {% for variable in intune_required_variables %}
+    <div><dt>{{ variable }}</dt><dd>{% if variable in intune_configured_variables %}Present (hidden){% else %}Missing{% endif %}</dd></div>
+    {% endfor %}
+    <div><dt>Last sync attempt</dt><dd>{% if latest_intune_run %}{{ latest_intune_run.get_status_display }} · {{ latest_intune_run.started_at|date:"j M Y H:i" }}{% else %}No runs{% endif %}</dd></div>
+    <div><dt>Last successful sync</dt><dd>{% if latest_successful_intune_run %}{{ latest_successful_intune_run.completed_at|date:"j M Y H:i" }}{% else %}No successful sync{% endif %}</dd></div>
+  </dl>
+  <details>
+    <summary>Configure Intune sync</summary>
+    <p>Store these values in the host environment or managed secret store. Grant Microsoft Graph application permission <code>DeviceManagementManagedDevices.Read.All</code> with administrator consent. Then restart the application environment and run the authorized sync command:</p>
+    <pre><code>INTUNE_TENANT_ID=&lt;tenant-id-or-domain&gt;
+INTUNE_CLIENT_ID=&lt;application-client-id&gt;
+INTUNE_CLIENT_SECRET=&lt;managed-secret&gt;
+
+python Application/manage.py sync_intune_devices \
+  --confirm-read-only-authorized</code></pre>
+    <p>Only exact unique serial references are matched to assets. Review duplicate and unmatched records on the <a href="{% url 'inventory:intune-devices' %}">Intune devices page</a> when you have the required permission.</p>
+  </details>
+</section>
+
+<section class="notice" role="note">
+  These settings are status and setup guidance, not an in-browser secret editor. Environment changes are managed by the deployment operator. The page intentionally does not display tenant IDs, API keys, client IDs, client secrets, or configured endpoint addresses.
+</section>
+{% endblock %}

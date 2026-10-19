@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from datetime import date, timedelta
 from typing import TypedDict
 
@@ -152,6 +153,47 @@ def copilot(request):
         request,
         "inventory/copilot.html",
         {"query": query, "result": result},
+    )
+
+
+@login_required
+def application_settings(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+
+    llm_api_key_configured = bool(os.environ.get("COPILOT_LLM_API_KEY", "").strip())
+    intune_variables = (
+        "INTUNE_TENANT_ID",
+        "INTUNE_CLIENT_ID",
+        "INTUNE_CLIENT_SECRET",
+    )
+    configured_intune_variables = [
+        variable
+        for variable in intune_variables
+        if os.environ.get(variable, "").strip()
+    ]
+    latest_intune_run = IntuneSyncRun.objects.order_by("-started_at", "-pk").first()
+    latest_successful_intune_run = (
+        IntuneSyncRun.objects.filter(status=IntuneSyncRun.Status.SUCCEEDED)
+        .order_by("-completed_at", "-pk")
+        .first()
+    )
+    return render(
+        request,
+        "inventory/application_settings.html",
+        {
+            "llm_api_key_configured": llm_api_key_configured,
+            "llm_model": os.environ.get("COPILOT_LLM_MODEL", "gpt-4o-mini"),
+            "llm_custom_endpoint": bool(
+                os.environ.get("COPILOT_LLM_API_URL", "").strip()
+            ),
+            "intune_configured_variables": configured_intune_variables,
+            "intune_required_variables": intune_variables,
+            "intune_configured": len(configured_intune_variables)
+            == len(intune_variables),
+            "latest_intune_run": latest_intune_run,
+            "latest_successful_intune_run": latest_successful_intune_run,
+        },
     )
 
 
