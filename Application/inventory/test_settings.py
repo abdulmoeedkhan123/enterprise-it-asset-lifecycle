@@ -38,7 +38,7 @@ class ApplicationSettingsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Not configured")
         self.assertContains(response, "Incomplete configuration")
-        self.assertContains(response, "COPILOT_LLM_API_KEY")
+        self.assertContains(response, "GROQ_API_KEY")
         self.assertContains(response, "INTUNE_CLIENT_SECRET")
         self.assertNotContains(response, "client-secret")
         self.assertNotContains(response, "access-token")
