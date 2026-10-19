@@ -2,7 +2,7 @@
 
 **Three-project portfolio | Project 01 developed: IT Asset Lifecycle Management**
 
-This repository presents a practical, fictional portfolio case study for an ICT Business Analyst role. Project 01 demonstrates business analysis, requirements, process modelling, data analysis, dashboard prototyping, testing design, and project governance. Projects 02 and 03 are portfolio roadmap concepts; they are not presented as completed case studies.
+This repository presents A practical, fictional portfolio case study for an ICT Business Analyst role. Project 01 demonstrates business analysis, requirements, process modelling, data analysis, a Python-powered dashboard prototype, testing design, and project governance. Projects 02 and 03 are portfolio roadmap concepts; they are not presented as completed case studies.
 
 > **Simulation notice:** The organisation, scenario, stakeholders, asset records, targets, process findings, test scenarios, and illustrative defects are fictional. Sample results are calculated from generated data and are not evidence of a real client, implemented system, completed user testing, approved business case, or realised benefit.
 
@@ -41,16 +41,17 @@ The roadmap concepts are not represented as finished deliverables or professiona
 From the repository root:
 
 ```bash
-python -m http.server 8000
+python dashboard/server.py
 ```
 
-Open <http://localhost:8000/dashboard/> in a browser. The CSV is loaded with `fetch`, so a local web server is required; opening the HTML as `file://` will not load the dataset.
+Open <http://localhost:8000/dashboard/> in a browser. The Python standard-library server loads the CSV and renders filtered pages; no JavaScript or third-party web framework is required. Stop it with Ctrl+C.
 
 In another terminal, run:
 
 ```bash
 python analysis/generate_assets.py
 python -m unittest discover -s analysis -p 'test_*.py' -v
+python -m unittest discover -s dashboard -p 'test_*.py' -v
 python analysis/validate_assets.py
 ```
 

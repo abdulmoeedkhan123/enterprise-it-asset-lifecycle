@@ -79,8 +79,8 @@
 
 ### AC-12 - Data-load failure is explicit (FR-12)
 
-- **Given** the CSV cannot be fetched or contains invalid row structure,
-- **When** the dashboard attempts to load it,
+- **Given** the CSV is unavailable or contains an invalid header or row structure,
+- **When** the Python dashboard server attempts to render the page,
 - **Then** it shows a visible error and does not display KPI values as though the load succeeded.
 
 ### AC-13 - Accessible controls and empty results (FR-13)
