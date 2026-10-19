@@ -1,0 +1,85 @@
+{% extends "inventory/base.html" %}
+{% block title %}{{ product.name }} | Software{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">SOFTWARE CATALOG / {{ product.get_category_display|upper }}</p><h1>{{ product.name }}{% if product.version %} <span class="software-version">{{ product.version }}</span>{% endif %}</h1>
+    <p class="muted">{{ product.publisher }}{% if product.end_of_support %} · Support ends {{ product.end_of_support|date:"j M Y" }}{% endif %}</p>
+  </div>
+  <a class="secondary-button" href="{% url 'inventory:software-catalog' %}">Back to software</a>
+</section>
+{% if product.description %}<p class="software-description">{{ product.description }}</p>{% endif %}
+<section class="panel">
+  <div class="panel-heading"><div><p class="eyebrow">LICENCE ENTITLEMENTS</p><h2>Contracts & subscriptions</h2></div>
+    {% if perms.inventory.view_softwarecontract %}<a class="secondary-button" href="{% url 'inventory:software-renewals' %}">Renewal queue</a>{% endif %}
+  </div>
+  {% for contract in product.contracts.all %}
+  <article class="contract-card">
+    <div class="contract-heading">
+      <div><h3>{{ contract.get_contract_type_display }} · {{ contract.supplier }}</h3><p class="muted">{{ contract.get_license_metric_display }} · {{ contract.contract_reference|default:"No contract reference" }}</p></div>
+      {% if contract.status == "active" and contract.renewal_due %}<span class="status-tag renewal-alert">{% if contract.is_expired %}Expired{% else %}Renewal due{% endif %}</span>
+      {% elif contract.status == "active" %}<span class="status-tag">{{ contract.get_status_display }}</span>
+      {% else %}<span class="status-tag">{{ contract.get_status_display }}</span>{% endif %}
+    </div>
+    <div class="contract-summary">
+      <div><span>Seats assigned</span><strong>{{ contract.assigned_quantity }} / {{ contract.purchased_quantity }}</strong></div>
+      <div><span>Available</span><strong>{{ contract.available_quantity }}</strong></div>
+      <div><span>Term end</span><strong>{{ contract.end_date|date:"j M Y"|default:"No end date" }}</strong></div>
+      <div><span>Annual cost</span><strong>{% if contract.annual_cost is not None %}{{ contract.currency }} {{ contract.annual_cost }}{% else %}Not recorded{% endif %}</strong></div>
+    </div>
+    <div class="contract-meta">
+      <span>Start: {{ contract.start_date|date:"j M Y"|default:"—" }}</span>
+      <span>Renewal notice: {{ contract.renewal_notice_days }} days</span>
+      <span>Auto-renew: {{ contract.auto_renew|yesno:"Yes,No" }}</span>
+      <span>Document: {{ contract.document_reference|default:"—" }}</span>
+      {% if contract.renewal_of %}<span>Renewal of contract #{{ contract.renewal_of_id }}</span>{% endif %}
+    </div>
+    {% if contract.notes %}<p class="muted">{{ contract.notes }}</p>{% endif %}
+    {% if perms.inventory.add_softwarelicenseassignment and contract.status == "active" and not contract.is_expired and contract.available_quantity %}
+    <details class="assignment-editor">
+      <summary>Assign a licence</summary>
+      <form method="post" action="{% url 'inventory:software-license-assign' contract.pk %}" class="assignment-form">
+        {% csrf_token %}
+        {% for field in assignment_form %}<label for="{{ field.id_for_label }}">{{ field.label }}{{ field }}</label>{% endfor %}
+        <button class="primary-button" type="submit">Assign seat</button>
+      </form>
+    </details>
+    {% endif %}
+    <div class="table-wrap">
+      <table><thead><tr><th>Assigned to</th><th>Department</th><th>Status</th><th>Assigned</th><th>Released</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for assignment in contract.assignments.all %}
+          <tr><td>{{ assignment.assignee_ref }}</td><td>{{ assignment.department|default:"—" }}</td><td>{{ assignment.get_status_display }}</td>
+            <td>{{ assignment.assigned_at|date:"j M Y" }}{% if assignment.assigned_by %}<small class="table-subtext">by {{ assignment.assigned_by.get_username }}</small>{% endif %}</td>
+            <td>{% if assignment.released_at %}{{ assignment.released_at|date:"j M Y" }}{% if assignment.released_by %}<small class="table-subtext">by {{ assignment.released_by.get_username }}</small>{% endif %}{% else %}—{% endif %}</td>
+            <td>{% if assignment.status == "active" and perms.inventory.change_softwarelicenseassignment %}
+              <form method="post" action="{% url 'inventory:software-license-release' contract.pk assignment.pk %}">{% csrf_token %}<button class="secondary-button" type="submit">Release</button></form>
+              {% else %}—{% endif %}</td>
+          </tr>
+          {% empty %}<tr><td colspan="6">No licence assignments recorded.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+  {% empty %}<div class="empty-state"><strong>No contracts recorded</strong><p class="muted">Add a contract or subscription to record purchased licence seats and renewal terms.</p></div>{% endfor %}
+</section>
+{% if perms.inventory.add_softwarecontract %}
+<section class="panel form-panel">
+  <div class="panel-heading"><div><p class="eyebrow">CONTRACT MANAGEMENT</p><h2>Add contract or subscription</h2></div></div>
+  <p class="muted">Store reference numbers and renewal terms here. Do not enter passwords or full licence keys.</p>
+  <form method="post" action="{% url 'inventory:software-contract-create' product.pk %}" class="stack-form">
+    {% csrf_token %}
+    {% if contract_form.non_field_errors %}<div class="error-message">{{ contract_form.non_field_errors }}</div>{% endif %}
+    <div class="form-grid">
+      {% for field in contract_form %}
+      <div class="form-field {% if field.name == 'notes' %}full-width{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="actions"><button class="primary-button" type="submit">Save contract</button></div>
+  </form>
+</section>
+{% endif %}
+{% endblock %}

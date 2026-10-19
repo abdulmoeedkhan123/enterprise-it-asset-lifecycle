@@ -34,6 +34,9 @@ from .models import (
     DisposalCase,
     DisposalEvent,
     ReturnWorkItem,
+    SoftwareContract,
+    SoftwareLicenseAssignment,
+    SoftwareProduct,
 )
 from .notifications import build_asset_notifications
 from .reporting import build_asset_quality_report

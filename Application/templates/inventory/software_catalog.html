@@ -1,0 +1,42 @@
+{% extends "inventory/base.html" %}
+{% block title %}Software & licences | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">SOFTWARE ASSET MANAGEMENT</p><h1>Software & licences</h1>
+    <p class="muted">Track software products, subscription contracts, purchased seats and assignments.</p>
+  </div>
+  {% if perms.inventory.add_softwareproduct %}<a class="primary-button" href="{% url 'inventory:software-create' %}">Add software</a>{% endif %}
+</section>
+<section class="panel">
+  <div class="panel-heading">
+    <div><h2>Software catalog</h2><p class="muted">Select a product to view its contracts, licence usage and assignment history.</p></div>
+    {% if perms.inventory.view_softwarecontract %}<a class="secondary-button" href="{% url 'inventory:software-renewals' %}">Renewal queue</a>{% endif %}
+  </div>
+  <form method="get" class="software-search">
+    <label for="software-search">Search software<input id="software-search" name="q" value="{{ search }}" type="search" placeholder="Product, publisher, or version"></label>
+    <button class="primary-button" type="submit">Search</button>
+    <a class="secondary-button" href="{% url 'inventory:software-catalog' %}">Clear</a>
+  </form>
+  <div class="software-grid">
+    {% for product in products %}
+    <article class="software-card">
+      <div class="software-card-heading">
+        <div><p class="eyebrow">{{ product.get_category_display }}</p><h2><a href="{% url 'inventory:software-detail' product.pk %}">{{ product.name }}{% if product.version %} <span class="software-version">{{ product.version }}</span>{% endif %}</a></h2><p class="muted">{{ product.publisher }}</p></div>
+        <span class="software-card-icon" aria-hidden="true">S</span>
+      </div>
+      <div class="software-card-stats">
+        <div><strong>{{ product.contracts.count }}</strong><span>contract{{ product.contracts.count|pluralize }}</span></div>
+        <div><strong>{% for contract in product.contracts.all %}{{ contract.assigned_quantity }}{% if not forloop.last %}, {% endif %}{% empty %}0{% endfor %}</strong><span>assigned seats</span></div>
+      </div>
+      {% if product.end_of_support %}<p class="software-meta">Support ends {{ product.end_of_support|date:"j M Y" }}</p>{% endif %}
+      <a class="software-card-link" href="{% url 'inventory:software-detail' product.pk %}">View software details <span aria-hidden="true">→</span></a>
+    </article>
+    {% empty %}
+    <div class="empty-state software-empty"><strong>{% if search %}No matching software{% else %}Your software catalog is empty{% endif %}</strong>
+      <p class="muted">{% if search %}Try a different search, or clear the filter.{% elif perms.inventory.add_softwareproduct %}Add a product to start tracking licences and renewals.{% else %}Ask a software administrator to add the first product.{% endif %}</p>
+      {% if not search and perms.inventory.add_softwareproduct %}<a class="primary-button" href="{% url 'inventory:software-create' %}">Add first product</a>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -60,6 +60,13 @@
       <span class="quick-action-arrow" aria-hidden="true">›</span>
     </a>
     {% endif %}
+    {% if perms.inventory.view_softwareproduct %}
+    <a class="quick-action" href="{% url 'inventory:software-catalog' %}">
+      <span class="quick-action-icon" aria-hidden="true">S</span>
+      <span><strong>Manage software & licences</strong><small>Review products, seats and subscriptions</small></span>
+      <span class="quick-action-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endif %}
   </div>
 </section>
 <section class="panel">

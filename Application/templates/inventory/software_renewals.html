@@ -1,0 +1,30 @@
+{% extends "inventory/base.html" %}
+{% block title %}Software renewals | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">SOFTWARE ASSET MANAGEMENT</p><h1>Renewal queue</h1><p class="muted">Active contracts within their configured renewal notice period or already expired.</p></div>
+  <a class="secondary-button" href="{% url 'inventory:software-catalog' %}">Back to software</a>
+</section>
+<section class="notice" role="note">Renewal dates are reminders only. This app does not contact suppliers, auto-renew contracts or make payments.</section>
+<section class="panel">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Software</th><th>Supplier</th><th>Contract reference</th><th>Term end</th><th>Notice</th><th>Seats</th><th>Annual cost</th><th>Auto-renew</th></tr></thead>
+    <tbody>
+      {% for contract in contracts %}
+      <tr>
+        <td><a href="{% url 'inventory:software-detail' contract.product_id %}">{{ contract.product.name }}{% if contract.product.version %} {{ contract.product.version }}{% endif %}</a></td>
+        <td>{{ contract.supplier }}</td><td>{{ contract.contract_reference|default:"—" }}</td>
+        <td><span class="{% if contract.is_expired %}renewal-overdue{% else %}renewal-upcoming{% endif %}">{{ contract.end_date|date:"j M Y" }}{% if contract.is_expired %} · Expired{% endif %}</span></td>
+        <td>{{ contract.renewal_notice_days }} days</td><td>{{ contract.assigned_quantity }} / {{ contract.purchased_quantity }}</td>
+        <td>{% if contract.annual_cost is not None %}{{ contract.currency }} {{ contract.annual_cost }}{% else %}—{% endif %}</td><td>{{ contract.auto_renew|yesno:"Yes,No" }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="8"><div class="table-empty"><strong>No renewals due</strong><span>Contracts will appear here when they reach their notice period.</span></div></td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% if renewal_page.has_other_pages %}<nav class="pagination" aria-label="Renewal queue pages">
+    {% if renewal_page.has_previous %}<a href="?page={{ renewal_page.previous_page_number }}">Previous</a>{% endif %}
+    <span>Page {{ renewal_page.number }} of {{ renewal_page.paginator.num_pages }}</span>
+    {% if renewal_page.has_next %}<a href="?page={{ renewal_page.next_page_number }}">Next</a>{% endif %}
+  </nav>{% endif %}
+</section>
+{% endblock %}

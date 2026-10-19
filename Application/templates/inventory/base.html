@@ -36,6 +36,7 @@
       {% if perms.inventory.view_disposalcase %}<a {% if request.resolver_match.url_name == "disposal-list" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:disposal-list' %}">Disposals</a>{% endif %}
       {% if perms.inventory.view_returnworkitem %}<a {% if request.resolver_match.url_name == "return-work-queue" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
       {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "integration-catalog" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
+      {% if perms.inventory.view_softwareproduct %}<a {% if request.resolver_match.url_name == "software-catalog" or request.resolver_match.url_name == "software-detail" or request.resolver_match.url_name == "software-create" or request.resolver_match.url_name == "software-renewals" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:software-catalog' %}">Software & licences</a>{% endif %}
       {% if perms.inventory.add_asset %}<a class="nav-action" href="{% url 'inventory:asset-create' %}">+ Register asset</a>{% endif %}
       {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
     </nav>
