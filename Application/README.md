@@ -86,6 +86,14 @@ The signed-in application also has a live in-app notification page. It flags ove
 
 Users with the relevant Django permissions can open maintenance work orders from an asset record, track priority, vendor, target date, and estimated/actual cost, and move orders through permitted statuses. Status transitions are recorded in an audit history. Work orders do not automatically change the asset's lifecycle status; that remains a separately permissioned asset transition. Disposed and lost/stolen assets cannot have new maintenance orders opened.
 
+### Procurement and receiving
+
+The procurement prototype covers draft requests, supplier quote comparison, quote selection, independent approval, purchase-order reference capture, expected delivery/tracking details, in-transit/delayed updates, partial/final receiving, receipt references, and registration of received items as assets. The requester cannot approve their own request. Separate Django permissions control request creation/change, independent approval, and order/receipt management. The prototype uses one independent approval for all amounts; it does not implement spend thresholds, budget checks, contract validation, or external supplier APIs. Configure real approval authority and delegated limits before organizational use. Barcode registration supports a keyboard/USB scanner and the browser's native camera `BarcodeDetector` when available; scanned values are checked against asset ID and serial references. No barcode is assumed unique, and no image or camera stream is uploaded or stored.
+
+### Disposal approvals
+
+Assets must first be moved through the lifecycle workflow to **Ready for Disposal**. A requester records the disposal reason and method; if sanitisation is required, passed sanitisation and its evidence reference are mandatory before submission. A different authorized user approves or rejects the request. A separately permissioned operator then records disposal evidence, which completes the approved case and the audited asset lifecycle transition to **Disposed**. These role permissions are a prototype separation-of-duties control, not a configured company approval matrix. External erasure/disposition vendors and their evidence APIs are not connected.
+
 Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
 
 ## Integrations

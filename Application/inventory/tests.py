@@ -462,7 +462,7 @@ class AssetLifecycleTests(TestCase):
             ).count(),
             1,
         )
-        self.assertEqual(purchase_request.events.count(), 8)
+        self.assertEqual(purchase_request.events.count(), 11)
 
     def test_disposal_requires_independent_approval_and_evidence_to_complete(self):
         requester_permissions = [
@@ -556,8 +556,8 @@ class AssetLifecycleTests(TestCase):
             lifecycle_status=LifecycleStatus.READY_FOR_DISPOSAL,
             custodian_ref="",
             sanitisation_required=True,
-            sanitisation_result="",
-            sanitisation_evidence_ref="",
+            sanitisation_result="Passed",
+            sanitisation_evidence_ref="SAN-READY-1",
         )
         response = self.client.post(
             reverse("inventory:disposal-create", args=[asset.pk]),
