@@ -12,6 +12,7 @@ from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
 from django.utils import timezone
 
 from .forms import (
@@ -76,6 +77,31 @@ def health_check(request):
     except DatabaseError:
         return JsonResponse({"status": "unhealthy"}, status=503)
     return JsonResponse({"status": "ok"})
+
+
+@login_required
+@permission_required("inventory.view_asset", raise_exception=True)
+@require_GET
+def asset_barcode_lookup(request):
+    code = request.GET.get("code", "").strip()
+    if not code or len(code) > 64:
+        return JsonResponse({"error": "Provide a barcode value up to 64 characters."}, status=400)
+    matches = Asset.objects.filter(Q(asset_id=code) | Q(serial_ref=code)).order_by(
+        "asset_id"
+    )[:10]
+    return JsonResponse(
+        {
+            "matches": [
+                {
+                    "asset_id": asset.asset_id,
+                    "site": asset.site,
+                    "status": asset.lifecycle_status,
+                    "url": reverse("inventory:asset-detail", args=[asset.pk]),
+                }
+                for asset in matches
+            ]
+        }
+    )
 
 
 @login_required
