@@ -112,6 +112,10 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
 .event-list time, .event-list span, .event-list small { display: block; margin-top: .22rem; color: var(--muted); }
 .event-list small { font-size: .7rem; }
 .form-panel { max-width: 900px; }
+.barcode-tools { margin-bottom: 1.2rem; padding: 1rem; border: 1px solid var(--line); border-radius: .65rem; background: #fcfdff; }
+.barcode-tools h2 { margin-bottom: .35rem; }
+.barcode-tools video { display: block; width: min(100%, 520px); max-height: 360px; margin-top: .8rem; border-radius: .5rem; background: #152235; }
+.barcode-tools ul { margin: .5rem 0; font-size: .78rem; }
 .stack-form { display: grid; gap: 1rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem 1rem; }
 .form-field { display: grid; align-content: start; gap: .35rem; }

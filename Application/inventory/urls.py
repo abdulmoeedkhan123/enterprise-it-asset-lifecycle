@@ -58,6 +58,11 @@ urlpatterns = [
         name="procurement-order",
     ),
     path(
+        "procurement/<int:pk>/delivery/",
+        views.procurement_delivery_update,
+        name="procurement-delivery-update",
+    ),
+    path(
         "procurement/<int:pk>/receive/",
         views.procurement_receive,
         name="procurement-receive",
