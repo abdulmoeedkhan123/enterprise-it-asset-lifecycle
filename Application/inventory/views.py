@@ -30,6 +30,9 @@ from .forms import (
     ProcurementReceiptForm,
     ProcurementRequestForm,
     PurchaseOrderForm,
+    SoftwareContractForm,
+    SoftwareLicenseAssignmentForm,
+    SoftwareProductForm,
     TransitionForm,
 )
 from .integrations.catalog import INTEGRATION_CATALOG
@@ -48,6 +51,9 @@ from .models import (
     ProcurementReceipt,
     ProcurementRequest,
     ReturnWorkItem,
+    SoftwareContract,
+    SoftwareLicenseAssignment,
+    SoftwareProduct,
 )
 from .notifications import build_asset_notifications
 from .reporting import build_asset_quality_report
@@ -1233,4 +1239,180 @@ def integration_catalog(request):
         request,
         "inventory/integration_catalog.html",
         {"integration_categories": categories.items()},
+    )
+
+
+@login_required
+@permission_required("inventory.view_softwareproduct", raise_exception=True)
+def software_catalog(request):
+    products = SoftwareProduct.objects.prefetch_related(
+        "contracts__assignments"
+    )
+    search = request.GET.get("q", "").strip()
+    if search:
+        products = products.filter(
+            Q(name__icontains=search)
+            | Q(publisher__icontains=search)
+            | Q(version__icontains=search)
+        )
+    return render(
+        request,
+        "inventory/software_catalog.html",
+        {"products": products, "search": search},
+    )
+
+
+@login_required
+@permission_required(
+    ("inventory.add_softwareproduct", "inventory.view_softwareproduct"),
+    raise_exception=True,
+)
+def software_product_create(request):
+    form = SoftwareProductForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        product = form.save()
+        messages.success(request, f"{product.name} was added to the software catalog.")
+        return redirect("inventory:software-detail", pk=product.pk)
+    return render(
+        request,
+        "inventory/software_product_form.html",
+        {"form": form},
+    )
+
+
+@login_required
+@permission_required("inventory.view_softwareproduct", raise_exception=True)
+def software_product_detail(request, pk: int):
+    product = get_object_or_404(
+        SoftwareProduct.objects.prefetch_related(
+            "contracts__assignments__assigned_by",
+            "contracts__assignments__released_by",
+            "contracts__created_by",
+        ),
+        pk=pk,
+    )
+    return render(
+        request,
+        "inventory/software_product_detail.html",
+        {
+            "product": product,
+            "contract_form": SoftwareContractForm(product=product),
+            "assignment_form": SoftwareLicenseAssignmentForm(),
+        },
+    )
+
+
+@login_required
+@permission_required(
+    ("inventory.add_softwarecontract", "inventory.view_softwareproduct"),
+    raise_exception=True,
+)
+@require_POST
+def software_contract_create(request, product_pk: int):
+    product = get_object_or_404(SoftwareProduct, pk=product_pk)
+    form = SoftwareContractForm(request.POST, product=product)
+    if not form.is_valid():
+        messages.error(request, form.errors.as_text())
+        return redirect("inventory:software-detail", pk=product.pk)
+    with transaction.atomic():
+        contract = form.save(commit=False)
+        contract.product = product
+        contract.created_by = request.user
+        renewal_of = contract.renewal_of
+        contract.save()
+        if renewal_of:
+            renewal_of.status = SoftwareContract.Status.RENEWED
+            renewal_of.save(update_fields=("status", "updated_at"))
+    messages.success(request, "Software contract or subscription was recorded.")
+    return redirect("inventory:software-detail", pk=product.pk)
+
+
+@login_required
+@permission_required(
+    ("inventory.add_softwarelicenseassignment", "inventory.view_softwareproduct"),
+    raise_exception=True,
+)
+@require_POST
+def software_license_assign(request, contract_pk: int):
+    form = SoftwareLicenseAssignmentForm(request.POST)
+    with transaction.atomic():
+        contract = get_object_or_404(
+            SoftwareContract.objects.select_for_update().select_related("product"),
+            pk=contract_pk,
+        )
+        if not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        elif contract.status != SoftwareContract.Status.ACTIVE or contract.is_expired:
+            messages.error(request, "Licences cannot be assigned from an inactive or expired contract.")
+        elif contract.assigned_quantity >= contract.purchased_quantity:
+            messages.error(
+                request,
+                "No licence seats are available. Increase the purchased quantity or release a seat first.",
+            )
+        elif contract.assignments.filter(
+            assignee_ref=form.cleaned_data["assignee_ref"],
+            status=SoftwareLicenseAssignment.Status.ACTIVE,
+        ).exists():
+            messages.error(request, "This person already has an active licence on this contract.")
+        else:
+            assignment = form.save(commit=False)
+            assignment.contract = contract
+            assignment.assigned_by = request.user
+            assignment.save()
+            messages.success(request, f"Licence assigned to {assignment.assignee_ref}.")
+    return redirect("inventory:software-detail", pk=contract.product_id)
+
+
+@login_required
+@permission_required(
+    ("inventory.change_softwarelicenseassignment", "inventory.view_softwareproduct"),
+    raise_exception=True,
+)
+@require_POST
+def software_license_release(request, contract_pk: int, assignment_pk: int):
+    with transaction.atomic():
+        contract = get_object_or_404(
+            SoftwareContract.objects.select_for_update().select_related("product"),
+            pk=contract_pk,
+        )
+        assignment = get_object_or_404(
+            SoftwareLicenseAssignment.objects.select_for_update(),
+            pk=assignment_pk,
+            contract=contract,
+        )
+        if assignment.status != SoftwareLicenseAssignment.Status.ACTIVE:
+            messages.error(request, "This licence assignment has already been released.")
+        else:
+            assignment.status = SoftwareLicenseAssignment.Status.RELEASED
+            assignment.released_by = request.user
+            assignment.save(update_fields=("status", "released_by", "released_at"))
+            messages.success(request, f"Licence released from {assignment.assignee_ref}.")
+    return redirect("inventory:software-detail", pk=contract.product_id)
+
+
+@login_required
+@permission_required("inventory.view_softwarecontract", raise_exception=True)
+def software_renewals(request):
+    today = timezone.localdate()
+    contracts = (
+        SoftwareContract.objects.filter(
+            status=SoftwareContract.Status.ACTIVE,
+            end_date__isnull=False,
+        )
+        .select_related("product")
+        .prefetch_related("assignments")
+    )
+    due_contracts = [
+        contract
+        for contract in contracts
+        if contract.renewal_due
+    ]
+    due_contracts.sort(
+        key=lambda contract: (contract.end_date, contract.product.name)
+    )
+    page = Paginator(due_contracts, 50).get_page(request.GET.get("page"))
+    return render(
+        request,
+        "inventory/software_renewals.html",
+        {"contracts": page.object_list, "renewal_page": page, "today": today},
     )
