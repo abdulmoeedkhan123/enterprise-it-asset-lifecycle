@@ -2,3 +2,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+Application/db.sqlite3
+Application/staticfiles/
+.env

@@ -41,7 +41,7 @@ The roadmap concepts are not represented as finished deliverables or professiona
 From the repository root:
 
 ```bash
-python dashboard/server.py
+python "ICT Business analysis/dashboard/server.py"
 ```
 
 Open <http://localhost:8000/dashboard/> in a browser. The Python standard-library server loads the CSV and renders filtered pages; no JavaScript or third-party web framework is required. Stop it with Ctrl+C.
@@ -49,10 +49,10 @@ Open <http://localhost:8000/dashboard/> in a browser. The Python standard-librar
 In another terminal, run:
 
 ```bash
-python analysis/generate_assets.py
-python -m unittest discover -s analysis -p 'test_*.py' -v
-python -m unittest discover -s dashboard -p 'test_*.py' -v
-python analysis/validate_assets.py
+python "ICT Business analysis/analysis/generate_assets.py"
+python -m unittest discover -s "ICT Business analysis/analysis" -p 'test_*.py' -v
+python -m unittest discover -s "ICT Business analysis/dashboard" -p 'test_*.py' -v
+python "ICT Business analysis/analysis/validate_assets.py"
 ```
 
 The generator rewrites the dataset deterministically to 1,200 rows. Do not rerun it if you have made intentional manual edits to the generated CSV without first preserving them elsewhere.

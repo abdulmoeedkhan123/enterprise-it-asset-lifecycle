@@ -288,7 +288,7 @@ def render_error(message: str) -> str:
 <body><main class="page-shell"><section class="panel" role="alert">
 <p class="eyebrow">PORTFOLIO PROTOTYPE</p><h1>Sample data could not be loaded</h1>
 <p>{escape(message)}</p><p>Check that the synthetic CSV exists and passes
-<code>python analysis/validate_assets.py</code>.</p><a href="/dashboard/">Try again</a>
+<code>python "ICT Business analysis/analysis/validate_assets.py"</code>.</p><a href="/dashboard/">Try again</a>
 </section></main></body></html>"""
 
 

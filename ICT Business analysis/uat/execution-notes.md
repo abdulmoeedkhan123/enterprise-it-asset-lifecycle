@@ -13,7 +13,7 @@
 | Test group | Status | Evidence |
 |---|---|---|
 | UAT-01 to UAT-13 | Not run | No implementation or real user test environment is part of this portfolio. |
-| Synthetic CSV generator/validator tests | Executed locally | Run `python -m unittest discover -s analysis -p 'test_*.py' -v` and `python analysis/validate_assets.py`. These automated checks do not constitute UAT. |
+| Synthetic CSV generator/validator tests | Executed locally | Run `python -m unittest discover -s "ICT Business analysis/analysis" -p 'test_*.py' -v` and `python "ICT Business analysis/analysis/validate_assets.py"`. These automated checks do not constitute UAT. |
 | Dashboard prototype smoke checks | Executed as developer checks only | Local HTTP checks, CSV load, KPI/filter/reset behavior, Python unit tests, and server-rendered error behavior are checked. They are not user acceptance evidence. |
 
 ## Proposed sign-off gates

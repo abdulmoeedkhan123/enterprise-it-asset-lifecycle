@@ -7,7 +7,7 @@ This Python-powered, read-only prototype demonstrates an asset-operations dashbo
 From the repository root:
 
 ```bash
-python dashboard/server.py
+python "ICT Business analysis/dashboard/server.py"
 ```
 
 Open <http://localhost:8000/dashboard/>. Stop the server with Ctrl+C.
@@ -24,7 +24,7 @@ Open <http://localhost:8000/dashboard/>. Stop the server with Ctrl+C.
 Run dashboard unit tests from the repository root:
 
 ```bash
-python -m unittest discover -s dashboard -p 'test_*.py' -v
+python -m unittest discover -s "ICT Business analysis/dashboard" -p 'test_*.py' -v
 ```
 
 ## Scope and limitations

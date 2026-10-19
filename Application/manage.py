@@ -12,7 +12,7 @@ def main() -> None:
     except ImportError as error:
         raise ImportError(
             "Django is required. Install the application dependencies with "
-            "`pip install -r asset_management/requirements.txt`."
+            "`pip install -r Application/requirements.txt` from the repository root."
         ) from error
     execute_from_command_line(sys.argv)
 
