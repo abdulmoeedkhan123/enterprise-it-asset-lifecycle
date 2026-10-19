@@ -11,6 +11,7 @@ from django.db import DatabaseError, connection, transaction
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_GET
 from django.utils import timezone
@@ -881,11 +882,51 @@ def disposal_complete(request, pk: int):
 @login_required
 @permission_required("inventory.add_asset", raise_exception=True)
 def asset_create(request):
+    procurement_id = request.GET.get("procurement_id") or request.POST.get(
+        "procurement_id", ""
+    )
+    purchase_request = None
+    if procurement_id:
+        purchase_request = get_object_or_404(ProcurementRequest, pk=procurement_id)
+        if (
+            purchase_request.status
+            not in {
+                ProcurementRequest.Status.PARTIALLY_RECEIVED,
+                ProcurementRequest.Status.RECEIVED,
+            }
+            or purchase_request.quantity_received
+            <= purchase_request.registered_assets.count()
+        ):
+            messages.error(
+                request,
+                "Only received items not yet registered can be added to the asset register.",
+            )
+            return redirect("inventory:procurement-detail", pk=purchase_request.pk)
     form = AssetForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         with transaction.atomic():
+            if purchase_request:
+                purchase_request = get_object_or_404(
+                    ProcurementRequest.objects.select_for_update(),
+                    pk=purchase_request.pk,
+                )
+                if (
+                    purchase_request.status
+                    not in {
+                        ProcurementRequest.Status.PARTIALLY_RECEIVED,
+                        ProcurementRequest.Status.RECEIVED,
+                    }
+                    or purchase_request.quantity_received
+                    <= purchase_request.registered_assets.count()
+                ):
+                    messages.error(request, "There are no unregistered received items remaining.")
+                    return redirect(
+                        "inventory:procurement-detail",
+                        pk=purchase_request.pk,
+                    )
             asset = form.save(commit=False)
             asset.lifecycle_status = LifecycleStatus.IN_STOCK
+            asset.procurement_request = purchase_request
             asset.full_clean()
             asset.save()
             LifecycleEvent.objects.create(
@@ -894,13 +935,29 @@ def asset_create(request):
                 to_status=asset.lifecycle_status,
                 reason="Asset record created",
                 actor=request.user,
+                details=(
+                    {"procurement_request_id": purchase_request.pk}
+                    if purchase_request
+                    else {}
+                ),
             )
+            if purchase_request:
+                ProcurementEvent.objects.create(
+                    request=purchase_request,
+                    event_type=ProcurementEvent.EventType.ASSET_REGISTERED,
+                    actor=request.user,
+                    details={"asset_id": asset.asset_id},
+                )
         messages.success(request, f"Asset {asset.asset_id} was created.")
         return redirect("inventory:asset-detail", pk=asset.pk)
     return render(
         request,
         "inventory/asset_form.html",
-        {"form": form, "page_title": "Register an asset"},
+        {
+            "form": form,
+            "page_title": "Register an asset",
+            "purchase_request": purchase_request,
+        },
     )
 
 
