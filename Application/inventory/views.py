@@ -161,7 +161,10 @@ def application_settings(request):
     if not request.user.is_staff:
         raise PermissionDenied
 
-    llm_api_key_configured = bool(os.environ.get("COPILOT_LLM_API_KEY", "").strip())
+    llm_api_key_configured = bool(
+        os.environ.get("GROQ_API_KEY", "").strip()
+        or os.environ.get("COPILOT_LLM_API_KEY", "").strip()
+    )
     intune_variables = (
         "INTUNE_TENANT_ID",
         "INTUNE_CLIENT_ID",
@@ -183,7 +186,9 @@ def application_settings(request):
         "inventory/application_settings.html",
         {
             "llm_api_key_configured": llm_api_key_configured,
-            "llm_model": os.environ.get("COPILOT_LLM_MODEL", "gpt-4o-mini"),
+            "llm_model": os.environ.get(
+                "COPILOT_LLM_MODEL", "openai/gpt-oss-20b"
+            ),
             "llm_custom_endpoint": bool(
                 os.environ.get("COPILOT_LLM_API_URL", "").strip()
             ),

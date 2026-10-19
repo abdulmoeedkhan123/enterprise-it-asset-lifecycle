@@ -10,8 +10,8 @@ from .copilot import MAX_QUERY_LENGTH
 from .models import LifecycleStatus
 
 
-DEFAULT_ENDPOINT = "https://api.openai.com/v1/chat/completions"
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
+DEFAULT_MODEL = "openai/gpt-oss-20b"
 ALLOWED_SEARCH_FIELDS = {
     "asset_id",
     "asset_type",
@@ -36,7 +36,9 @@ def propose_asset_intent(query: str, *, timeout: float = 15) -> dict | None:
     """Ask a configured LLM for a constrained intent; never send inventory records."""
     if not isinstance(query, str) or not query.strip() or len(query) > MAX_QUERY_LENGTH:
         raise CopilotLLMError("The question is empty or exceeds the supported length.")
-    api_key = os.environ.get("COPILOT_LLM_API_KEY", "")
+    api_key = os.environ.get("GROQ_API_KEY") or os.environ.get(
+        "COPILOT_LLM_API_KEY", ""
+    )
     if not api_key:
         raise CopilotLLMNotConfigured("LLM assistance is not configured.")
     endpoint = os.environ.get("COPILOT_LLM_API_URL", DEFAULT_ENDPOINT).strip()
