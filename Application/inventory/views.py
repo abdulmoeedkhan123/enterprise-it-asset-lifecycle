@@ -208,17 +208,108 @@ def asset_list(request):
     selected_site = request.GET.get("site", "").strip()
     selected_status = request.GET.get("status", "").strip()
     search = request.GET.get("q", "").strip()
+    selected_field = request.GET.get("field", "any").strip()
+    filter_fields = (
+        ("any", "All searchable fields"),
+        ("asset_id", "Asset ID"),
+        ("asset_type", "Asset type"),
+        ("manufacturer", "Manufacturer"),
+        ("model", "Model"),
+        ("serial_ref", "Serial reference"),
+        ("site", "Site"),
+        ("department", "Department"),
+        ("custodian_ref", "Custodian reference"),
+        ("lifecycle_status", "Lifecycle status"),
+        ("sanitisation_result", "Sanitisation result"),
+        ("sanitisation_evidence_ref", "Sanitisation evidence reference"),
+        ("disposal_evidence_ref", "Disposal evidence reference"),
+        ("purchase_date", "Purchase date"),
+        ("warranty_end", "Warranty end date"),
+        ("return_due_date", "Return due date"),
+        ("source_last_updated", "Source last updated"),
+        ("sanitisation_required", "Sanitisation required"),
+    )
+    valid_fields = {value for value, _label in filter_fields}
+    if selected_field not in valid_fields:
+        selected_field = "any"
     if selected_site:
         assets = assets.filter(site=selected_site)
     if selected_status:
         assets = assets.filter(lifecycle_status=selected_status)
     if search:
-        assets = assets.filter(
-            Q(asset_id__icontains=search)
-            | Q(serial_ref__icontains=search)
-            | Q(custodian_ref__icontains=search)
-            | Q(site__icontains=search)
+        text_fields = (
+            "asset_id",
+            "asset_type",
+            "manufacturer",
+            "model",
+            "serial_ref",
+            "site",
+            "department",
+            "custodian_ref",
+            "lifecycle_status",
+            "sanitisation_result",
+            "sanitisation_evidence_ref",
+            "disposal_evidence_ref",
         )
+        search_error = ""
+        if selected_field == "any":
+            query = Q()
+            for field in text_fields:
+                query |= Q(**{f"{field}__icontains": search})
+            try:
+                search_date = date.fromisoformat(search)
+            except ValueError:
+                search_date = None
+            if search_date:
+                query |= (
+                    Q(purchase_date=search_date)
+                    | Q(warranty_end=search_date)
+                    | Q(return_due_date=search_date)
+                    | Q(source_last_updated=search_date)
+                )
+            if search.isdecimal():
+                query |= Q(procurement_request_id=int(search))
+            if search.casefold() in {"yes", "true", "1"}:
+                query |= Q(sanitisation_required=True)
+            elif search.casefold() in {"no", "false", "0"}:
+                query |= Q(sanitisation_required=False)
+            assets = assets.filter(query)
+        elif selected_field in text_fields:
+            assets = assets.filter(**{f"{selected_field}__icontains": search})
+        elif selected_field in {
+            "purchase_date",
+            "warranty_end",
+            "return_due_date",
+            "source_last_updated",
+        }:
+            try:
+                search_date = date.fromisoformat(search)
+            except ValueError:
+                search_date = None
+            if search_date:
+                assets = assets.filter(**{selected_field: search_date})
+            else:
+                search_error = "Enter a date as YYYY-MM-DD to filter by date."
+                assets = assets.none()
+        elif selected_field == "sanitisation_required":
+            boolean_terms = {
+                "yes": True,
+                "true": True,
+                "1": True,
+                "no": False,
+                "false": False,
+                "0": False,
+            }
+            normalized_search = search.casefold()
+            if normalized_search in boolean_terms:
+                assets = assets.filter(
+                    sanitisation_required=boolean_terms[normalized_search]
+                )
+            else:
+                search_error = "Enter Yes or No to filter this field."
+                assets = assets.none()
+    else:
+        search_error = ""
     paginator = Paginator(assets, 50)
     page = paginator.get_page(request.GET.get("page"))
     context = {
@@ -229,6 +320,9 @@ def asset_list(request):
         "statuses": LifecycleStatus.choices,
         "selected_site": selected_site,
         "selected_status": selected_status,
+        "selected_field": selected_field,
+        "filter_fields": filter_fields,
+        "search_error": search_error,
         "search": search,
     }
     return render(request, "inventory/asset_list.html", context)

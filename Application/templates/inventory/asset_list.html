@@ -9,26 +9,28 @@
   <div class="panel-heading">
     <div><h2>Find an asset</h2><p class="muted">Search by asset ID, serial number, custodian reference, or site.</p></div>
   </div>
-  <form method="get" class="filter-form">
-    <label for="q">Search inventory<input id="q" name="q" value="{{ search }}" type="search" placeholder="e.g. AST-1001 or serial number"></label>
+  <form method="get" class="filter-form asset-filter-form">
+    <label for="q">Search value<input id="q" name="q" value="{{ search }}" type="search" placeholder="Text, date (YYYY-MM-DD), or Yes / No"></label>
+    <label for="field">Search in<select id="field" name="field">{% for value,label in filter_fields %}<option value="{{ value }}" {% if value == selected_field %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
     <label for="site">Site<select id="site" name="site"><option value="">All sites</option>{% for site in sites %}<option value="{{ site }}" {% if site == selected_site %}selected{% endif %}>{{ site }}</option>{% endfor %}</select></label>
     <label for="status">Lifecycle status<select id="status" name="status"><option value="">All statuses</option>{% for value,label in statuses %}<option value="{{ value }}" {% if value == selected_status %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
     <button class="primary-button" type="submit">Search</button>
     <a class="secondary-button" href="{% url 'inventory:asset-list' %}">Clear</a>
   </form>
+  {% if search_error %}<p class="error-message" role="alert">{{ search_error }}</p>{% endif %}
   <div class="table-wrap"><table>
     <thead><tr><th>Asset ID</th><th>Type</th><th>Site</th><th>Department</th><th>Custodian</th><th>Status</th><th>Warranty end</th></tr></thead>
     <tbody>
       {% for asset in assets %}
-      <tr><td><a href="{% url 'inventory:asset-detail' asset.pk %}">{{ asset.asset_id }}</a></td><td>{{ asset.asset_type }}</td><td>{{ asset.site }}</td><td>{{ asset.department }}</td><td>{{ asset.custodian_ref|default:"—" }}</td><td><span class="status-tag">{{ asset.lifecycle_status }}</span></td><td>{{ asset.warranty_end|date:"j M Y" }}</td></tr>
+      <tr class="clickable-row" data-href="{% url 'inventory:asset-detail' asset.pk %}" tabindex="0" aria-label="Open details for {{ asset.asset_id }}"><td><a href="{% url 'inventory:asset-detail' asset.pk %}">{{ asset.asset_id }}</a></td><td>{{ asset.asset_type }}</td><td>{{ asset.site }}</td><td>{{ asset.department }}</td><td>{{ asset.custodian_ref|default:"—" }}</td><td><span class="status-tag">{{ asset.lifecycle_status }}</span></td><td>{{ asset.warranty_end|date:"j M Y" }}</td></tr>
       {% empty %}<tr><td colspan="7"><div class="table-empty"><strong>No matching assets</strong><span>Try clearing a filter or changing your search terms.</span></div></td></tr>{% endfor %}
     </tbody>
   </table></div>
   {% if page_obj.has_other_pages %}
   <nav class="pagination" aria-label="Asset list pages">
-    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&site={{ selected_site|urlencode }}&status={{ selected_status|urlencode }}&q={{ search|urlencode }}">Previous</a>{% endif %}
+    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&site={{ selected_site|urlencode }}&status={{ selected_status|urlencode }}&field={{ selected_field|urlencode }}&q={{ search|urlencode }}">Previous</a>{% endif %}
     <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&site={{ selected_site|urlencode }}&status={{ selected_status|urlencode }}&q={{ search|urlencode }}">Next</a>{% endif %}
+    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&site={{ selected_site|urlencode }}&status={{ selected_status|urlencode }}&field={{ selected_field|urlencode }}&q={{ search|urlencode }}">Next</a>{% endif %}
   </nav>
   {% endif %}
 </section>
