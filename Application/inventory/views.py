@@ -16,6 +16,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_GET
 from django.utils import timezone
 
+from .copilot import run_copilot_query
 from .forms import (
     AssetForm,
     DisposalCompletionForm,
@@ -103,6 +104,22 @@ def asset_barcode_lookup(request):
                 for asset in matches
             ]
         }
+    )
+
+
+@login_required
+@permission_required("inventory.view_asset", raise_exception=True)
+def copilot(request):
+    """Read-only asset question interface; all results use the existing view permission."""
+    query = ""
+    result = None
+    if request.method == "POST":
+        query = request.POST.get("query", "")
+        result = run_copilot_query(query)
+    return render(
+        request,
+        "inventory/copilot.html",
+        {"query": query, "result": result},
     )
 
 
