@@ -146,9 +146,12 @@ table { width: 100%; border-collapse: collapse; text-align: left; }
 th { padding: .75rem .7rem; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .68rem; letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
 td { padding: .82rem .7rem; border-bottom: 1px solid #edf0f4; color: #34445c; font-size: .8rem; }
 tbody tr:hover { background: #f8faff; }
+.clickable-row { cursor: pointer; }
+.clickable-row:focus-visible { outline: 3px solid #9cc4ff; outline-offset: -3px; }
 tbody tr:last-child td { border-bottom: 0; }
 .status-tag { display: inline-block; padding: .3rem .5rem; border-radius: .35rem; background: #edf4ff; color: var(--blue-dark); font-size: .69rem; white-space: nowrap; }
 .filter-form { display: grid; grid-template-columns: 1fr 1.1fr 1.7fr auto auto; align-items: end; gap: .75rem; margin-bottom: 1rem; }
+.asset-filter-form { grid-template-columns: minmax(190px, 1.5fr) minmax(170px, 1.2fr) minmax(130px, .8fr) minmax(155px, 1fr) auto auto; }
 .filter-form label, .form-field label, .stack-form > label { display: grid; gap: .35rem; color: #41526c; font-size: .73rem; font-weight: 700; }
 .filters { display: flex; align-items: end; gap: .75rem; margin-bottom: 1rem; }
 .filters label { display: grid; gap: .35rem; color: #41526c; font-size: .73rem; font-weight: 700; }
@@ -204,6 +207,7 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
   .notification-item { grid-template-columns: auto 1fr; }
   .notification-item .secondary-button { grid-column: 2; justify-self: start; }
   .filter-form { grid-template-columns: 1fr 1fr; }
+  .asset-filter-form { grid-template-columns: 1fr 1fr; }
   .filters { align-items: stretch; flex-direction: column; }
   .inline-form { min-width: 0; flex-wrap: wrap; }
   .search-field { grid-column: 1 / -1; }
@@ -226,6 +230,7 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
   .contract-summary { grid-template-columns: 1fr 1fr; }
   .assignment-form { grid-template-columns: 1fr; }
   .filter-form { grid-template-columns: 1fr; }
+  .asset-filter-form { grid-template-columns: 1fr; }
   .search-field { grid-column: auto; }
 }
 
