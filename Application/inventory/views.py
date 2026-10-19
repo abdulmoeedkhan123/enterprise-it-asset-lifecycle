@@ -22,6 +22,7 @@ from .forms import (
     MaintenanceStatusForm,
     MaintenanceWorkOrderForm,
     ProcurementDecisionForm,
+    ProcurementDeliveryUpdateForm,
     ProcurementQuoteForm,
     ProcurementReceiptForm,
     ProcurementRequestForm,
@@ -373,6 +374,16 @@ def procurement_detail(request, pk: int):
             "decision_form": ProcurementDecisionForm(),
             "purchase_order_form": PurchaseOrderForm(),
             "receipt_form": ProcurementReceiptForm(),
+            "delivery_form": ProcurementDeliveryUpdateForm(),
+            "quoted_total": (
+                purchase_request.selected_quote.unit_cost * purchase_request.quantity
+                if purchase_request.selected_quote_id
+                else None
+            ),
+            "remaining_to_receive": max(
+                purchase_request.quantity - purchase_request.quantity_received,
+                0,
+            ),
             "remaining_to_register": max(
                 purchase_request.quantity_received
                 - purchase_request.registered_assets.count(),
@@ -390,21 +401,20 @@ def _procurement_owner_or_changer(request, purchase_request) -> bool:
 
 
 @login_required
-@permission_required("inventory.change_purchaserequest", raise_exception=True)
 @require_POST
 def procurement_quote_add(request, pk: int):
-    purchase_request = get_object_or_404(
-        ProcurementRequest.objects.select_for_update(),
-        pk=pk,
-    )
     form = ProcurementQuoteForm(request.POST)
-    if (
-        purchase_request.status != ProcurementRequest.Status.DRAFT
-        or not _procurement_owner_or_changer(request, purchase_request)
-    ):
-        messages.error(request, "Only the requester may add quotes to a draft.")
-    elif form.is_valid():
-        with transaction.atomic():
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        if (
+            purchase_request.status != ProcurementRequest.Status.DRAFT
+            or not _procurement_owner_or_changer(request, purchase_request)
+        ):
+            messages.error(request, "Only the requester may add quotes to a draft.")
+        elif form.is_valid():
             quote = form.save(commit=False)
             quote.request = purchase_request
             quote.save()
@@ -414,28 +424,29 @@ def procurement_quote_add(request, pk: int):
                 actor=request.user,
                 details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
             )
-        messages.success(request, f"Quote from {quote.supplier} was added.")
-    else:
-        messages.error(request, form.errors.as_text())
+            messages.success(request, f"Quote from {quote.supplier} was added.")
+        else:
+            messages.error(request, form.errors.as_text())
     return redirect("inventory:procurement-detail", pk=pk)
 
 
 @login_required
-@permission_required("inventory.change_purchaserequest", raise_exception=True)
 @require_POST
 def procurement_quote_select(request, pk: int, quote_pk: int):
-    purchase_request = get_object_or_404(
-        ProcurementRequest.objects.select_for_update(),
-        pk=pk,
-    )
-    quote = get_object_or_404(ProcurementQuote, pk=quote_pk, request=purchase_request)
-    if (
-        purchase_request.status != ProcurementRequest.Status.DRAFT
-        or not _procurement_owner_or_changer(request, purchase_request)
-    ):
-        messages.error(request, "A quote can only be selected by the requester on a draft.")
-    else:
-        with transaction.atomic():
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        quote = get_object_or_404(
+            ProcurementQuote, pk=quote_pk, request=purchase_request
+        )
+        if (
+            purchase_request.status != ProcurementRequest.Status.DRAFT
+            or not _procurement_owner_or_changer(request, purchase_request)
+        ):
+            messages.error(request, "A quote can only be selected by the requester on a draft.")
+        else:
             purchase_request.selected_quote = quote
             purchase_request.save(update_fields=("selected_quote", "updated_at"))
             ProcurementEvent.objects.create(
@@ -444,7 +455,7 @@ def procurement_quote_select(request, pk: int, quote_pk: int):
                 actor=request.user,
                 details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
             )
-        messages.success(request, f"{quote.supplier} was selected for review.")
+            messages.success(request, f"{quote.supplier} was selected for review.")
     return redirect("inventory:procurement-detail", pk=pk)
 
 
@@ -541,10 +552,22 @@ def procurement_order(request, pk: int):
             purchase_request.purchase_order_reference = form.cleaned_data[
                 "purchase_order_reference"
             ]
+            purchase_request.expected_delivery_date = form.cleaned_data[
+                "expected_delivery_date"
+            ]
+            purchase_request.tracking_reference = form.cleaned_data[
+                "tracking_reference"
+            ]
+            purchase_request.delivery_status = (
+                ProcurementRequest.DeliveryStatus.ORDERED
+            )
             purchase_request.save(
                 update_fields=(
                     "status",
                     "purchase_order_reference",
+                    "expected_delivery_date",
+                    "tracking_reference",
+                    "delivery_status",
                     "updated_at",
                 )
             )
@@ -555,9 +578,68 @@ def procurement_order(request, pk: int):
                 details={
                     "purchase_order_reference": purchase_request.purchase_order_reference,
                     "supplier": purchase_request.selected_quote.supplier,
+                    "expected_delivery_date": (
+                        purchase_request.expected_delivery_date.isoformat()
+                        if purchase_request.expected_delivery_date
+                        else ""
+                    ),
+                    "tracking_reference": purchase_request.tracking_reference,
                 },
             )
             messages.success(request, "Purchase order recorded.")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@require_POST
+def procurement_delivery_update(request, pk: int):
+    form = ProcurementDeliveryUpdateForm(request.POST)
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        if purchase_request.status not in {
+            ProcurementRequest.Status.ORDERED,
+            ProcurementRequest.Status.PARTIALLY_RECEIVED,
+        }:
+            messages.error(request, "Delivery tracking is available after an order is placed.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        else:
+            purchase_request.delivery_status = form.cleaned_data["delivery_status"]
+            purchase_request.expected_delivery_date = (
+                form.cleaned_data["expected_delivery_date"]
+                or purchase_request.expected_delivery_date
+            )
+            purchase_request.tracking_reference = (
+                form.cleaned_data["tracking_reference"]
+                or purchase_request.tracking_reference
+            )
+            purchase_request.save(
+                update_fields=(
+                    "delivery_status",
+                    "expected_delivery_date",
+                    "tracking_reference",
+                    "updated_at",
+                )
+            )
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.DELIVERY_UPDATED,
+                actor=request.user,
+                details={
+                    "delivery_status": purchase_request.delivery_status,
+                    "expected_delivery_date": (
+                        purchase_request.expected_delivery_date.isoformat()
+                        if purchase_request.expected_delivery_date
+                        else ""
+                    ),
+                    "tracking_reference": purchase_request.tracking_reference,
+                },
+            )
+            messages.success(request, "Delivery tracking was updated.")
     return redirect("inventory:procurement-detail", pk=pk)
 
 
@@ -592,12 +674,18 @@ def procurement_receive(request, pk: int):
                 if complete
                 else ProcurementRequest.Status.PARTIALLY_RECEIVED
             )
+            purchase_request.delivery_status = (
+                ProcurementRequest.DeliveryStatus.RECEIVED
+                if complete
+                else ProcurementRequest.DeliveryStatus.PARTIALLY_RECEIVED
+            )
             if complete:
                 purchase_request.completed_at = timezone.now()
             purchase_request.save(
                 update_fields=(
                     "quantity_received",
                     "status",
+                    "delivery_status",
                     "completed_at",
                     "updated_at",
                 )
