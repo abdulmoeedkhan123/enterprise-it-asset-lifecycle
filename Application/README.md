@@ -31,4 +31,21 @@ python Application/manage.py import_assets \
 
 ## Integrations
 
-Identity and third-party connectors must remain read-only and disabled until the provider's official API documentation, approved credentials, and a sandbox are available. Do not configure real identity or vendor integrations using this development project.
+### SCIM 2.0 deactivation review
+
+The initial SCIM connector is read-only. It requests only `id` and `active` from the provider's `/Users` resource, requires HTTPS certificate verification, follows SCIM pagination, and does not send account changes. Map SCIM subject IDs to local custodian references in the Django admin before running a sync. Inactive mapped users create idempotent return-review items for their currently assigned assets; the sync does not change identity status or asset lifecycle status. Unmapped inactive identities are counted but their identifiers are not recorded in the run summary.
+
+Set the provider's HTTPS SCIM service-provider root and an approved, least-privilege bearer token in the environment, then explicitly confirm authorization when running:
+
+```bash
+export SCIM_BASE_URL="https://identity-provider.example/scim/v2"
+export SCIM_BEARER_TOKEN="<approved-read-only-token>"
+python Application/manage.py sync_scim_deactivations \
+  --confirm-read-only-authorized
+```
+
+Do not put credentials in source control, command-line arguments, URLs, or logs. Use only a provider sandbox until access, privacy, retention, and security approvals are complete.
+
+### Other providers
+
+No Blancco or other third-party API calls are implemented. Keep those integrations disabled until official API documentation, approved credentials, and a sandbox are available. Do not configure real identity or vendor integrations using this development project.

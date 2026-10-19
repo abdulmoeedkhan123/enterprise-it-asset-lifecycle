@@ -34,7 +34,7 @@
   </article>
 </section>
 <section class="panel">
-  <div class="panel-heading"><div><p class="eyebrow">FOLLOW-UP</p><h2>Items for review</h2></div><a href="{% url 'inventory:asset-list' %}">Open inventory</a></div>
+  <div class="panel-heading"><div><p class="eyebrow">FOLLOW-UP</p><h2>Items for review</h2></div><div><a href="{% url 'inventory:asset-list' %}">Open inventory</a>{% if perms.inventory.view_returnworkitem %} · <a href="{% url 'inventory:return-work-queue' %}">Return review queue</a>{% endif %}</div></div>
   <p class="muted">Rule-based prompts for a human to review; not verified incidents or policy findings.</p>
   <div class="table-wrap"><table>
     <thead><tr><th>Asset</th><th>Site</th><th>Status</th><th>Prompt</th></tr></thead>

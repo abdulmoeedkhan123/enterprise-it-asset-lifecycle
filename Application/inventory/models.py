@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class LifecycleStatus(models.TextChoices):
@@ -191,6 +192,16 @@ class ReturnWorkItem(models.Model):
 
     def __str__(self) -> str:
         return f"{self.asset.asset_id}: return review ({self.status})"
+
+    def save(self, *args, **kwargs):
+        if self.status in {self.Status.CLOSED, self.Status.DISMISSED}:
+            self.closed_at = self.closed_at or timezone.now()
+        else:
+            self.closed_at = None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None:
+            kwargs["update_fields"] = set(update_fields) | {"closed_at"}
+        super().save(*args, **kwargs)
 
 
 class IntegrationRun(models.Model):

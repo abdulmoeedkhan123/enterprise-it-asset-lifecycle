@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import AssetForm, TransitionForm
-from .models import Asset, LifecycleEvent, LifecycleStatus
+from .models import Asset, LifecycleEvent, LifecycleStatus, ReturnWorkItem
 from .services import transition_asset
 
 
@@ -240,4 +240,26 @@ def asset_transition(request, pk: int):
         request,
         "inventory/transition_form.html",
         {"form": form, "asset": asset},
+    )
+
+
+@login_required
+@permission_required("inventory.view_returnworkitem", raise_exception=True)
+def return_work_queue(request):
+    selected_status = request.GET.get("status", "").strip()
+    work_items = ReturnWorkItem.objects.select_related("asset")
+    valid_statuses = {value for value, _label in ReturnWorkItem.Status.choices}
+    if selected_status in valid_statuses:
+        work_items = work_items.filter(status=selected_status)
+    elif selected_status != "all":
+        selected_status = "open"
+        work_items = work_items.filter(status=ReturnWorkItem.Status.OPEN)
+    return render(
+        request,
+        "inventory/return_work_queue.html",
+        {
+            "work_items": work_items[:100],
+            "statuses": ReturnWorkItem.Status.choices,
+            "selected_status": selected_status,
+        },
     )
