@@ -21,7 +21,13 @@
     <dt>Sanitisation result</dt><dd>{{ asset.sanitisation_result|default:"—" }}</dd>
     <dt>Sanitisation evidence</dt><dd>{{ asset.sanitisation_evidence_ref|default:"—" }}</dd>
     <dt>Disposal evidence</dt><dd>{{ asset.disposal_evidence_ref|default:"—" }}</dd>
-    <dt>Procurement request</dt><dd>{% if asset.procurement_request_id %}<a href="{% url 'inventory:procurement-detail' asset.procurement_request_id %}">PR-{{ asset.procurement_request_id }}</a>{% else %}—{% endif %}</dd>
+    {% if perms.inventory.view_procurementrequest %}
+      {% if not asset.procurement_request_id %}
+        <dt>Procurement request</dt><dd>—</dd>
+      {% elif perms.inventory.view_all_procurementrequests or asset.procurement_request.requester_id == user.pk %}
+        <dt>Procurement request</dt><dd><a href="{% url 'inventory:procurement-detail' asset.procurement_request_id %}">PR-{{ asset.procurement_request_id }}</a></dd>
+      {% endif %}
+    {% endif %}
   </dl></article>
   <article class="panel"><h2>Lifecycle history</h2>
     <ol class="event-list">
@@ -40,11 +46,11 @@
     {% if perms.inventory.add_maintenanceworkorder %}<a class="secondary-button" href="{% url 'inventory:maintenance-work-order-create' asset.pk %}">Open work order</a>{% endif %}
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>Work order</th><th>Priority</th><th>Status</th><th>Vendor</th><th>Target date</th></tr></thead>
+    <thead><tr><th>Work order</th><th>Priority</th><th>Status</th><th>Vendor</th><th>Target date</th><th>History</th></tr></thead>
     <tbody>
       {% for order in maintenance_orders %}
-      <tr><td>{{ order.title }}</td><td>{{ order.get_priority_display }}</td><td>{{ order.get_status_display }}</td><td>{{ order.vendor|default:"—" }}</td><td>{{ order.target_date|date:"j M Y"|default:"—" }}</td></tr>
-      {% empty %}<tr><td colspan="5">No maintenance work orders for this asset.</td></tr>{% endfor %}
+      <tr><td>{{ order.title }}</td><td>{{ order.get_priority_display }}</td><td>{{ order.get_status_display }}</td><td>{{ order.vendor|default:"—" }}</td><td>{{ order.target_date|date:"j M Y"|default:"—" }}</td><td><details><summary>{{ order.events.count }} event(s)</summary><ol class="event-list">{% for event in order.events.all %}<li>{{ event.get_to_status_display }} · {{ event.created_at|date:"j M Y H:i" }}<small>{% if event.actor %}{{ event.actor.get_username }}{% else %}System{% endif %}</small></li>{% endfor %}</ol></details></td></tr>
+      {% empty %}<tr><td colspan="6">No maintenance work orders for this asset.</td></tr>{% endfor %}
     </tbody>
   </table></div>
   {% if perms.inventory.view_maintenanceworkorder %}<p><a href="{% url 'inventory:maintenance-work-orders' %}">View all maintenance work orders</a></p>{% endif %}

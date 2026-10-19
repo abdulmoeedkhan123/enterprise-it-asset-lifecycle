@@ -5,9 +5,9 @@ from typing import TypedDict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
-from django.db import DatabaseError, connection, transaction
+from django.db import DatabaseError, IntegrityError, connection, transaction
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -240,7 +240,7 @@ def asset_detail(request, pk: int):
             "events": events,
             "maintenance_orders": asset.maintenance_orders.select_related(
                 "created_by"
-            )[:5],
+            ).prefetch_related("events__actor")[:5],
         },
     )
 
@@ -272,7 +272,10 @@ def maintenance_work_orders(request):
 
 
 @login_required
-@permission_required("inventory.add_maintenanceworkorder", raise_exception=True)
+@permission_required(
+    ("inventory.add_maintenanceworkorder", "inventory.view_maintenanceworkorder"),
+    raise_exception=True,
+)
 def maintenance_work_order_create(request, asset_pk: int):
     asset = get_object_or_404(Asset, pk=asset_pk)
     if asset.lifecycle_status in {
@@ -304,7 +307,10 @@ def maintenance_work_order_create(request, asset_pk: int):
 
 
 @login_required
-@permission_required("inventory.change_maintenanceworkorder", raise_exception=True)
+@permission_required(
+    ("inventory.change_maintenanceworkorder", "inventory.view_maintenanceworkorder"),
+    raise_exception=True,
+)
 @require_POST
 def maintenance_work_order_update(request, pk: int):
     with transaction.atomic():
@@ -336,13 +342,14 @@ def maintenance_work_order_update(request, pk: int):
 @permission_required("inventory.view_procurementrequest", raise_exception=True)
 def procurement_list(request):
     requests = ProcurementRequest.objects.select_related("requester", "selected_quote")
+    if not request.user.has_perm("inventory.view_all_procurementrequests"):
+        requests = requests.filter(requester=request.user)
     selected_status = request.GET.get("status", "").strip()
     valid_statuses = {value for value, _label in ProcurementRequest.Status.choices}
     if selected_status in valid_statuses:
         requests = requests.filter(status=selected_status)
     elif selected_status != "all":
-        selected_status = ProcurementRequest.Status.PENDING_APPROVAL
-        requests = requests.filter(status=selected_status)
+        selected_status = "all"
     page = Paginator(requests, 50).get_page(request.GET.get("page"))
     return render(
         request,
@@ -357,7 +364,10 @@ def procurement_list(request):
 
 
 @login_required
-@permission_required("inventory.add_procurementrequest", raise_exception=True)
+@permission_required(
+    ("inventory.add_procurementrequest", "inventory.view_procurementrequest"),
+    raise_exception=True,
+)
 def procurement_create(request):
     form = ProcurementRequestForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -391,6 +401,11 @@ def procurement_detail(request, pk: int):
         ).prefetch_related("quotes", "events__actor", "registered_assets"),
         pk=pk,
     )
+    if (
+        purchase_request.requester_id != request.user.pk
+        and not request.user.has_perm("inventory.view_all_procurementrequests")
+    ):
+        raise PermissionDenied
     return render(
         request,
         "inventory/procurement_detail.html",
@@ -428,11 +443,15 @@ def procurement_detail(request, pk: int):
 def _procurement_owner_or_changer(request, purchase_request) -> bool:
     return (
         purchase_request.requester_id == request.user.pk
-        or request.user.has_perm("inventory.change_procurementrequest")
+        or (
+            request.user.has_perm("inventory.change_procurementrequest")
+            and request.user.has_perm("inventory.view_all_procurementrequests")
+        )
     )
 
 
 @login_required
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
 @require_POST
 def procurement_quote_add(request, pk: int):
     form = ProcurementQuoteForm(request.POST)
@@ -447,22 +466,29 @@ def procurement_quote_add(request, pk: int):
         ):
             messages.error(request, "Only the requester may add quotes to a draft.")
         elif form.is_valid():
-            quote = form.save(commit=False)
-            quote.request = purchase_request
-            quote.save()
-            ProcurementEvent.objects.create(
-                request=purchase_request,
-                event_type=ProcurementEvent.EventType.QUOTE_ADDED,
-                actor=request.user,
-                details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
-            )
-            messages.success(request, f"Quote from {quote.supplier} was added.")
+            if purchase_request.quotes.filter(
+                supplier=form.cleaned_data["supplier"],
+                quote_reference=form.cleaned_data["quote_reference"],
+            ).exists():
+                messages.error(request, "That supplier quote reference is already recorded.")
+            else:
+                quote = form.save(commit=False)
+                quote.request = purchase_request
+                quote.save()
+                ProcurementEvent.objects.create(
+                    request=purchase_request,
+                    event_type=ProcurementEvent.EventType.QUOTE_ADDED,
+                    actor=request.user,
+                    details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
+                )
+                messages.success(request, f"Quote from {quote.supplier} was added.")
         else:
             messages.error(request, form.errors.as_text())
     return redirect("inventory:procurement-detail", pk=pk)
 
 
 @login_required
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
 @require_POST
 def procurement_quote_select(request, pk: int, quote_pk: int):
     with transaction.atomic():
@@ -492,6 +518,7 @@ def procurement_quote_select(request, pk: int, quote_pk: int):
 
 
 @login_required
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
 @require_POST
 def procurement_submit(request, pk: int):
     with transaction.atomic():
@@ -522,7 +549,44 @@ def procurement_submit(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.approve_procurementrequest", raise_exception=True)
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
+@require_POST
+def procurement_cancel(request, pk: int):
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        cancellable_statuses = {
+            ProcurementRequest.Status.DRAFT,
+            ProcurementRequest.Status.PENDING_APPROVAL,
+            ProcurementRequest.Status.APPROVED,
+        }
+        if (
+            purchase_request.status not in cancellable_statuses
+            or not _procurement_owner_or_changer(request, purchase_request)
+        ):
+            messages.error(request, "This request cannot be withdrawn.")
+        else:
+            purchase_request.status = ProcurementRequest.Status.CANCELLED
+            purchase_request.save(update_fields=("status", "updated_at"))
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.CANCELLED,
+                actor=request.user,
+            )
+            messages.success(request, "Procurement request withdrawn.")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required(
+    (
+        "inventory.approve_procurementrequest",
+        "inventory.view_all_procurementrequests",
+    ),
+    raise_exception=True,
+)
 @require_POST
 def procurement_review(request, pk: int):
     form = ProcurementDecisionForm(request.POST)
@@ -563,7 +627,13 @@ def procurement_review(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@permission_required(
+    (
+        "inventory.manage_procurementrequest",
+        "inventory.view_all_procurementrequests",
+    ),
+    raise_exception=True,
+)
 @require_POST
 def procurement_order(request, pk: int):
     form = PurchaseOrderForm(request.POST)
@@ -624,7 +694,13 @@ def procurement_order(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@permission_required(
+    (
+        "inventory.manage_procurementrequest",
+        "inventory.view_all_procurementrequests",
+    ),
+    raise_exception=True,
+)
 @require_POST
 def procurement_delivery_update(request, pk: int):
     form = ProcurementDeliveryUpdateForm(request.POST)
@@ -677,7 +753,13 @@ def procurement_delivery_update(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@permission_required(
+    (
+        "inventory.manage_procurementrequest",
+        "inventory.view_all_procurementrequests",
+    ),
+    raise_exception=True,
+)
 @require_POST
 def procurement_receive(request, pk: int):
     form = ProcurementReceiptForm(request.POST)
@@ -751,7 +833,9 @@ def procurement_receive(request, pk: int):
 @login_required
 @permission_required("inventory.view_disposalcase", raise_exception=True)
 def disposal_list(request):
-    cases = DisposalCase.objects.select_related("asset", "requested_by")
+    cases = DisposalCase.objects.select_related("asset", "requested_by").prefetch_related(
+        "events__actor"
+    )
     selected_status = request.GET.get("status", "").strip()
     valid_statuses = {value for value, _label in DisposalCase.Status.choices}
     if selected_status in valid_statuses:
@@ -773,7 +857,10 @@ def disposal_list(request):
 
 
 @login_required
-@permission_required("inventory.add_disposalcase", raise_exception=True)
+@permission_required(
+    ("inventory.add_disposalcase", "inventory.view_disposalcase"),
+    raise_exception=True,
+)
 def disposal_create(request, asset_pk: int):
     asset = get_object_or_404(Asset, pk=asset_pk)
     if asset.lifecycle_status != LifecycleStatus.READY_FOR_DISPOSAL:
@@ -788,17 +875,37 @@ def disposal_create(request, asset_pk: int):
         return redirect("inventory:asset-detail", pk=asset.pk)
     form = DisposalRequestForm(request.POST or None, asset=asset)
     if request.method == "POST" and form.is_valid():
-        with transaction.atomic():
-            case = form.save(commit=False)
-            case.asset = asset
-            case.requested_by = request.user
-            case.full_clean()
-            case.save()
-            DisposalEvent.objects.create(
-                case=case,
-                event_type=DisposalEvent.EventType.REQUESTED,
-                actor=request.user,
+        try:
+            with transaction.atomic():
+                locked_asset = get_object_or_404(
+                    Asset.objects.select_for_update(),
+                    pk=asset.pk,
+                )
+                if DisposalCase.objects.filter(
+                    asset=locked_asset,
+                    status__in=active_statuses,
+                ).exists():
+                    messages.error(
+                        request,
+                        "An active disposal request already exists for this asset.",
+                    )
+                    return redirect("inventory:asset-detail", pk=asset.pk)
+                case = form.save(commit=False)
+                case.asset = locked_asset
+                case.requested_by = request.user
+                case.full_clean()
+                case.save()
+                DisposalEvent.objects.create(
+                    case=case,
+                    event_type=DisposalEvent.EventType.REQUESTED,
+                    actor=request.user,
+                )
+        except IntegrityError:
+            messages.error(
+                request,
+                "An active disposal request already exists for this asset.",
             )
+            return redirect("inventory:asset-detail", pk=asset.pk)
         messages.success(request, f"Disposal request for {asset.asset_id} was submitted.")
         return redirect("inventory:disposal-list")
     return render(
@@ -809,7 +916,10 @@ def disposal_create(request, asset_pk: int):
 
 
 @login_required
-@permission_required("inventory.approve_disposalcase", raise_exception=True)
+@permission_required(
+    ("inventory.approve_disposalcase", "inventory.view_disposalcase"),
+    raise_exception=True,
+)
 @require_POST
 def disposal_review(request, pk: int):
     form = DisposalReviewForm(request.POST)
@@ -847,7 +957,10 @@ def disposal_review(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.complete_disposalcase", raise_exception=True)
+@permission_required(
+    ("inventory.complete_disposalcase", "inventory.view_disposalcase"),
+    raise_exception=True,
+)
 @require_POST
 def disposal_complete(request, pk: int):
     form = DisposalCompletionForm(request.POST)
@@ -905,7 +1018,7 @@ def disposal_complete(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.add_asset", raise_exception=True)
+@permission_required(("inventory.add_asset", "inventory.view_asset"), raise_exception=True)
 def asset_create(request):
     procurement_id = request.GET.get("procurement_id") or request.POST.get(
         "procurement_id", ""

@@ -382,6 +382,7 @@ class ProcurementRequest(models.Model):
         permissions = [
             ("approve_procurementrequest", "Can approve procurement requests"),
             ("manage_procurementrequest", "Can place and receive procurement orders"),
+            ("view_all_procurementrequests", "Can view all procurement requests"),
         ]
 
     def __str__(self) -> str:

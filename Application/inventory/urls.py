@@ -48,6 +48,11 @@ urlpatterns = [
         name="procurement-submit",
     ),
     path(
+        "procurement/<int:pk>/cancel/",
+        views.procurement_cancel,
+        name="procurement-cancel",
+    ),
+    path(
         "procurement/<int:pk>/review/",
         views.procurement_review,
         name="procurement-review",

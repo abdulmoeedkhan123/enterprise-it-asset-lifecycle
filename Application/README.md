@@ -82,13 +82,30 @@ Each run records its source filename and hash, start/completion status, row coun
 
 The signed-in application also has a live in-app notification page. It flags overdue/soon-due returns, expired/soon-expiring active-asset warranties, and selected missing asset references or disposal evidence. Notifications are computed from current records and disappear when the underlying condition is resolved; they do not send email or push messages.
 
+### Permission setup for the workflow modules
+
+Create Django Groups and assign these permissions in Django Admin; grant only the capabilities required for each job:
+
+| Role | Permissions |
+|---|---|
+| Asset operator | `inventory.view_asset`; add/edit and `inventory.transition_asset` only where required |
+| Maintenance coordinator | `inventory.view_maintenanceworkorder`, `inventory.add_maintenanceworkorder`, `inventory.change_maintenanceworkorder` |
+| Procurement requester | `inventory.view_procurementrequest`, `inventory.add_procurementrequest` |
+| Procurement approver | `inventory.view_procurementrequest`, `inventory.view_all_procurementrequests`, `inventory.approve_procurementrequest` |
+| Procurement buyer/receiver | `inventory.view_procurementrequest`, `inventory.view_all_procurementrequests`, `inventory.manage_procurementrequest` |
+| Disposal requester | `inventory.view_disposalcase`, `inventory.add_disposalcase`, plus asset view/transition access as required |
+| Disposal reviewer | `inventory.view_disposalcase`, `inventory.approve_disposalcase` |
+| Disposal operator | `inventory.view_disposalcase`, `inventory.complete_disposalcase` |
+
+The requester manages their own procurement draft. Managing another user's request requires both `inventory.change_procurementrequest` and `inventory.view_all_procurementrequests`; approval and buyer/receiver actions likewise require their action permission plus view-all access. Approval policies and Groups shown here are implementation controls, not company-specific delegated financial authorities. Test permission combinations using non-superuser accounts before deployment.
+
 ### Maintenance work orders
 
-Users with the relevant Django permissions can open maintenance work orders from an asset record, track priority, vendor, target date, and estimated/actual cost, and move orders through permitted statuses. Status transitions are recorded in an audit history. Work orders do not automatically change the asset's lifecycle status; that remains a separately permissioned asset transition. Disposed and lost/stolen assets cannot have new maintenance orders opened.
+Users with the relevant Django permissions can open maintenance work orders from an asset record, track priority, vendor, target date, and cost, and move orders through permitted statuses. Status transitions are recorded in an audit history. Work orders do not automatically change the asset's lifecycle status; that remains a separately permissioned asset transition. Disposed and lost/stolen assets cannot have new maintenance orders opened.
 
 ### Procurement and receiving
 
-The procurement prototype covers draft requests, supplier quote comparison, quote selection, independent approval, purchase-order reference capture, expected delivery/tracking details, in-transit/delayed updates, partial/final receiving, receipt references, and registration of received items as assets. The requester cannot approve their own request. Separate Django permissions control request creation/change, independent approval, and order/receipt management. The prototype uses one independent approval for all amounts; it does not implement spend thresholds, budget checks, contract validation, or external supplier APIs. Configure real approval authority and delegated limits before organizational use. Barcode registration supports a keyboard/USB scanner and the browser's native camera `BarcodeDetector` when available; scanned values are checked against asset ID and serial references. No barcode is assumed unique, and no image or camera stream is uploaded or stored.
+The procurement prototype covers draft requests, supplier quote comparison, quote selection, independent approval, purchase-order reference capture, expected delivery/tracking details, in-transit/delayed updates, partial/final receiving, unique receipt references, and registration of received items as assets. The requester cannot approve their own request. Separate Django permissions control request creation/change, independent approval, and order/receipt management. The prototype uses one independent approval for all amounts; it does not implement spend thresholds, budget checks, contract validation, or external supplier APIs. Configure real approval authority and delegated limits before organizational use. Barcode registration supports a keyboard/USB scanner and the browser's native camera `BarcodeDetector` when available; scanned values are checked against asset ID and serial references. No barcode is assumed unique, and no image or camera stream is uploaded or stored. Supplier quotes, purchase orders, tracking and receiving are captured as identifiers/references and audit data; uploaded document storage is not implemented.
 
 ### Disposal approvals
 

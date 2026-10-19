@@ -228,6 +228,9 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(work_order.status, MaintenanceWorkOrder.Status.OPEN)
         self.assertEqual(work_order.created_by, self.user)
         self.assertEqual(work_order.events.count(), 1)
+        list_response = self.client.get(reverse("inventory:maintenance-work-orders"))
+        self.assertEqual(list_response.status_code, 200)
+        self.assertContains(list_response, "Replace damaged screen")
 
         response = self.client.post(
             reverse(
@@ -297,7 +300,11 @@ class AssetLifecycleTests(TestCase):
             Permission.objects.get(
                 content_type__app_label="inventory",
                 codename="add_maintenanceworkorder",
-            )
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_maintenanceworkorder",
+            ),
         )
         asset = self.create_asset(
             lifecycle_status=LifecycleStatus.DISPOSED,
@@ -319,7 +326,6 @@ class AssetLifecycleTests(TestCase):
         add_permissions = [
             "view_procurementrequest",
             "add_procurementrequest",
-            "change_procurementrequest",
             "add_asset",
             "view_asset",
             "approve_procurementrequest",
@@ -350,6 +356,52 @@ class AssetLifecycleTests(TestCase):
             reverse("inventory:procurement-detail", args=[purchase_request.pk])
         )
         self.assertEqual(detail_response.status_code, 200)
+
+        scoped_approver = get_user_model().objects.create_user(
+            username="procurement-scoped-approver",
+            password="test-pass",
+        )
+        scoped_approver.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_procurementrequest",
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="approve_procurementrequest",
+            ),
+        )
+        self.client.force_login(scoped_approver)
+        self.assertEqual(
+            self.client.get(
+                reverse("inventory:procurement-detail", args=[purchase_request.pk])
+            ).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("inventory:procurement-review", args=[purchase_request.pk]),
+                {"decision": "approve", "note": "Missing view-all permission."},
+            ).status_code,
+            403,
+        )
+        self.client.post(
+            reverse("inventory:procurement-quote-add", args=[purchase_request.pk]),
+            {
+                "supplier": "Unauthorized Supplier",
+                "quote_reference": "Q-UNAUTHORIZED",
+                "unit_cost": "1.00",
+                "delivery_days": 1,
+                "notes": "",
+            },
+        )
+        self.assertFalse(purchase_request.quotes.exists())
+        purchase_request.refresh_from_db()
+        self.assertEqual(
+            purchase_request.status,
+            ProcurementRequest.Status.DRAFT,
+        )
+        self.client.force_login(self.user)
 
         for supplier, cost in (("Supplier A", "1200.00"), ("Supplier B", "1150.00")):
             self.client.post(
@@ -400,6 +452,7 @@ class AssetLifecycleTests(TestCase):
                 )
                 for codename in (
                     "view_procurementrequest",
+                    "view_all_procurementrequests",
                     "approve_procurementrequest",
                     "manage_procurementrequest",
                 )
@@ -438,6 +491,10 @@ class AssetLifecycleTests(TestCase):
             reverse("inventory:procurement-receive", args=[purchase_request.pk]),
             {"quantity": 1, "receipt_reference": "GRN-1"},
         )
+        self.client.post(
+            reverse("inventory:procurement-receive", args=[purchase_request.pk]),
+            {"quantity": 1, "receipt_reference": "GRN-1"},
+        )
         purchase_request.refresh_from_db()
         self.assertEqual(
             purchase_request.status,
@@ -445,6 +502,7 @@ class AssetLifecycleTests(TestCase):
         )
         self.assertEqual(purchase_request.quantity_received, 1)
         self.assertEqual(purchase_request.delivery_status, "partially_received")
+        self.assertEqual(purchase_request.receipts.count(), 1)
 
         self.client.force_login(self.user)
         registration_page = self.client.get(
@@ -489,6 +547,7 @@ class AssetLifecycleTests(TestCase):
         purchase_request.refresh_from_db()
         self.assertEqual(purchase_request.status, ProcurementRequest.Status.RECEIVED)
         self.assertEqual(purchase_request.delivery_status, "received")
+        self.assertEqual(purchase_request.receipts.count(), 2)
         self.assertEqual(
             purchase_request.events.filter(
                 event_type=ProcurementEvent.EventType.ASSET_REGISTERED
@@ -549,6 +608,10 @@ class AssetLifecycleTests(TestCase):
                 content_type__app_label="inventory",
                 codename="complete_disposalcase",
             ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_disposalcase",
+            ),
         )
         self.client.force_login(reviewer)
         self.client.post(
@@ -572,7 +635,11 @@ class AssetLifecycleTests(TestCase):
             Permission.objects.get(
                 content_type__app_label="inventory",
                 codename="complete_disposalcase",
-            )
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_disposalcase",
+            ),
         )
         self.client.force_login(executor)
         self.client.post(
@@ -597,7 +664,11 @@ class AssetLifecycleTests(TestCase):
             Permission.objects.get(
                 content_type__app_label="inventory",
                 codename="add_disposalcase",
-            )
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_disposalcase",
+            ),
         )
         asset = self.create_asset(
             lifecycle_status=LifecycleStatus.READY_FOR_DISPOSAL,
