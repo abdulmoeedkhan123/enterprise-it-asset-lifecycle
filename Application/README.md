@@ -109,9 +109,9 @@ Create Django Groups and assign these permissions in Django Admin; grant only th
 | Disposal requester | `inventory.view_disposalcase`, `inventory.add_disposalcase`, plus asset view/transition access as required |
 | Disposal reviewer | `inventory.view_disposalcase`, `inventory.approve_disposalcase` |
 | Disposal operator | `inventory.view_disposalcase`, `inventory.complete_disposalcase` |
-| Software asset manager | `inventory.view_softwareproduct`, `inventory.add_softwareproduct`, `inventory.add_softwarecontract` |
-| Licence administrator | `inventory.view_softwareproduct`, `inventory.add_softwarelicenseassignment`, `inventory.change_softwarelicenseassignment` |
-| Software contract reviewer | `inventory.view_softwarecontract` |
+| Software asset manager | `inventory.view_softwareproduct`, `inventory.add_softwareproduct`, `inventory.view_softwarecontract`, `inventory.add_softwarecontract` |
+| Licence administrator | `inventory.view_softwareproduct`, `inventory.view_softwarecontract`, `inventory.add_softwarelicenseassignment`, `inventory.change_softwarelicenseassignment` |
+| Software contract reviewer | `inventory.view_softwareproduct`, `inventory.view_softwarecontract` |
 
 The requester manages their own procurement draft. Managing another user's request requires both `inventory.change_procurementrequest` and `inventory.view_all_procurementrequests`; approval and buyer/receiver actions likewise require their action permission plus view-all access. Approval policies and Groups shown here are implementation controls, not company-specific delegated financial authorities. Test permission combinations using non-superuser accounts before deployment.
 

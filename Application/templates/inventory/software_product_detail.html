@@ -8,6 +8,7 @@
   <a class="secondary-button" href="{% url 'inventory:software-catalog' %}">Back to software</a>
 </section>
 {% if product.description %}<p class="software-description">{{ product.description }}</p>{% endif %}
+{% if perms.inventory.view_softwarecontract %}
 <section class="panel">
   <div class="panel-heading"><div><p class="eyebrow">LICENCE ENTITLEMENTS</p><h2>Contracts & subscriptions</h2></div>
     {% if perms.inventory.view_softwarecontract %}<a class="secondary-button" href="{% url 'inventory:software-renewals' %}">Renewal queue</a>{% endif %}
@@ -80,6 +81,12 @@
     </div>
     <div class="actions"><button class="primary-button" type="submit">Save contract</button></div>
   </form>
+</section>
+{% endif %}
+{% elif perms.inventory.add_softwarecontract %}
+<section class="panel form-panel">
+  <div class="panel-heading"><div><p class="eyebrow">CONTRACT MANAGEMENT</p><h2>Add contract or subscription</h2></div></div>
+  <p class="muted">Contract visibility permission is needed to view contract details and assignments.</p>
 </section>
 {% endif %}
 {% endblock %}
