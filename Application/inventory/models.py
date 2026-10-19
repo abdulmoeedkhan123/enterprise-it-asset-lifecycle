@@ -696,7 +696,10 @@ class SoftwareContract(models.Model):
 
     @property
     def assigned_quantity(self) -> int:
-        return self.assignments.filter(status=SoftwareLicenseAssignment.Status.ACTIVE).count()
+        return sum(
+            assignment.status == SoftwareLicenseAssignment.Status.ACTIVE
+            for assignment in self.assignments.all()
+        )
 
     @property
     def available_quantity(self) -> int:
