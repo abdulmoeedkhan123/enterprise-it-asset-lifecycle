@@ -29,10 +29,51 @@
   <p class="filter-footnote">Asset metrics use the selected filters. Pipeline and integration history is system-wide.</p>
 </section>
 <section class="kpi-grid" aria-label="Asset key performance indicators">
-  <article class="kpi-card"><span><i class="kpi-icon" aria-hidden="true">A</i> Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states</small></article>
-  <article class="kpi-card"><span><i class="kpi-icon" aria-hidden="true">✓</i> Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned</small></article>
-  <article class="kpi-card warning"><span><i class="kpi-icon" aria-hidden="true">↩</i> Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date</small></article>
-  <article class="kpi-card alert"><span><i class="kpi-icon" aria-hidden="true">!</i> Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen</small></article>
+  <a class="kpi-card" href="{% url 'inventory:asset-list' %}"><span><i class="kpi-icon" aria-hidden="true">A</i> Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states <b>View assets →</b></small></a>
+  <a class="kpi-card" href="{% url 'inventory:asset-list' %}?status=Assigned"><span><i class="kpi-icon" aria-hidden="true">✓</i> Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned <b>View assigned →</b></small></a>
+  <a class="kpi-card warning" href="{% url 'inventory:notifications' %}"><span><i class="kpi-icon" aria-hidden="true">↩</i> Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date <b>Review alerts →</b></small></a>
+  <a class="kpi-card alert" href="{% url 'inventory:notifications' %}"><span><i class="kpi-icon" aria-hidden="true">!</i> Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen <b>Review alerts →</b></small></a>
+</section>
+<section class="insights-panel" aria-labelledby="insights-title">
+  <div class="insights-heading">
+    <span class="insight-spark" aria-hidden="true">✦</span>
+    <div><p class="eyebrow">ACTION CENTRE</p><h2 id="insights-title">Insights & recommended actions</h2><p class="muted">Signals from current records to help focus your next step.</p></div>
+  </div>
+  <div class="insight-list">
+    {% if overdue_count %}
+    <a class="insight-item insight-danger" href="{% url 'inventory:notifications' %}">
+      <span class="insight-indicator" aria-hidden="true">!</span>
+      <span><strong>{{ overdue_count }} overdue return{{ overdue_count|pluralize }}</strong><small>Follow up on the return due date and update the asset record.</small></span>
+      <b>Review returns →</b>
+    </a>
+    {% endif %}
+    {% if expired_warranty_count %}
+    <a class="insight-item insight-warning" href="{% url 'inventory:notifications' %}">
+      <span class="insight-indicator" aria-hidden="true">!</span>
+      <span><strong>{{ expired_warranty_count }} active asset{{ expired_warranty_count|pluralize }} with expired warranty</strong><small>Check support coverage and decide whether to renew or plan replacement.</small></span>
+      <b>Review warranties →</b>
+    </a>
+    {% endif %}
+    {% if quality_report.assets_with_issues %}
+    <a class="insight-item" href="#data-quality">
+      <span class="insight-indicator insight-indicator-blue" aria-hidden="true">i</span>
+      <span><strong>{{ quality_report.assets_with_issues }} asset{{ quality_report.assets_with_issues|pluralize }} need record review</strong><small>Open data-quality checks below to see missing or inconsistent fields.</small></span>
+      <b>See checks ↓</b>
+    </a>
+    {% endif %}
+    {% if software_renewals %}
+    <a class="insight-item insight-warning" href="{% url 'inventory:software-renewals' %}">
+      <span class="insight-indicator" aria-hidden="true">↻</span>
+      <span><strong>Software renewals need attention</strong><small>
+        {% for due_contract in software_renewals %}{{ due_contract.product.name }}{% if due_contract.end_date < report_date %} expired{% else %} due {{ due_contract.end_date|date:"j M" }}{% endif %}{% if not forloop.last %}; {% endif %}{% endfor %}
+      </small></span>
+      <b>Open renewal queue →</b>
+    </a>
+    {% endif %}
+    {% if not overdue_count and not expired_warranty_count and not quality_report.assets_with_issues and not software_renewals %}
+    <div class="insight-clear"><span aria-hidden="true">✓</span><div><strong>No urgent actions from current checks</strong><small>Continue routine inventory and contract reviews.</small></div></div>
+    {% endif %}
+  </div>
 </section>
 <section class="panel quick-actions-panel" aria-labelledby="quick-actions-title">
   <div class="panel-heading">
@@ -95,7 +136,7 @@
   </div>
 </section>
 <section class="two-column" aria-label="Data quality and pipeline reporting">
-  <article class="panel">
+  <article class="panel" id="data-quality">
     <div class="panel-heading">
       <div><p class="eyebrow">DATA QUALITY</p><h2>Current record checks</h2></div>
       <strong>{{ quality_report.assets_with_issues }} / {{ quality_report.asset_count }} assets flagged</strong>
@@ -148,7 +189,9 @@
     <div class="panel-heading"><div><p class="eyebrow">INVENTORY</p><h2>Lifecycle status</h2></div><a href="{% url 'inventory:asset-list' %}">View assets</a></div>
     <div class="bar-list">
       {% for row in status_counts %}
-      <div class="bar-row"><span>{{ row.lifecycle_status }}</span><span class="bar-track"><span class="bar-fill" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }}</strong></div>
+      <a class="bar-row chart-bar-link {% if selected_status == row.lifecycle_status %}chart-bar-selected{% endif %}" href="{% url 'inventory:dashboard' %}?site={{ selected_site|urlencode }}&status={{ row.lifecycle_status|urlencode }}" aria-label="Filter overview by {{ row.lifecycle_status }}, {{ row.total }} assets">
+        <span>{{ row.lifecycle_status }}</span><span class="bar-track"><span class="bar-fill" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }} <span aria-hidden="true">→</span></strong>
+      </a>
       {% empty %}<p class="muted">No assets registered.</p>{% endfor %}
     </div>
   </article>
@@ -156,7 +199,9 @@
     <div class="panel-heading"><div><p class="eyebrow">DISTRIBUTION</p><h2>Assets by site</h2></div></div>
     <div class="bar-list">
       {% for row in site_counts %}
-      <div class="bar-row"><span>{{ row.site }}</span><span class="bar-track"><span class="bar-fill teal" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }}</strong></div>
+      <a class="bar-row chart-bar-link {% if selected_site == row.site %}chart-bar-selected{% endif %}" href="{% url 'inventory:dashboard' %}?site={{ row.site|urlencode }}&status={{ selected_status|urlencode }}" aria-label="Filter overview by {{ row.site }}, {{ row.total }} assets">
+        <span>{{ row.site }}</span><span class="bar-track"><span class="bar-fill teal" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }} <span aria-hidden="true">→</span></strong>
+      </a>
       {% empty %}<p class="muted">No assets registered.</p>{% endfor %}
     </div>
   </article>
