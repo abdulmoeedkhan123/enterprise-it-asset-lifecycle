@@ -577,3 +577,214 @@ class DisposalEvent(models.Model):
 
     def __str__(self) -> str:
         return f"{self.case}: {self.get_event_type_display()}"
+
+
+class SoftwareProduct(models.Model):
+    class Category(models.TextChoices):
+        APPLICATION = "application", "Application"
+        OPERATING_SYSTEM = "operating_system", "Operating system"
+        SAAS = "saas", "SaaS"
+        SECURITY = "security", "Security"
+        OTHER = "other", "Other"
+
+    name = models.CharField(max_length=128)
+    publisher = models.CharField(max_length=128)
+    version = models.CharField(max_length=64, blank=True)
+    category = models.CharField(
+        max_length=24, choices=Category.choices, default=Category.APPLICATION
+    )
+    description = models.TextField(blank=True)
+    end_of_support = models.DateField(null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("name", "publisher", "version")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("name", "publisher", "version"),
+                name="unique_software_product_version",
+            )
+        ]
+
+    def __str__(self) -> str:
+        version = f" {self.version}" if self.version else ""
+        return f"{self.name}{version} ({self.publisher})"
+
+
+class SoftwareContract(models.Model):
+    class ContractType(models.TextChoices):
+        SUBSCRIPTION = "subscription", "Subscription"
+        PERPETUAL = "perpetual", "Perpetual licence"
+        MAINTENANCE = "maintenance", "Maintenance"
+        OTHER = "other", "Other"
+
+    class LicenseMetric(models.TextChoices):
+        NAMED_USER = "named_user", "Named user"
+        DEVICE = "device", "Device"
+        CONCURRENT = "concurrent", "Concurrent use"
+        SITE = "site", "Site"
+        OTHER = "other", "Other"
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Active"
+        RENEWED = "renewed", "Renewed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    product = models.ForeignKey(
+        SoftwareProduct, on_delete=models.PROTECT, related_name="contracts"
+    )
+    supplier = models.CharField(max_length=128)
+    contract_reference = models.CharField(max_length=64, blank=True)
+    contract_type = models.CharField(
+        max_length=16, choices=ContractType.choices, default=ContractType.SUBSCRIPTION
+    )
+    license_metric = models.CharField(
+        max_length=16, choices=LicenseMetric.choices, default=LicenseMetric.NAMED_USER
+    )
+    purchased_quantity = models.PositiveIntegerField()
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True, db_index=True)
+    renewal_notice_days = models.PositiveSmallIntegerField(default=90)
+    auto_renew = models.BooleanField(default=False)
+    annual_cost = models.DecimalField(
+        max_digits=12, decimal_places=2, null=True, blank=True
+    )
+    currency = models.CharField(max_length=3, default="USD")
+    document_reference = models.CharField(max_length=128, blank=True)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.ACTIVE, db_index=True
+    )
+    renewal_of = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="renewals",
+    )
+    notes = models.TextField(blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="created_software_contracts",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("end_date", "product__name", "-created_at")
+        permissions = [
+            ("view_all_softwarecontracts", "Can view all software contracts"),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(purchased_quantity__gte=1),
+                name="software_contract_quantity_positive",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(renewal_notice_days__lte=365),
+                name="software_contract_notice_max_365",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.product}: {self.get_contract_type_display()} ({self.supplier})"
+
+    @property
+    def assigned_quantity(self) -> int:
+        return self.assignments.filter(status=SoftwareLicenseAssignment.Status.ACTIVE).count()
+
+    @property
+    def available_quantity(self) -> int:
+        return max(self.purchased_quantity - self.assigned_quantity, 0)
+
+    @property
+    def is_expired(self) -> bool:
+        return bool(
+            self.end_date
+            and self.end_date < timezone.localdate()
+            and self.status == self.Status.ACTIVE
+        )
+
+    @property
+    def renewal_due(self) -> bool:
+        today = timezone.localdate()
+        return bool(
+            self.status == self.Status.ACTIVE
+            and self.end_date
+            and self.end_date <= today + timezone.timedelta(days=self.renewal_notice_days)
+        )
+
+    def clean(self) -> None:
+        errors = {}
+        if self.annual_cost is not None and self.annual_cost < 0:
+            errors["annual_cost"] = "Annual cost cannot be negative."
+        if self.currency and len(self.currency) != 3:
+            errors["currency"] = "Enter a three-letter currency code."
+        if (
+            self.contract_type == self.ContractType.SUBSCRIPTION
+            and not self.end_date
+        ):
+            errors["end_date"] = "Subscription contracts need an end or renewal date."
+        if self.renewal_of_id and self.product_id and self.renewal_of.product_id != self.product_id:
+            errors["renewal_of"] = "A renewal must belong to the same software product."
+        if errors:
+            raise ValidationError(errors)
+
+
+class SoftwareLicenseAssignment(models.Model):
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Assigned"
+        RELEASED = "released", "Released"
+
+    contract = models.ForeignKey(
+        SoftwareContract, on_delete=models.PROTECT, related_name="assignments"
+    )
+    assignee_ref = models.CharField(max_length=64)
+    department = models.CharField(max_length=64, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.ACTIVE, db_index=True
+    )
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="software_license_assignments",
+    )
+    assigned_at = models.DateTimeField(auto_now_add=True)
+    released_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="released_software_license_assignments",
+    )
+    released_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("status", "assignee_ref")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("contract", "assignee_ref"),
+                condition=models.Q(status="active"),
+                name="unique_active_software_license_assignment",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.contract.product}: {self.assignee_ref} ({self.get_status_display()})"
+
+    def save(self, *args, **kwargs):
+        if self.status == self.Status.RELEASED:
+            self.released_at = self.released_at or timezone.now()
+        else:
+            self.released_at = None
+            self.released_by = None
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None:
+            kwargs["update_fields"] = set(update_fields) | {"released_at", "released_by"}
+        super().save(*args, **kwargs)
