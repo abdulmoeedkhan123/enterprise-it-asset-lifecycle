@@ -156,7 +156,7 @@ class AssetLifecycleTests(TestCase):
         response = self.client.get(reverse("inventory:dashboard"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Insights &amp; recommended actions")
+        self.assertContains(response, "Insights & recommended actions")
         self.assertContains(response, "Software renewals need attention")
         self.assertContains(response, "Planning Suite")
         self.assertContains(response, "chart-bar-link")
