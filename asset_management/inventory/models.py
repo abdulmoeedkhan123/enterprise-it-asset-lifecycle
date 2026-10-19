@@ -67,18 +67,24 @@ class Asset(models.Model):
         if self.lifecycle_status == LifecycleStatus.RETURN_PENDING and not self.return_due_date:
             errors["return_due_date"] = "Return-pending assets require a due date."
         if (
-            self.lifecycle_status == LifecycleStatus.DISPOSED
+            self.lifecycle_status
+            in {LifecycleStatus.READY_FOR_DISPOSAL, LifecycleStatus.DISPOSED}
             and self.sanitisation_required
             and (
                 self.sanitisation_result != SanitisationResult.PASSED
                 or not self.sanitisation_evidence_ref.strip()
-                or not self.disposal_evidence_ref.strip()
+                or (
+                    self.lifecycle_status == LifecycleStatus.DISPOSED
+                    and not self.disposal_evidence_ref.strip()
+                )
             )
         ):
-            errors["lifecycle_status"] = (
-                "Disposal requires passed sanitisation and sanitisation and disposal "
-                "evidence references when sanitisation is required."
-            )
+            errors["lifecycle_status"] = "Disposition requires passed sanitisation and its evidence."
+        if (
+            self.lifecycle_status == LifecycleStatus.DISPOSED
+            and not self.disposal_evidence_ref.strip()
+        ):
+            errors["disposal_evidence_ref"] = "Disposed assets require a disposal evidence reference."
         if errors:
             raise ValidationError(errors)
 
@@ -117,7 +123,6 @@ class ImportRun(models.Model):
         RUNNING = "running", "Running"
         SUCCEEDED = "succeeded", "Succeeded"
         FAILED = "failed", "Failed"
-        SKIPPED = "skipped", "Skipped"
 
     source_name = models.CharField(max_length=255)
     source_sha256 = models.CharField(max_length=64, db_index=True)
