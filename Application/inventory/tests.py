@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -11,6 +11,14 @@ from .models import Asset, LifecycleEvent, LifecycleStatus
 from .services import transition_asset
 
 
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+        },
+    }
+)
 class AssetLifecycleTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
@@ -114,9 +122,7 @@ class AssetLifecycleTests(TestCase):
         self.assertFalse(LifecycleEvent.objects.filter(asset=asset).exists())
 
     def test_disposal_requires_evidence(self):
-        asset = self.create_asset(
-            custodian_ref="",
-        )
+        asset = self.create_asset()
         asset.lifecycle_status = LifecycleStatus.DISPOSED
         asset.disposal_evidence_ref = ""
 
