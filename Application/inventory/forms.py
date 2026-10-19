@@ -10,6 +10,9 @@ from .models import (
     ProcurementQuote,
     ProcurementRequest,
     SanitisationResult,
+    SoftwareContract,
+    SoftwareLicenseAssignment,
+    SoftwareProduct,
 )
 from .services import ALLOWED_TRANSITIONS
 
@@ -300,3 +303,75 @@ class DisposalReviewForm(forms.Form):
 
 class DisposalCompletionForm(forms.Form):
     disposal_evidence_ref = forms.CharField(max_length=64)
+
+
+class SoftwareProductForm(forms.ModelForm):
+    class Meta:
+        model = SoftwareProduct
+        fields = ("name", "publisher", "version", "category", "description", "end_of_support")
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+            "end_of_support": forms.DateInput(attrs={"type": "date"}),
+        }
+
+
+class SoftwareContractForm(forms.ModelForm):
+    class Meta:
+        model = SoftwareContract
+        fields = (
+            "supplier",
+            "contract_reference",
+            "contract_type",
+            "license_metric",
+            "purchased_quantity",
+            "start_date",
+            "end_date",
+            "renewal_notice_days",
+            "auto_renew",
+            "annual_cost",
+            "currency",
+            "document_reference",
+            "renewal_of",
+            "notes",
+        )
+        widgets = {
+            "start_date": forms.DateInput(attrs={"type": "date"}),
+            "end_date": forms.DateInput(attrs={"type": "date"}),
+            "notes": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def __init__(self, *args, product: SoftwareProduct, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.product = product
+        self.fields["renewal_of"].queryset = product.contracts.exclude(
+            status=SoftwareContract.Status.CANCELLED
+        )
+        self.fields["renewal_of"].required = False
+        self.fields["renewal_of"].help_text = (
+            "Select the previous contract when recording a renewal."
+        )
+
+    def clean_purchased_quantity(self):
+        quantity = self.cleaned_data["purchased_quantity"]
+        if quantity < 1:
+            raise forms.ValidationError("Purchased quantity must be at least one.")
+        return quantity
+
+    def clean_renewal_notice_days(self):
+        days = self.cleaned_data["renewal_notice_days"]
+        if days > 365:
+            raise forms.ValidationError("Renewal notice must be no more than 365 days.")
+        return days
+
+    def clean_currency(self):
+        return self.cleaned_data["currency"].strip().upper()
+
+
+class SoftwareLicenseAssignmentForm(forms.ModelForm):
+    class Meta:
+        model = SoftwareLicenseAssignment
+        fields = ("assignee_ref", "department", "notes")
+        widgets = {"notes": forms.Textarea(attrs={"rows": 2})}
+
+    def clean_assignee_ref(self):
+        return self.cleaned_data["assignee_ref"].strip()

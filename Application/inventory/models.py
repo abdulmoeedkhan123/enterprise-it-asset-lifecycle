@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import timedelta
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -714,7 +716,7 @@ class SoftwareContract(models.Model):
         return bool(
             self.status == self.Status.ACTIVE
             and self.end_date
-            and self.end_date <= today + timezone.timedelta(days=self.renewal_notice_days)
+            and self.end_date <= today + timedelta(days=self.renewal_notice_days)
         )
 
     def clean(self) -> None:
