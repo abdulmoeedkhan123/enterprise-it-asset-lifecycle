@@ -1304,7 +1304,11 @@ def software_product_detail(request, pk: int):
 
 @login_required
 @permission_required(
-    ("inventory.add_softwarecontract", "inventory.view_softwareproduct"),
+    (
+        "inventory.add_softwarecontract",
+        "inventory.view_softwareproduct",
+        "inventory.view_softwarecontract",
+    ),
     raise_exception=True,
 )
 @require_POST
@@ -1329,7 +1333,11 @@ def software_contract_create(request, product_pk: int):
 
 @login_required
 @permission_required(
-    ("inventory.add_softwarelicenseassignment", "inventory.view_softwareproduct"),
+    (
+        "inventory.add_softwarelicenseassignment",
+        "inventory.view_softwareproduct",
+        "inventory.view_softwarecontract",
+    ),
     raise_exception=True,
 )
 @require_POST
@@ -1365,7 +1373,11 @@ def software_license_assign(request, contract_pk: int):
 
 @login_required
 @permission_required(
-    ("inventory.change_softwarelicenseassignment", "inventory.view_softwareproduct"),
+    (
+        "inventory.change_softwarelicenseassignment",
+        "inventory.view_softwareproduct",
+        "inventory.view_softwarecontract",
+    ),
     raise_exception=True,
 )
 @require_POST
@@ -1391,7 +1403,10 @@ def software_license_release(request, contract_pk: int, assignment_pk: int):
 
 
 @login_required
-@permission_required("inventory.view_softwarecontract", raise_exception=True)
+@permission_required(
+    ("inventory.view_softwarecontract", "inventory.view_softwareproduct"),
+    raise_exception=True,
+)
 def software_renewals(request):
     today = timezone.localdate()
     contracts = (

@@ -728,6 +728,8 @@ class SoftwareContract(models.Model):
             errors["annual_cost"] = "Annual cost cannot be negative."
         if self.currency and len(self.currency) != 3:
             errors["currency"] = "Enter a three-letter currency code."
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            errors["end_date"] = "Contract end date must be on or after its start date."
         if (
             self.contract_type == self.ContractType.SUBSCRIPTION
             and not self.end_date

@@ -776,6 +776,148 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, "Blocked pending vendor contract")
         self.assertContains(response, "No external connection is enabled")
 
+    def test_software_contract_license_assignment_release_and_renewal(self):
+        permissions = (
+            "view_softwareproduct",
+            "add_softwareproduct",
+            "add_softwarecontract",
+            "view_softwarecontract",
+            "add_softwarelicenseassignment",
+            "change_softwarelicenseassignment",
+        )
+        self.user.user_permissions.add(
+            *[
+                Permission.objects.get(
+                    content_type__app_label="inventory",
+                    codename=codename,
+                )
+                for codename in permissions
+            ]
+        )
+        response = self.client.post(
+            reverse("inventory:software-create"),
+            {
+                "name": "Design Suite",
+                "publisher": "Example Software",
+                "version": "2026",
+                "category": SoftwareProduct.Category.SAAS,
+                "description": "Team design subscription.",
+                "end_of_support": "",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        product = SoftwareProduct.objects.get(name="Design Suite")
+        self.assertEqual(
+            self.client.get(
+                reverse("inventory:software-detail", args=[product.pk])
+            ).status_code,
+            200,
+        )
+        contract_payload = {
+            "supplier": "Example Reseller",
+            "contract_reference": "SUB-100",
+            "contract_type": SoftwareContract.ContractType.SUBSCRIPTION,
+            "license_metric": SoftwareContract.LicenseMetric.NAMED_USER,
+            "purchased_quantity": 1,
+            "start_date": timezone.localdate().isoformat(),
+            "end_date": (timezone.localdate() + timedelta(days=45)).isoformat(),
+            "renewal_notice_days": 60,
+            "annual_cost": "120.00",
+            "currency": "usd",
+            "document_reference": "DOC-100",
+            "renewal_of": "",
+            "notes": "Test subscription.",
+        }
+        response = self.client.post(
+            reverse("inventory:software-contract-create", args=[product.pk]),
+            contract_payload,
+        )
+        self.assertEqual(response.status_code, 302)
+        contract = SoftwareContract.objects.get(product=product)
+        self.assertEqual(contract.currency, "USD")
+
+        self.client.post(
+            reverse("inventory:software-license-assign", args=[contract.pk]),
+            {"assignee_ref": "EMP-SOFT-1", "department": "Design", "notes": ""},
+        )
+        self.assertEqual(contract.assignments.filter(status="active").count(), 1)
+        self.client.post(
+            reverse("inventory:software-license-assign", args=[contract.pk]),
+            {"assignee_ref": "EMP-SOFT-2", "department": "Design", "notes": ""},
+        )
+        self.assertEqual(contract.assignments.filter(status="active").count(), 1)
+        assignment = contract.assignments.get(assignee_ref="EMP-SOFT-1")
+        self.client.post(
+            reverse(
+                "inventory:software-license-release",
+                args=[contract.pk, assignment.pk],
+            )
+        )
+        assignment.refresh_from_db()
+        self.assertEqual(assignment.status, SoftwareLicenseAssignment.Status.RELEASED)
+        self.assertEqual(assignment.released_by, self.user)
+        self.assertIsNotNone(assignment.released_at)
+
+        renewal_payload = {
+            **contract_payload,
+            "contract_reference": "SUB-101",
+            "end_date": (timezone.localdate() + timedelta(days=410)).isoformat(),
+            "renewal_of": contract.pk,
+        }
+        response = self.client.post(
+            reverse("inventory:software-contract-create", args=[product.pk]),
+            renewal_payload,
+        )
+        self.assertEqual(response.status_code, 302)
+        contract.refresh_from_db()
+        renewed_contract = SoftwareContract.objects.get(contract_reference="SUB-101")
+        self.assertEqual(contract.status, SoftwareContract.Status.RENEWED)
+        self.assertEqual(renewed_contract.renewal_of, contract)
+        self.assertEqual(
+            self.client.get(reverse("inventory:software-renewals")).status_code,
+            200,
+        )
+
+    def test_software_contract_assignment_and_renewal_queue_permissions(self):
+        self.assertEqual(
+            self.client.get(reverse("inventory:software-catalog")).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.get(reverse("inventory:software-renewals")).status_code,
+            403,
+        )
+
+    def test_software_renewal_queue_includes_only_active_contracts_in_notice_period(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_softwarecontract",
+            )
+        )
+        product = SoftwareProduct.objects.create(
+            name="Office Tools",
+            publisher="Example Publisher",
+        )
+        due_contract = SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=5,
+            end_date=timezone.localdate() + timedelta(days=30),
+            renewal_notice_days=60,
+        )
+        SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=5,
+            end_date=timezone.localdate() + timedelta(days=150),
+            renewal_notice_days=60,
+        )
+        response = self.client.get(reverse("inventory:software-renewals"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, str(due_contract.pk))
+        self.assertEqual(len(response.context["contracts"]), 1)
+
 
 class SCIMClientTests(TestCase):
     @staticmethod

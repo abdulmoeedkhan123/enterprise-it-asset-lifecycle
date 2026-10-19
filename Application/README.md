@@ -109,6 +109,9 @@ Create Django Groups and assign these permissions in Django Admin; grant only th
 | Disposal requester | `inventory.view_disposalcase`, `inventory.add_disposalcase`, plus asset view/transition access as required |
 | Disposal reviewer | `inventory.view_disposalcase`, `inventory.approve_disposalcase` |
 | Disposal operator | `inventory.view_disposalcase`, `inventory.complete_disposalcase` |
+| Software asset manager | `inventory.view_softwareproduct`, `inventory.add_softwareproduct`, `inventory.add_softwarecontract` |
+| Licence administrator | `inventory.view_softwareproduct`, `inventory.add_softwarelicenseassignment`, `inventory.change_softwarelicenseassignment` |
+| Software contract reviewer | `inventory.view_softwarecontract` |
 
 The requester manages their own procurement draft. Managing another user's request requires both `inventory.change_procurementrequest` and `inventory.view_all_procurementrequests`; approval and buyer/receiver actions likewise require their action permission plus view-all access. Approval policies and Groups shown here are implementation controls, not company-specific delegated financial authorities. Test permission combinations using non-superuser accounts before deployment.
 
@@ -123,6 +126,12 @@ The procurement prototype covers draft requests, supplier quote comparison, quot
 ### Disposal approvals
 
 Assets must first be moved through the lifecycle workflow to **Ready for Disposal**. A requester records the disposal reason and method; if sanitisation is required, passed sanitisation and its evidence reference are mandatory before submission. A different authorized user approves or rejects the request. A separately permissioned operator then records disposal evidence, which completes the approved case and the audited asset lifecycle transition to **Disposed**. These role permissions are a prototype separation-of-duties control, not a configured company approval matrix. External erasure/disposition vendors and their evidence APIs are not connected.
+
+### Software assets, licences, subscriptions and renewals
+
+The software catalog records product name, publisher, version, category and end-of-support date. Software contracts capture subscription/perpetual/maintenance terms, supplier and contract/document references, licence metric, purchased seats, term dates, renewal notice period, auto-renew flag and annual cost/currency. Renewal records can be linked to the prior contract; recording a renewal marks the previous contract as renewed. The renewal queue shows active contracts within their own notice period or already past their end date.
+
+Seat assignments use an operator-entered assignee reference and department. The application blocks assignments above the purchased seat count and blocks duplicate active assignments to the same assignee on a contract. Releasing a seat preserves the assignment history and records who released it; a released seat can be assigned again. Contract references are metadata only: do not enter passwords, full licence keys, payment details or other secrets. The prototype does not ingest device discovery/software usage, calculate publisher-specific compliance rules, upload contract documents, contact vendors, renew or pay subscriptions automatically, or integrate with a vendor marketplace. Licence measurement rules and true-up/overage terms must be validated against each supplier agreement.
 
 Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
 

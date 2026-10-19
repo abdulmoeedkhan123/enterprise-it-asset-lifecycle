@@ -344,7 +344,10 @@ class SoftwareContractForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.product = product
         self.fields["renewal_of"].queryset = product.contracts.exclude(
-            status=SoftwareContract.Status.CANCELLED
+            status__in=[
+                SoftwareContract.Status.CANCELLED,
+                SoftwareContract.Status.RENEWED,
+            ]
         )
         self.fields["renewal_of"].required = False
         self.fields["renewal_of"].help_text = (

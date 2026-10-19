@@ -16,6 +16,9 @@ from .models import (
     ProcurementReceipt,
     ProcurementRequest,
     ReturnWorkItem,
+    SoftwareContract,
+    SoftwareLicenseAssignment,
+    SoftwareProduct,
 )
 
 
@@ -343,6 +346,65 @@ class DisposalEventAdmin(admin.ModelAdmin):
     list_filter = ("event_type", "created_at")
     search_fields = ("case__asset__asset_id", "note")
     readonly_fields = tuple(field.name for field in DisposalEvent._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(SoftwareProduct)
+class SoftwareProductAdmin(admin.ModelAdmin):
+    list_display = ("name", "publisher", "version", "category", "end_of_support")
+    list_filter = ("category", "publisher")
+    search_fields = ("name", "publisher", "version")
+    readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(SoftwareContract)
+class SoftwareContractAdmin(admin.ModelAdmin):
+    list_display = (
+        "product",
+        "supplier",
+        "contract_type",
+        "purchased_quantity",
+        "end_date",
+        "status",
+    )
+    list_filter = ("contract_type", "status", "auto_renew", "end_date")
+    search_fields = ("product__name", "supplier", "contract_reference")
+    readonly_fields = tuple(field.name for field in SoftwareContract._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(SoftwareLicenseAssignment)
+class SoftwareLicenseAssignmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "contract",
+        "assignee_ref",
+        "department",
+        "status",
+        "assigned_by",
+        "assigned_at",
+        "released_at",
+    )
+    list_filter = ("status", "department", "assigned_at")
+    search_fields = ("contract__product__name", "assignee_ref", "department")
+    readonly_fields = tuple(
+        field.name for field in SoftwareLicenseAssignment._meta.fields
+    )
 
     def has_add_permission(self, request):
         return False
