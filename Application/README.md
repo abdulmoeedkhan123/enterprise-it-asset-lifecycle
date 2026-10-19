@@ -19,7 +19,7 @@ python Application/manage.py createsuperuser
 python Application/manage.py runserver 127.0.0.1:8001
 ```
 
-Open <http://127.0.0.1:8001/>. The default development database is SQLite and is stored in this folder. PostgreSQL configuration and container deployment instructions will be documented here when they are implemented and verified.
+Open <http://127.0.0.1:8001/>. The default development database is SQLite and is stored in this folder. For PostgreSQL, use the local Docker deployment below.
 
 The case-study CSV is located at [`../ICT Business analysis/data/assets.csv`](<../ICT Business analysis/data/assets.csv>). Importing any data requires explicit authorization confirmation; use the synthetic sample only for development:
 
@@ -65,6 +65,33 @@ Each run records its source filename and hash, start/completion status, row coun
 Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
 
 ## Integrations
+
+The authenticated app's **Integrations** page is a capability catalogue, not a
+one-click marketplace. It distinguishes working connectors from planned adapters
+so a client can match their workflow without implying unsupported APIs are live.
+Provider adapters implement the shared identity status contract in
+`inventory/integrations/contracts.py` and are selected through the registry in
+`inventory/integrations/adapters.py`. The SCIM adapter is the only registered
+identity provider today; unregistered vendors fail explicitly instead of returning
+sample or success-shaped data.
+Current availability:
+
+| Client platform/feed | Current status |
+|---|---|
+| Local CSV asset feed | Implemented ETL import with audit and quality reports |
+| Generic SCIM 2.0 | Implemented read-only users status sync, subject to provider contract compatibility |
+| Microsoft Entra ID / Graph, Okta, Active Directory / LDAP | Provider adapter required; no direct vendor API integration is claimed |
+| ServiceNow, Jira Service Management | Adapter and workflow/status mapping required |
+| Microsoft Intune, Jamf Pro | Device inventory adapter required |
+| Blancco | Blocked pending official API documentation, vendor sandbox, and evidence mapping contract |
+| SFTP and generic REST/webhooks | Transport adapters and source/destination contracts required |
+
+Each provider adapter should translate provider-specific authentication, pagination,
+rate limits, identifiers, and payloads into a versioned internal contract. The
+workflow layer then validates, deduplicates, audits, and routes events to human
+review; external writes stay disabled until separately approved and tested.
+This boundary is intended to fit existing client workflows without making the
+core inventory application dependent on one vendor.
 
 ### SCIM 2.0 deactivation review
 

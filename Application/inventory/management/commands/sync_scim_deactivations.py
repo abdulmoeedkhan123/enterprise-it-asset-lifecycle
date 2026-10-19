@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import hashlib
-import os
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DatabaseError, transaction
 from django.utils import timezone
 
-from inventory.integrations.scim import SCIMClient, SCIMError
+from inventory.integrations.adapters import (
+    AdapterConfigurationError,
+    create_identity_adapter,
+)
+from inventory.integrations.scim import SCIMError
 from inventory.models import (
     Asset,
     IdentityLink,
@@ -34,19 +37,13 @@ class Command(BaseCommand):
                 "owner approval and use an approved read-only SCIM credential."
             )
 
-        base_url = os.environ.get("SCIM_BASE_URL", "").strip()
-        token = os.environ.get("SCIM_BEARER_TOKEN", "")
-        if not base_url:
-            raise CommandError("SCIM_BASE_URL is required.")
-        if not token:
-            raise CommandError("SCIM_BEARER_TOKEN is required.")
-
         run = IntegrationRun.objects.create(
             provider="scim",
             status=IntegrationRun.Status.RUNNING,
         )
         try:
-            identities = SCIMClient(base_url=base_url, bearer_token=token).list_users()
+            adapter = create_identity_adapter("scim")
+            identities = adapter.fetch_identity_statuses()
             matched_count = 0
             created_count = 0
             existing_count = 0
@@ -103,7 +100,7 @@ class Command(BaseCommand):
                     "completed_at",
                 )
             )
-        except (SCIMError, DatabaseError) as error:
+        except (AdapterConfigurationError, SCIMError, DatabaseError) as error:
             run.status = IntegrationRun.Status.FAILED
             run.error_summary = str(error)[:500]
             run.completed_at = timezone.now()

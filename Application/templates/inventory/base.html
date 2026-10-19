@@ -19,6 +19,7 @@
       <a href="{% url 'inventory:dashboard' %}">Overview</a>
       <a href="{% url 'inventory:asset-list' %}">Assets</a>
       {% if perms.inventory.view_returnworkitem %}<a href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
+      {% if perms.inventory.view_asset %}<a href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
       {% if perms.inventory.add_asset %}<a href="{% url 'inventory:asset-create' %}">Register asset</a>{% endif %}
       {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
     </nav>

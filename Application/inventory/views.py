@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+from typing import TypedDict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
@@ -13,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import AssetForm, TransitionForm
+from .integrations.catalog import INTEGRATION_CATALOG
 from .models import (
     Asset,
     ImportRun,
@@ -23,6 +25,16 @@ from .models import (
 )
 from .reporting import build_asset_quality_report
 from .services import transition_asset
+
+
+class IntegrationCatalogEntry(TypedDict):
+    name: str
+    category: str
+    availability: str
+    protocol: str
+    workflow: str
+    data_direction: str
+    notes: str
 
 
 def add_bar_widths(rows: list[dict]) -> list[dict]:
@@ -290,4 +302,17 @@ def return_work_queue(request):
             "statuses": ReturnWorkItem.Status.choices,
             "selected_status": selected_status,
         },
+    )
+
+
+@login_required
+@permission_required("inventory.view_asset", raise_exception=True)
+def integration_catalog(request):
+    categories: dict[str, list[IntegrationCatalogEntry]] = {}
+    for integration in INTEGRATION_CATALOG:
+        categories.setdefault(integration["category"], []).append(integration)
+    return render(
+        request,
+        "inventory/integration_catalog.html",
+        {"integration_categories": categories.items()},
     )

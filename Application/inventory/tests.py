@@ -1,24 +1,36 @@
+import csv
 import json
 from datetime import date, timedelta
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from io import StringIO
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
-from django.core.management import call_command, CommandError
+from django.core.management import CommandError, call_command
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
 from .integrations.scim import SCIMClient, SCIMError, SCIMIdentity
+from .integrations.adapters import (
+    AdapterConfigurationError,
+    SCIMIdentityAdapter,
+    create_identity_adapter,
+)
+from .integrations.contracts import IdentityStatus
 from .models import (
     Asset,
     IdentityLink,
+    ImportRun,
     IntegrationRun,
     LifecycleEvent,
     LifecycleStatus,
     ReturnWorkItem,
 )
+from .reporting import build_asset_quality_report
 from .services import transition_asset
 
 
@@ -90,6 +102,21 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, asset.asset_id)
         self.assertContains(response, "Disposal evidence missing")
 
+    def test_dashboard_filters_operational_and_quality_reports(self):
+        self.user.user_permissions.add(self.view_permission)
+        self.create_asset(asset_id="AST-SYD", site="Sydney")
+        self.create_asset(asset_id="AST-MEL", site="Melbourne")
+
+        response = self.client.get(
+            reverse("inventory:dashboard"),
+            {"site": "Sydney", "status": LifecycleStatus.ASSIGNED},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["asset_count"], 1)
+        self.assertEqual(response.context["assigned_count"], 1)
+        self.assertEqual(response.context["quality_report"]["asset_count"], 1)
+
     def test_allowed_transition_updates_asset_and_writes_event(self):
         self.user.user_permissions.add(self.transition_permission)
         asset = self.create_asset()
@@ -160,6 +187,20 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, asset.asset_id)
         self.assertContains(response, "Pending review")
 
+    def test_integration_catalog_distinguishes_available_from_unimplemented(self):
+        self.user.user_permissions.add(self.view_permission)
+
+        response = self.client.get(reverse("inventory:integration-catalog"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "SCIM 2.0 user status")
+        self.assertContains(response, "Available - generic connector")
+        self.assertContains(response, "Microsoft Entra ID / Microsoft Graph")
+        self.assertContains(response, "Adapter required")
+        self.assertContains(response, "Blancco")
+        self.assertContains(response, "Blocked pending vendor contract")
+        self.assertContains(response, "No external connection is enabled")
+
 
 class SCIMClientTests(TestCase):
     @staticmethod
@@ -212,6 +253,31 @@ class SCIMClientTests(TestCase):
             with self.subTest(base_url=base_url), self.assertRaises(SCIMError):
                 SCIMClient(base_url=base_url, bearer_token="test-token")
 
+    def test_scim_adapter_normalizes_provider_records_to_shared_contract(self):
+        client = MagicMock()
+        client.list_users.return_value = [
+            SCIMIdentity(subject_id="subject-1", active=False)
+        ]
+
+        adapter = SCIMIdentityAdapter(client=client)
+
+        self.assertEqual(
+            adapter.fetch_identity_statuses(),
+            [IdentityStatus(subject_id="subject-1", active=False)],
+        )
+
+    def test_adapter_factory_rejects_unimplemented_provider(self):
+        with patch.dict(
+            "os.environ",
+            {
+                "SCIM_BASE_URL": "https://idp.example/scim/v2",
+                "SCIM_BEARER_TOKEN": "test-token",
+            },
+        ):
+            self.assertEqual(create_identity_adapter("scim").provider_id, "scim")
+        with self.assertRaisesMessage(AdapterConfigurationError, "No verified adapter"):
+            create_identity_adapter("entra")
+
 
 class SCIMSyncCommandTests(TestCase):
     def setUp(self):
@@ -241,14 +307,16 @@ class SCIMSyncCommandTests(TestCase):
             "SCIM_BEARER_TOKEN": "test-token",
         },
     )
-    @patch("inventory.management.commands.sync_scim_deactivations.SCIMClient.list_users")
+    @patch("inventory.management.commands.sync_scim_deactivations.create_identity_adapter")
     def test_sync_creates_idempotent_review_work_item_without_state_changes(
-        self, list_users
+        self, create_adapter
     ):
-        list_users.return_value = [
-            SCIMIdentity(subject_id="subject-2001", active=False),
-            SCIMIdentity(subject_id="unmapped-subject", active=False),
-            SCIMIdentity(subject_id="active-subject", active=True),
+        adapter = create_adapter.return_value
+        adapter.provider_id = "scim"
+        adapter.fetch_identity_statuses.return_value = [
+            IdentityStatus(subject_id="subject-2001", active=False),
+            IdentityStatus(subject_id="unmapped-subject", active=False),
+            IdentityStatus(subject_id="active-subject", active=True),
         ]
 
         call_command("sync_scim_deactivations", confirm_read_only_authorized=True)
@@ -285,10 +353,12 @@ class SCIMSyncCommandTests(TestCase):
         },
     )
     @patch(
-        "inventory.management.commands.sync_scim_deactivations.SCIMClient.list_users",
-        side_effect=SCIMError("SCIM request failed with HTTP 503."),
+        "inventory.management.commands.sync_scim_deactivations.create_identity_adapter",
     )
-    def test_sync_records_failure_without_exposing_credentials(self, _list_users):
+    def test_sync_records_failure_without_exposing_credentials(self, create_adapter):
+        create_adapter.return_value.fetch_identity_statuses.side_effect = SCIMError(
+            "SCIM request failed with HTTP 503."
+        )
         with self.assertRaises(CommandError):
             call_command(
                 "sync_scim_deactivations",
@@ -298,6 +368,21 @@ class SCIMSyncCommandTests(TestCase):
         run = IntegrationRun.objects.get()
         self.assertEqual(run.status, IntegrationRun.Status.FAILED)
         self.assertNotIn("test-token", run.error_summary)
+
+    @patch(
+        "inventory.management.commands.sync_scim_deactivations.create_identity_adapter",
+        side_effect=SCIMError("SCIM request failed with HTTP 503."),
+    )
+    def test_configuration_failure_is_recorded(self, _create_adapter):
+        with self.assertRaises(CommandError):
+            call_command(
+                "sync_scim_deactivations",
+                confirm_read_only_authorized=True,
+            )
+        self.assertEqual(
+            IntegrationRun.objects.get().status,
+            IntegrationRun.Status.FAILED,
+        )
 
     def test_return_work_item_sets_and_clears_closed_timestamp(self):
         item = ReturnWorkItem.objects.create(
@@ -315,3 +400,167 @@ class SCIMSyncCommandTests(TestCase):
         item.save(update_fields=("status",))
         item.refresh_from_db()
         self.assertIsNone(item.closed_at)
+
+
+class AssetImportPipelineTests(TestCase):
+    headers = (
+        "asset_id",
+        "asset_type",
+        "manufacturer",
+        "model",
+        "serial_ref",
+        "site",
+        "department",
+        "custodian_ref",
+        "lifecycle_status",
+        "purchase_date",
+        "warranty_end",
+        "return_due_date",
+        "sanitisation_required",
+        "sanitisation_result",
+        "sanitisation_evidence_ref",
+        "disposal_evidence_ref",
+        "last_updated",
+    )
+
+    def write_csv(self, path: Path, **overrides):
+        row = {
+            "asset_id": "AST-ETL-1",
+            "asset_type": "Laptop",
+            "manufacturer": "Example",
+            "model": "Business Laptop",
+            "serial_ref": "SER-ETL-1",
+            "site": "Sydney",
+            "department": "IT",
+            "custodian_ref": "",
+            "lifecycle_status": LifecycleStatus.IN_STOCK,
+            "purchase_date": "2024-01-01",
+            "warranty_end": "2027-01-01",
+            "return_due_date": "",
+            "sanitisation_required": "false",
+            "sanitisation_result": "",
+            "sanitisation_evidence_ref": "",
+            "disposal_evidence_ref": "",
+            "last_updated": "2026-10-18",
+        }
+        row.update(overrides)
+        with path.open("w", newline="", encoding="utf-8") as source_file:
+            writer = csv.DictWriter(source_file, fieldnames=self.headers)
+            writer.writeheader()
+            writer.writerow(row)
+
+    def test_import_run_is_idempotent_and_persists_quality_profile(self):
+        with TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "assets.csv"
+            self.write_csv(path, asset_id="  AST-ETL-1  ")
+
+            for _ in range(2):
+                call_command(
+                    "import_assets",
+                    input=path,
+                    confirm_authorized_source=True,
+                    stdout=StringIO(),
+                )
+
+        self.assertEqual(Asset.objects.count(), 1)
+        self.assertEqual(Asset.objects.get().asset_id, "AST-ETL-1")
+        runs = list(ImportRun.objects.order_by("pk"))
+        self.assertEqual(runs[0].rows_created, 1)
+        self.assertEqual(runs[0].rows_unchanged, 0)
+        self.assertEqual(runs[1].rows_created, 0)
+        self.assertEqual(runs[1].rows_unchanged, 1)
+        self.assertEqual(runs[1].rows_rejected, 0)
+        self.assertEqual(runs[1].quality_summary["records_profiled"], 1)
+
+    def test_import_quality_profile_counts_accepted_exception_rows(self):
+        with TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "quality-assets.csv"
+            self.write_csv(
+                path,
+                lifecycle_status=LifecycleStatus.ASSIGNED,
+                custodian_ref="",
+            )
+            call_command(
+                "import_assets",
+                input=path,
+                confirm_authorized_source=True,
+                stdout=StringIO(),
+            )
+
+        run = ImportRun.objects.get()
+        self.assertEqual(run.status, ImportRun.Status.SUCCEEDED)
+        self.assertEqual(run.quality_summary["assigned_without_custodian"], 1)
+        self.assertEqual(run.rows_rejected, 0)
+
+    def test_invalid_batch_is_rejected_and_recorded_without_partial_load(self):
+        with TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "bad-assets.csv"
+            self.write_csv(path, lifecycle_status="Unknown status")
+
+            with self.assertRaises(CommandError):
+                call_command(
+                    "import_assets",
+                    input=path,
+                    confirm_authorized_source=True,
+                    stdout=StringIO(),
+                )
+
+        run = ImportRun.objects.get()
+        self.assertEqual(run.status, ImportRun.Status.FAILED)
+        self.assertEqual(run.rows_rejected, 1)
+        self.assertFalse(Asset.objects.exists())
+
+    def test_import_requires_authorization_before_opening_source(self):
+        with self.assertRaisesMessage(CommandError, "--confirm-authorized-source"):
+            call_command(
+                "import_assets",
+                input=Path("/not/a/real/source.csv"),
+            )
+        self.assertFalse(ImportRun.objects.exists())
+
+
+class AssetQualityReportingTests(TestCase):
+    def test_quality_report_counts_overlapping_issues_without_double_counting_assets(self):
+        report_date = date(2026, 10, 19)
+        shared_values = {
+            "asset_type": "Laptop",
+            "manufacturer": "Example",
+            "model": "Business Laptop",
+            "site": "Sydney",
+            "department": "IT",
+            "purchase_date": date(2025, 1, 1),
+            "warranty_end": date(2024, 1, 1),
+            "source_last_updated": report_date - timedelta(days=100),
+        }
+        Asset.objects.create(
+            asset_id="AST-QUALITY-1",
+            serial_ref="SER-DUP",
+            lifecycle_status=LifecycleStatus.ASSIGNED,
+            **shared_values,
+        )
+        Asset.objects.create(
+            asset_id="AST-QUALITY-2",
+            serial_ref="SER-DUP",
+            lifecycle_status=LifecycleStatus.DISPOSED,
+            sanitisation_required=True,
+            sanitisation_result="Pending",
+            **shared_values,
+        )
+        Asset.objects.create(
+            asset_id="AST-QUALITY-3",
+            serial_ref="SER-OK",
+            lifecycle_status=LifecycleStatus.IN_STOCK,
+            **shared_values,
+        )
+
+        report = build_asset_quality_report(Asset.objects.all(), as_of=report_date)
+        check_counts = {check["code"]: check["count"] for check in report["checks"]}
+
+        self.assertEqual(report["asset_count"], 3)
+        self.assertEqual(report["assets_with_issues"], 3)
+        self.assertEqual(check_counts["assigned_without_custodian"], 1)
+        self.assertEqual(check_counts["disposition_missing_sanitisation_evidence"], 1)
+        self.assertEqual(check_counts["disposed_without_evidence"], 1)
+        self.assertEqual(check_counts["stale_source_records"], 3)
+        self.assertEqual(check_counts["warranty_before_purchase"], 3)
+        self.assertEqual(check_counts["duplicate_serial_assets"], 2)

@@ -19,6 +19,7 @@ def build_asset_quality_report(
         .values("serial_ref")
     )
     duplicate_serial_filter = Q(serial_ref__in=Subquery(duplicate_serials))
+    stale_cutoff = as_of - timedelta(days=90)
     checks = (
         (
             "assigned_without_custodian",
@@ -72,18 +73,25 @@ def build_asset_quality_report(
             duplicate_serial_filter,
         ),
     )
-    checks_report = []
     issue_filter = Q(pk__in=[])
-    stale_cutoff = as_of - timedelta(days=90)
-    for code, label, condition in checks:
-        checks_report.append(
-            {"code": code, "label": label, "count": assets.filter(condition).count()}
-        )
+    for _code, _label, condition in checks:
         issue_filter |= condition
+    totals = assets.aggregate(
+        asset_count=Count("pk"),
+        assets_with_issues=Count("pk", filter=issue_filter, distinct=True),
+        **{
+            code: Count("pk", filter=condition)
+            for code, _label, condition in checks
+        },
+    )
+    checks_report = [
+        {"code": code, "label": label, "count": totals[code]}
+        for code, label, _condition in checks
+    ]
 
     return {
-        "asset_count": assets.count(),
-        "assets_with_issues": assets.filter(issue_filter).distinct().count(),
+        "asset_count": totals["asset_count"],
+        "assets_with_issues": totals["assets_with_issues"],
         "checks": checks_report,
     }
 

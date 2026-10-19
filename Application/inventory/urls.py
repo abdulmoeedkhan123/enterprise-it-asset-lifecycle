@@ -13,4 +13,5 @@ urlpatterns = [
     path("assets/<int:pk>/edit/", views.asset_update, name="asset-update"),
     path("assets/<int:pk>/transition/", views.asset_transition, name="asset-transition"),
     path("returns/", views.return_work_queue, name="return-work-queue"),
+    path("integrations/", views.integration_catalog, name="integration-catalog"),
 ]

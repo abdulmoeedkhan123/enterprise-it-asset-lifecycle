@@ -1,0 +1,36 @@
+{% extends "inventory/base.html" %}
+{% block title %}Integration catalogue | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">PLATFORM CONNECTIONS</p>
+    <h1>Integration catalogue</h1>
+    <p class="muted">Connect asset workflows through supported feeds and provider-specific adapters. Availability means implemented in this app, not automatically compatible with every tenant.</p>
+  </div>
+</section>
+<section class="notice">
+  No external connection is enabled by this catalogue. Confirm provider API contracts, data ownership, least-privilege access, security/privacy approval, and sandbox behavior before configuring any tenant.
+</section>
+{% for category, integrations in integration_categories %}
+<section class="panel">
+  <div class="panel-heading"><div><p class="eyebrow">CONNECTOR GROUP</p><h2>{{ category }}</h2></div></div>
+  <div class="integration-grid">
+    {% for integration in integrations %}
+    <article class="integration-card">
+      <div class="integration-title">
+        <h3>{{ integration.name }}</h3>
+        <span class="availability-tag">{{ integration.availability }}</span>
+      </div>
+      <dl class="integration-details">
+        <dt>Protocol</dt><dd>{{ integration.protocol }}</dd>
+        <dt>Workflow</dt><dd>{{ integration.workflow }}</dd>
+        <dt>Data flow</dt><dd>{{ integration.data_direction }}</dd>
+      </dl>
+      <p class="muted">{{ integration.notes }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+<p><a href="{% url 'inventory:dashboard' %}">Back to reporting dashboard</a></p>
+{% endblock %}
