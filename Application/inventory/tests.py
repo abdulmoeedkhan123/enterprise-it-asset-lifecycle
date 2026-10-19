@@ -126,6 +126,65 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(response.context["assigned_count"], 1)
         self.assertEqual(response.context["quality_report"]["asset_count"], 1)
 
+    def test_asset_list_filters_by_selected_fields_and_searches_all_asset_fields(self):
+        self.user.user_permissions.add(self.view_permission)
+        matching = self.create_asset(
+            asset_id="AST-FILTER-1",
+            manufacturer="Northwind Devices",
+            model="Travel Laptop",
+            serial_ref="SERIAL-LOOKUP-1",
+            department="Customer Success",
+        )
+        self.create_asset(
+            asset_id="AST-FILTER-2",
+            manufacturer="Contoso",
+            serial_ref="SERIAL-LOOKUP-2",
+            department="Finance",
+        )
+
+        response = self.client.get(
+            reverse("inventory:asset-list"),
+            {"field": "manufacturer", "q": "Northwind"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["result_count"], 1)
+        self.assertContains(response, matching.asset_id)
+        self.assertContains(response, 'class="clickable-row"')
+
+        response = self.client.get(
+            reverse("inventory:asset-list"),
+            {"q": "Customer Success"},
+        )
+        self.assertEqual(response.context["result_count"], 1)
+        self.assertContains(response, matching.asset_id)
+
+        response = self.client.get(
+            reverse("inventory:asset-list"),
+            {
+                "field": "warranty_end",
+                "q": matching.warranty_end.isoformat(),
+            },
+        )
+        self.assertEqual(response.context["result_count"], 2)
+
+    def test_asset_list_reports_invalid_date_and_boolean_filter_values(self):
+        self.user.user_permissions.add(self.view_permission)
+        self.create_asset()
+
+        date_response = self.client.get(
+            reverse("inventory:asset-list"),
+            {"field": "purchase_date", "q": "not-a-date"},
+        )
+        self.assertContains(date_response, "Enter a date as YYYY-MM-DD")
+        self.assertEqual(date_response.context["result_count"], 0)
+
+        boolean_response = self.client.get(
+            reverse("inventory:asset-list"),
+            {"field": "sanitisation_required", "q": "sometimes"},
+        )
+        self.assertContains(boolean_response, "Enter Yes or No")
+        self.assertEqual(boolean_response.context["result_count"], 0)
+
     def test_notifications_show_due_and_expiring_assets_and_navigation_count(self):
         self.user.user_permissions.add(self.view_permission)
         today = timezone.localdate()
@@ -893,7 +952,11 @@ class AssetLifecycleTests(TestCase):
             Permission.objects.get(
                 content_type__app_label="inventory",
                 codename="view_softwarecontract",
-            )
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_softwareproduct",
+            ),
         )
         product = SoftwareProduct.objects.create(
             name="Office Tools",
