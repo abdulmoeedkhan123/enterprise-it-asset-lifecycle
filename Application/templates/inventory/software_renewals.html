@@ -11,7 +11,7 @@
     <thead><tr><th>Software</th><th>Supplier</th><th>Contract reference</th><th>Term end</th><th>Notice</th><th>Seats</th><th>Annual cost</th><th>Auto-renew</th></tr></thead>
     <tbody>
       {% for contract in contracts %}
-      <tr>
+      <tr class="clickable-row" data-href="{% url 'inventory:software-detail' contract.product_id %}" tabindex="0" aria-label="Open {{ contract.product.name }} contract details">
         <td><a href="{% url 'inventory:software-detail' contract.product_id %}">{{ contract.product.name }}{% if contract.product.version %} {{ contract.product.version }}{% endif %}</a></td>
         <td>{{ contract.supplier }}</td><td>{{ contract.contract_reference|default:"—" }}</td>
         <td><span class="{% if contract.is_expired %}renewal-overdue{% else %}renewal-upcoming{% endif %}">{{ contract.end_date|date:"j M Y" }}{% if contract.is_expired %} · Expired{% endif %}</span></td>

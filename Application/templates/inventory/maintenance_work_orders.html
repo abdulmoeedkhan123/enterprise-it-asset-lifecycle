@@ -20,7 +20,7 @@
     <thead><tr><th>Asset</th><th>Work order</th><th>Priority</th><th>Status</th><th>Vendor</th><th>Target date</th><th>Cost</th><th>Update</th></tr></thead>
     <tbody>
       {% for order in work_orders %}
-      <tr>
+      <tr class="clickable-row" data-href="{% url 'inventory:asset-detail' order.asset_id %}" tabindex="0" aria-label="Open asset {{ order.asset.asset_id }} for work order {{ order.title }}">
         <td><a href="{% url 'inventory:asset-detail' order.asset_id %}">{{ order.asset.asset_id }}</a></td>
         <td><strong>{{ order.title }}</strong>{% if order.description %}<br><small>{{ order.description|truncatechars:100 }}</small>{% endif %}</td>
         <td>{{ order.get_priority_display }}</td><td>{{ order.get_status_display }}</td>

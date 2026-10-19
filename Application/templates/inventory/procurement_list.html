@@ -19,7 +19,7 @@
     <thead><tr><th>Request</th><th>Requester</th><th>Quantity</th><th>Supplier quote</th><th>Purchase order</th><th>Delivery</th><th>Received</th><th>Status</th></tr></thead>
     <tbody>
       {% for item in procurement_requests %}
-      <tr>
+      <tr class="clickable-row" data-href="{% url 'inventory:procurement-detail' item.pk %}" tabindex="0" aria-label="Open purchase request {{ item.pk }}: {{ item.title }}">
         <td><a href="{% url 'inventory:procurement-detail' item.pk %}">PR-{{ item.pk }} · {{ item.title }}</a></td>
         <td>{{ item.requester.get_username }}</td><td>{{ item.quantity }}</td>
         <td>{% if item.selected_quote %}{{ item.selected_quote.supplier }} · {{ item.selected_quote.unit_cost }} / unit{% else %}—{% endif %}</td>
