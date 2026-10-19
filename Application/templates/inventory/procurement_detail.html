@@ -16,6 +16,9 @@
     <dt>Selected supplier</dt><dd>{% if purchase_request.selected_quote %}{{ purchase_request.selected_quote.supplier }}{% else %}Not selected{% endif %}</dd>
     <dt>Quoted total</dt><dd>{% if quoted_total is not None %}{{ quoted_total }}{% else %}—{% endif %}</dd>
     <dt>Purchase order</dt><dd>{{ purchase_request.purchase_order_reference|default:"—" }}</dd>
+    <dt>Delivery status</dt><dd>{{ purchase_request.get_delivery_status_display }}</dd>
+    <dt>Expected delivery</dt><dd>{{ purchase_request.expected_delivery_date|date:"j M Y"|default:"—" }}</dd>
+    <dt>Tracking reference</dt><dd>{{ purchase_request.tracking_reference|default:"—" }}</dd>
     <dt>Receipt quantity</dt><dd>{{ purchase_request.quantity_received }} / {{ purchase_request.quantity }}</dd>
   </dl></article>
   <article class="panel"><h2>Workflow actions</h2>
@@ -35,15 +38,26 @@
       <form method="post" action="{% url 'inventory:procurement-order' purchase_request.pk %}" class="stack-form">
         {% csrf_token %}
         <label for="po-reference">Purchase order reference<input id="po-reference" name="purchase_order_reference" required maxlength="64"></label>
+        <label for="expected-delivery-date">Expected delivery date<input id="expected-delivery-date" name="expected_delivery_date" type="date"></label>
+        <label for="tracking-reference">Tracking reference<input id="tracking-reference" name="tracking_reference" maxlength="64"></label>
         <button class="primary-button" type="submit">Record order</button>
       </form>
     {% elif purchase_request.status == "ordered" or purchase_request.status == "partially_received" %}
       {% if perms.inventory.manage_procurementrequest %}
       <form method="post" action="{% url 'inventory:procurement-receive' purchase_request.pk %}" class="stack-form">
         {% csrf_token %}
-        <label for="receipt-quantity">Quantity received<input id="receipt-quantity" name="quantity" type="number" min="1" max="{{ purchase_request.quantity|add:"-"|default:purchase_request.quantity }}" required></label>
+        <p class="muted">Remaining to receive: {{ remaining_to_receive }}</p>
+        <label for="receipt-quantity">Quantity received<input id="receipt-quantity" name="quantity" type="number" min="1" max="{{ remaining_to_receive }}" required></label>
         <label for="receipt-reference">Receipt reference<input id="receipt-reference" name="receipt_reference" required maxlength="64"></label>
         <button class="primary-button" type="submit">Record receipt</button>
+      </form>
+      <h3>Update delivery tracking</h3>
+      <form method="post" action="{% url 'inventory:procurement-delivery-update' purchase_request.pk %}" class="stack-form">
+        {% csrf_token %}
+        <label for="delivery-status">Delivery status<select id="delivery-status" name="delivery_status"><option value="in_transit">In transit</option><option value="delayed">Delayed</option></select></label>
+        <label for="delivery-expected-date">Expected delivery date<input id="delivery-expected-date" name="expected_delivery_date" type="date" value="{{ purchase_request.expected_delivery_date|date:'Y-m-d' }}"></label>
+        <label for="delivery-tracking-reference">Tracking reference<input id="delivery-tracking-reference" name="tracking_reference" maxlength="64" value="{{ purchase_request.tracking_reference }}"></label>
+        <button class="secondary-button" type="submit">Save delivery update</button>
       </form>
       {% else %}<p class="muted">Awaiting goods receipt.</p>{% endif %}
     {% else %}
