@@ -1,0 +1,98 @@
+{% extends "inventory/base.html" %}
+{% block title %}AI Copilot | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">ASSISTED OPERATIONS</p>
+    <h1>Asset copilot</h1>
+    <p class="muted">Ask questions about asset records using plain language.</p>
+  </div>
+  <span class="status-pill">Read-only beta</span>
+</section>
+
+<section class="panel copilot-panel">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">YOUR WORKSPACE ASSISTANT</p>
+      <h2>What would you like to find?</h2>
+    </div>
+    <span aria-hidden="true" class="copilot-mark">AI</span>
+  </div>
+  <p class="muted">This first version uses deterministic query rules and your existing asset-view permission. It does not send data to an external AI provider, modify records, approve requests, or trigger workflows.</p>
+
+  <form method="post" class="copilot-form">
+    {% csrf_token %}
+    <label for="copilot-query">Your question
+      <textarea id="copilot-query" name="query" rows="3" maxlength="500" required placeholder="e.g. Show overdue returns or warranties expiring in the next 30 days">{% if query %}{{ query }}{% endif %}</textarea>
+    </label>
+    <div class="copilot-form-actions">
+      <span class="muted">Up to 500 characters</span>
+      <button class="primary-button" type="submit">Search assets</button>
+    </div>
+  </form>
+
+  <div class="prompt-suggestions" aria-label="Example questions">
+    <p class="eyebrow">TRY AN EXAMPLE</p>
+    <div class="prompt-chips">
+      <button class="prompt-chip" type="button" data-prompt="Show overdue returns">Show overdue returns</button>
+      <button class="prompt-chip" type="button" data-prompt="Show warranties expiring in the next 30 days">Warranties expiring in 30 days</button>
+      <button class="prompt-chip" type="button" data-prompt="List assigned assets">List assigned assets</button>
+      <button class="prompt-chip" type="button" data-prompt="Find asset AST-1001">Find an asset by ID</button>
+    </div>
+  </div>
+</section>
+
+{% if result %}
+<section class="panel copilot-results" aria-live="polite">
+  <div class="panel-heading">
+    <div><p class="eyebrow">RESULT</p><h2>Copilot response</h2></div>
+    <span class="status-pill">Read-only</span>
+  </div>
+  <p>{{ result.message }}</p>
+  {% if result.assets %}
+    <p class="muted">{% if result.truncated %}Showing the first 10 records; there are more matches.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Asset</th><th>Type / model</th><th>Site</th><th>Status</th><th>Warranty</th><th>Return due</th></tr></thead>
+        <tbody>
+        {% for asset in result.assets %}
+          <tr>
+            <td><a href="{% url 'inventory:asset-detail' asset.pk %}">{{ asset.asset_id }}</a></td>
+            <td>{{ asset.asset_type }} · {{ asset.model }}</td>
+            <td>{{ asset.site }}</td>
+            <td>{{ asset.lifecycle_status }}</td>
+            <td>{{ asset.warranty_end|date:"j M Y" }}</td>
+            <td>{% if asset.return_due_date %}{{ asset.return_due_date|date:"j M Y" }}{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% elif result.intent == "unsupported" %}
+    <p class="muted">Try one of the example questions above. Unsupported questions do not cause changes.</p>
+  {% elif result.intent == "invalid" %}
+    <p class="muted">Shorten your question and try again.</p>
+  {% else %}
+    <p class="muted">No matching asset records were found for this query.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+<section class="panel">
+  <p class="eyebrow">SAFETY BOUNDARIES</p>
+  <ul>
+    <li>All results use the application's existing <code>inventory.view_asset</code> permission.</li>
+    <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, or certify sanitisation.</li>
+    <li>Any future write action must go through a server-side policy check and an authorised human approval workflow.</li>
+  </ul>
+</section>
+<script>
+  document.querySelectorAll("[data-prompt]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var field = document.getElementById("copilot-query");
+      field.value = button.getAttribute("data-prompt");
+      field.focus();
+    });
+  });
+</script>
+{% endblock %}
