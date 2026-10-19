@@ -1,17 +1,42 @@
 {% extends "inventory/base.html" %}
 {% block title %}Overview | Asset Lifecycle{% endblock %}
 {% block content %}
-<section class="page-heading">
+<section class="page-heading dashboard-heading">
   <div>
     <p class="eyebrow">OPERATIONS / ASSET INVENTORY</p>
     <h1>Lifecycle overview</h1>
     <p class="muted">Welcome, {{ request.user.get_username }}. Find an asset or continue a workflow.</p>
   </div>
-  <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong><a href="{% url 'inventory:notifications' %}">{{ asset_notification_count }} active notifications</a></div>
+  <div class="report-date"><span>REPORTING DATE</span><strong>{{ report_date|date:"j M Y" }}</strong><a href="{% url 'inventory:notifications' %}"><span class="dashboard-alert-dot" aria-hidden="true"></span>{{ asset_notification_count }} active notifications <span aria-hidden="true">→</span></a></div>
+</section>
+<section class="panel">
+  <div class="filter-panel-heading"><div><strong>Refine overview</strong><span>Filter asset metrics by site and lifecycle status</span></div>{% if selected_site or selected_status %}<a class="clear-filter-link" href="{% url 'inventory:dashboard' %}">Clear filters</a>{% endif %}</div>
+  <form class="filter-form dashboard-filter-form" method="get" aria-label="Filter dashboard reporting">
+    <label for="dashboard-site">Site
+      <select id="dashboard-site" name="site">
+        <option value="">All sites</option>
+        {% for site in sites %}<option value="{{ site }}" {% if selected_site == site %}selected{% endif %}>{{ site }}</option>{% endfor %}
+      </select>
+    </label>
+    <label for="dashboard-status">Lifecycle status
+      <select id="dashboard-status" name="status">
+        <option value="">All statuses</option>
+        {% for value, label in statuses %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </label>
+    <button class="primary-button" type="submit"><span aria-hidden="true">⌕</span> Update overview</button>
+  </form>
+  <p class="filter-footnote">Asset metrics use the selected filters. Pipeline and integration history is system-wide.</p>
+</section>
+<section class="kpi-grid" aria-label="Asset key performance indicators">
+  <article class="kpi-card"><span><i class="kpi-icon" aria-hidden="true">A</i> Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states</small></article>
+  <article class="kpi-card"><span><i class="kpi-icon" aria-hidden="true">✓</i> Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned</small></article>
+  <article class="kpi-card warning"><span><i class="kpi-icon" aria-hidden="true">↩</i> Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date</small></article>
+  <article class="kpi-card alert"><span><i class="kpi-icon" aria-hidden="true">!</i> Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen</small></article>
 </section>
 <section class="panel quick-actions-panel" aria-labelledby="quick-actions-title">
   <div class="panel-heading">
-    <div><p class="eyebrow">GET STARTED</p><h2 id="quick-actions-title">What would you like to do?</h2></div>
+    <div><p class="eyebrow">SHORTCUTS</p><h2 id="quick-actions-title">Common tasks</h2></div>
   </div>
   <div class="quick-actions">
     <a class="quick-action" href="{% url 'inventory:asset-list' %}">
@@ -68,31 +93,6 @@
     </a>
     {% endif %}
   </div>
-</section>
-<section class="panel">
-  <form class="filter-form" method="get" aria-label="Filter dashboard reporting">
-    <label for="dashboard-site">Site
-      <select id="dashboard-site" name="site">
-        <option value="">All sites</option>
-        {% for site in sites %}<option value="{{ site }}" {% if selected_site == site %}selected{% endif %}>{{ site }}</option>{% endfor %}
-      </select>
-    </label>
-    <label for="dashboard-status">Lifecycle status
-      <select id="dashboard-status" name="status">
-        <option value="">All statuses</option>
-        {% for value, label in statuses %}<option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
-      </select>
-    </label>
-    <button class="primary-button" type="submit">Update overview</button>
-    <a class="secondary-button" href="{% url 'inventory:dashboard' %}">Reset</a>
-  </form>
-  <p class="muted">Operational and quality metrics below use the selected filters. Pipeline and integration history is system-wide.</p>
-</section>
-<section class="kpi-grid" aria-label="Asset key performance indicators">
-  <article class="kpi-card"><span>Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states</small></article>
-  <article class="kpi-card"><span>Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned</small></article>
-  <article class="kpi-card warning"><span>Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date</small></article>
-  <article class="kpi-card alert"><span>Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen</small></article>
 </section>
 <section class="two-column" aria-label="Data quality and pipeline reporting">
   <article class="panel">

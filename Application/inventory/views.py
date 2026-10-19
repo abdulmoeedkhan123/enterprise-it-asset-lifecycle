@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 from typing import TypedDict
 
 from django.contrib import messages
@@ -158,6 +158,25 @@ def dashboard(request):
     active = assets.exclude(
         lifecycle_status__in=[LifecycleStatus.DISPOSED, LifecycleStatus.LOST_STOLEN]
     )
+    quality_report = build_asset_quality_report(assets, as_of=today)
+    software_renewals = []
+    if request.user.has_perm(
+        "inventory.view_softwareproduct"
+    ) and request.user.has_perm("inventory.view_softwarecontract"):
+        renewal_candidates = (
+            SoftwareContract.objects.filter(
+                status=SoftwareContract.Status.ACTIVE,
+                end_date__isnull=False,
+                end_date__lte=today + timedelta(days=365),
+            )
+            .select_related("product")
+            .order_by("end_date", "product__name")
+        )
+        software_renewals = [
+            contract
+            for contract in renewal_candidates
+            if contract.renewal_due
+        ][:5]
     context = {
         "asset_count": assets.count(),
         "assigned_count": assets.filter(lifecycle_status=LifecycleStatus.ASSIGNED).count(),
@@ -173,7 +192,8 @@ def dashboard(request):
         "statuses": LifecycleStatus.choices,
         "selected_site": selected_site,
         "selected_status": selected_status,
-        "quality_report": build_asset_quality_report(assets, as_of=today),
+        "quality_report": quality_report,
+        "software_renewals": software_renewals,
         "recent_import_runs": ImportRun.objects.all()[:5],
         "recent_integration_runs": IntegrationRun.objects.all()[:5],
         "review_queue": assets.filter(
