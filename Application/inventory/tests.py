@@ -297,9 +297,9 @@ class AssetLifecycleTests(TestCase):
 
     def test_procurement_quote_approval_order_delivery_and_receiving_workflow(self):
         add_permissions = [
-            "view_purchaserequest",
-            "add_purchaserequest",
-            "change_purchaserequest",
+            "view_procurementrequest",
+            "add_procurementrequest",
+            "change_procurementrequest",
             "add_asset",
             "view_asset",
             "approve_procurementrequest",
@@ -375,7 +375,7 @@ class AssetLifecycleTests(TestCase):
                     codename=codename,
                 )
                 for codename in (
-                    "view_purchaserequest",
+                    "view_procurementrequest",
                     "approve_procurementrequest",
                     "manage_procurementrequest",
                 )

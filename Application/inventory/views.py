@@ -332,7 +332,7 @@ def maintenance_work_order_update(request, pk: int):
 
 
 @login_required
-@permission_required("inventory.view_purchaserequest", raise_exception=True)
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
 def procurement_list(request):
     requests = ProcurementRequest.objects.select_related("requester", "selected_quote")
     selected_status = request.GET.get("status", "").strip()
@@ -356,7 +356,7 @@ def procurement_list(request):
 
 
 @login_required
-@permission_required("inventory.add_purchaserequest", raise_exception=True)
+@permission_required("inventory.add_procurementrequest", raise_exception=True)
 def procurement_create(request):
     form = ProcurementRequestForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -382,7 +382,7 @@ def procurement_create(request):
 
 
 @login_required
-@permission_required("inventory.view_purchaserequest", raise_exception=True)
+@permission_required("inventory.view_procurementrequest", raise_exception=True)
 def procurement_detail(request, pk: int):
     purchase_request = get_object_or_404(
         ProcurementRequest.objects.select_related(
@@ -423,7 +423,7 @@ def procurement_detail(request, pk: int):
 def _procurement_owner_or_changer(request, purchase_request) -> bool:
     return (
         purchase_request.requester_id == request.user.pk
-        or request.user.has_perm("inventory.change_purchaserequest")
+        or request.user.has_perm("inventory.change_procurementrequest")
     )
 
 
@@ -487,7 +487,7 @@ def procurement_quote_select(request, pk: int, quote_pk: int):
 
 
 @login_required
-@permission_required("inventory.change_purchaserequest", raise_exception=True)
+@permission_required("inventory.change_procurementrequest", raise_exception=True)
 @require_POST
 def procurement_submit(request, pk: int):
     with transaction.atomic():

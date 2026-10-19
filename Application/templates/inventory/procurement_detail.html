@@ -22,7 +22,7 @@
     <dt>Receipt quantity</dt><dd>{{ purchase_request.quantity_received }} / {{ purchase_request.quantity }}</dd>
   </dl></article>
   <article class="panel"><h2>Workflow actions</h2>
-    {% if purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_purchaserequest %}
+    {% if purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_procurementrequest %}
       <p class="muted">Add and select a supplier quote before submitting for approval.</p>
       {% if purchase_request.selected_quote %}
       <form method="post" action="{% url 'inventory:procurement-submit' purchase_request.pk %}">{% csrf_token %}<button class="primary-button" type="submit">Submit for approval</button></form>
@@ -71,12 +71,12 @@
     {% for quote in quotes %}
     <tr><td>{{ quote.supplier }}</td><td>{{ quote.quote_reference|default:"—" }}</td><td>{{ quote.unit_cost }}</td><td>{{ quote.delivery_days|default:"—" }}</td><td>{{ quote.notes|default:"—" }}</td>
       <td>{% if purchase_request.selected_quote_id == quote.pk %}<strong>Selected</strong>
-      {% elif purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_purchaserequest %}
+      {% elif purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_procurementrequest %}
       <form method="post" action="{% url 'inventory:procurement-quote-select' purchase_request.pk quote.pk %}">{% csrf_token %}<button class="secondary-button" type="submit">Select</button></form>
       {% else %}—{% endif %}</td></tr>
     {% empty %}<tr><td colspan="6">No supplier quotes have been recorded.</td></tr>{% endfor %}
   </tbody></table></div>
-  {% if purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_purchaserequest %}
+  {% if purchase_request.status == "draft" and purchase_request.requester_id == request.user.id and perms.inventory.change_procurementrequest %}
   <h3>Add quote</h3>
   <form method="post" action="{% url 'inventory:procurement-quote-add' purchase_request.pk %}" class="form-grid">
     {% csrf_token %}

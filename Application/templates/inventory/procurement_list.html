@@ -5,7 +5,7 @@
   <div><p class="eyebrow">SUPPLY / PURCHASING</p><h1>Procurement requests</h1>
     <p class="muted">{{ procurement_page.paginator.count }} purchase requests tracked.</p>
   </div>
-  {% if perms.inventory.add_purchaserequest %}<a class="primary-button" href="{% url 'inventory:procurement-create' %}">New request</a>{% endif %}
+  {% if perms.inventory.add_procurementrequest %}<a class="primary-button" href="{% url 'inventory:procurement-create' %}">New request</a>{% endif %}
 </section>
 <section class="panel">
   <form method="get" class="filters">
