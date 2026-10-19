@@ -8,6 +8,7 @@ urlpatterns = [
     path("healthz/", views.health_check, name="health-check"),
     path("", views.dashboard, name="dashboard"),
     path("notifications/", views.notifications, name="notifications"),
+    path("assets/barcode-lookup/", views.asset_barcode_lookup, name="asset-barcode-lookup"),
     path("assets/", views.asset_list, name="asset-list"),
     path("assets/new/", views.asset_create, name="asset-create"),
     path("assets/<int:pk>/", views.asset_detail, name="asset-detail"),

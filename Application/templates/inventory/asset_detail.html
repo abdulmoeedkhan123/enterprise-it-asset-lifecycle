@@ -21,6 +21,7 @@
     <dt>Sanitisation result</dt><dd>{{ asset.sanitisation_result|default:"—" }}</dd>
     <dt>Sanitisation evidence</dt><dd>{{ asset.sanitisation_evidence_ref|default:"—" }}</dd>
     <dt>Disposal evidence</dt><dd>{{ asset.disposal_evidence_ref|default:"—" }}</dd>
+    <dt>Procurement request</dt><dd>{% if asset.procurement_request_id %}<a href="{% url 'inventory:procurement-detail' asset.procurement_request_id %}">PR-{{ asset.procurement_request_id }}</a>{% else %}—{% endif %}</dd>
   </dl></article>
   <article class="panel"><h2>Lifecycle history</h2>
     <ol class="event-list">
