@@ -153,3 +153,73 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
   .filter-form { grid-template-columns: 1fr; }
   .search-field { grid-column: auto; }
 }
+
+
+/* Read-only copilot workspace */
+.copilot-panel { max-width: 980px; }
+.copilot-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #e8f2ff;
+  color: #164e8a;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.copilot-form { display: grid; gap: 14px; }
+.copilot-form label { display: grid; gap: 8px; font-weight: 650; }
+.copilot-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  resize: vertical;
+  min-height: 96px;
+  padding: 14px;
+  border: 1px solid var(--border, #d8dee8);
+  border-radius: 12px;
+  font: inherit;
+  line-height: 1.5;
+  background: var(--surface, #fff);
+  color: inherit;
+}
+.copilot-form textarea:focus-visible,
+.prompt-chip:focus-visible { outline: 3px solid #7bb5ff; outline-offset: 2px; }
+.copilot-form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.prompt-suggestions { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border, #e0e5ec); }
+.prompt-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.prompt-chip {
+  appearance: none;
+  border: 1px solid var(--border, #d8dee8);
+  border-radius: 999px;
+  background: var(--surface, #fff);
+  padding: 8px 12px;
+  color: inherit;
+  font: inherit;
+  font-size: .92rem;
+  cursor: pointer;
+}
+.prompt-chip:hover { background: var(--surface-muted, #f5f7fa); }
+.copilot-results { margin-top: 20px; }
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #b7d3f5;
+  border-radius: 999px;
+  background: #f0f6ff;
+  color: #174a7e;
+  padding: 5px 10px;
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .copilot-form-actions { align-items: stretch; flex-direction: column; }
+  .copilot-form-actions .primary-button { width: 100%; }
+}
