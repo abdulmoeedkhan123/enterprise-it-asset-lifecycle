@@ -132,6 +132,8 @@ class ImportRun(models.Model):
     rows_created = models.PositiveIntegerField(default=0)
     rows_updated = models.PositiveIntegerField(default=0)
     rows_unchanged = models.PositiveIntegerField(default=0)
+    rows_rejected = models.PositiveIntegerField(default=0)
+    quality_summary = models.JSONField(default=dict, blank=True)
     error_summary = models.TextField(blank=True)
     started_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)

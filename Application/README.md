@@ -29,6 +29,28 @@ python Application/manage.py import_assets \
   --confirm-authorized-source
 ```
 
+## Local Docker deployment
+
+This Compose setup runs PostgreSQL and the Django application locally. The web port is bound to `127.0.0.1:8001`; this is a development environment, not a public or production deployment.
+
+From the repository root:
+
+```bash
+cp .env.example .env
+# Replace the Django and PostgreSQL placeholder values in .env.
+docker compose up --build
+```
+
+Open <http://127.0.0.1:8001/>. The web container waits for PostgreSQL, applies the checked-in migrations, and then starts Gunicorn. To create an administrator, open a second terminal and run:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+Stop the services with Ctrl+C or `docker compose down`. The named PostgreSQL volume remains so local data survives a restart; `docker compose down --volumes` removes that volume and its database contents.
+
+The Compose configuration disables secure cookies only for its loopback-bound local HTTP setup. For any real deployment, use HTTPS, secure cookies, managed secrets, a controlled migration/release process, backups, monitoring, and a reviewed security/privacy design. Do not expose this local Compose configuration to a network or load real organizational data.
+
 ## Integrations
 
 ### SCIM 2.0 deactivation review
