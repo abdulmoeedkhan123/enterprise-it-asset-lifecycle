@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db import transaction
 
 from .models import Asset, ImportRun, LifecycleEvent
 
@@ -19,6 +20,7 @@ class AssetAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at", "lifecycle_status")
     ordering = ("asset_id",)
 
+    @transaction.atomic
     def save_model(self, request, obj, form, change):
         previous_status = None
         changed_fields = []

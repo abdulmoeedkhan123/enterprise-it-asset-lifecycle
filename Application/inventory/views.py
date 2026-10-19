@@ -65,16 +65,22 @@ def dashboard(request):
         "review_queue": assets.filter(
             Q(lifecycle_status=LifecycleStatus.RETURN_PENDING, return_due_date__lt=today)
             | Q(lifecycle_status=LifecycleStatus.ASSIGNED, custodian_ref="")
-            | Q(
-                lifecycle_status__in=[
-                    LifecycleStatus.READY_FOR_DISPOSAL,
-                    LifecycleStatus.DISPOSED,
-                ],
-                sanitisation_required=True,
+            | (
+                Q(
+                    lifecycle_status__in=[
+                        LifecycleStatus.READY_FOR_DISPOSAL,
+                        LifecycleStatus.DISPOSED,
+                    ],
+                    sanitisation_required=True,
+                )
+                & (
+                    ~Q(sanitisation_result="Passed")
+                    | Q(sanitisation_evidence_ref="")
+                )
             )
-            & (
-                ~Q(sanitisation_result="Passed")
-                | Q(sanitisation_evidence_ref="")
+            | Q(
+                lifecycle_status=LifecycleStatus.DISPOSED,
+                disposal_evidence_ref="",
             )
         ).order_by("asset_id")[:15],
     }
@@ -131,17 +137,18 @@ def asset_detail(request, pk: int):
 def asset_create(request):
     form = AssetForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
-        asset = form.save(commit=False)
-        asset.lifecycle_status = LifecycleStatus.IN_STOCK
-        asset.full_clean()
-        asset.save()
-        LifecycleEvent.objects.create(
-            asset=asset,
-            event_type=LifecycleEvent.EventType.CREATED,
-            to_status=asset.lifecycle_status,
-            reason="Asset record created",
-            actor=request.user,
-        )
+        with transaction.atomic():
+            asset = form.save(commit=False)
+            asset.lifecycle_status = LifecycleStatus.IN_STOCK
+            asset.full_clean()
+            asset.save()
+            LifecycleEvent.objects.create(
+                asset=asset,
+                event_type=LifecycleEvent.EventType.CREATED,
+                to_status=asset.lifecycle_status,
+                reason="Asset record created",
+                actor=request.user,
+            )
         messages.success(request, f"Asset {asset.asset_id} was created.")
         return redirect("inventory:asset-detail", pk=asset.pk)
     return render(
@@ -177,24 +184,25 @@ def asset_update(request, pk: int):
     }
     form = AssetForm(request.POST or None, instance=asset)
     if request.method == "POST" and form.is_valid():
-        updated = form.save(commit=False)
-        updated.full_clean()
-        updated.save()
-        changes = {
-            field: {"from": str(old), "to": str(getattr(updated, field))}
-            for field, old in original_values.items()
-            if old != getattr(updated, field)
-        }
-        if changes:
-            LifecycleEvent.objects.create(
-                asset=updated,
-                event_type=LifecycleEvent.EventType.UPDATED,
-                from_status=updated.lifecycle_status,
-                to_status=updated.lifecycle_status,
-                reason="Asset details updated",
-                details={"changes": changes},
-                actor=request.user,
-            )
+        with transaction.atomic():
+            updated = form.save(commit=False)
+            updated.full_clean()
+            updated.save()
+            changes = {
+                field: {"from": str(old), "to": str(getattr(updated, field))}
+                for field, old in original_values.items()
+                if old != getattr(updated, field)
+            }
+            if changes:
+                LifecycleEvent.objects.create(
+                    asset=updated,
+                    event_type=LifecycleEvent.EventType.UPDATED,
+                    from_status=updated.lifecycle_status,
+                    to_status=updated.lifecycle_status,
+                    reason="Asset details updated",
+                    details={"changes": changes},
+                    actor=request.user,
+                )
         messages.success(request, f"Asset {asset.asset_id} was updated.")
         return redirect("inventory:asset-detail", pk=asset.pk)
     return render(
