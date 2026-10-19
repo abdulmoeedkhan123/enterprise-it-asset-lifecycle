@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -7,6 +8,7 @@ from django.urls import reverse
 
 from .models import Asset, LifecycleStatus
 from .copilot import run_copilot_query
+from .copilot_llm import CopilotLLMError
 
 
 class CopilotQueryTests(TestCase):
@@ -123,3 +125,79 @@ class CopilotQueryTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Read-only beta")
         self.assertContains(response, "AST-OVERDUE")
+
+    @patch("inventory.views.propose_asset_intent")
+    def test_natural_language_intent_uses_llm_proposal_but_python_executes_search(
+        self, propose_intent
+    ):
+        self.user.user_permissions.add(self.view_permission)
+        asset = self.create_asset(
+            asset_id="AST-NATURAL-1",
+            manufacturer="Northwind Devices",
+        )
+        propose_intent.return_value = {
+            "intent": "asset_search",
+            "term": "Northwind",
+            "field": "manufacturer",
+        }
+
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Find our Northwind laptops"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["result"]["source"], "llm")
+        self.assertEqual(
+            [result.pk for result in response.context["result"]["assets"]],
+            [asset.pk],
+        )
+        self.assertTrue(response.context["result"]["read_only"])
+        propose_intent.assert_called_once_with("Find our Northwind laptops")
+
+    @patch("inventory.views.propose_asset_intent")
+    def test_copilot_displays_provider_failure_without_changing_records(
+        self, propose_intent
+    ):
+        self.user.user_permissions.add(self.view_permission)
+        asset = self.create_asset()
+        propose_intent.side_effect = CopilotLLMError(
+            "LLM provider request failed with HTTP 503."
+        )
+
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Show laptops assigned in our regional office"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "AI interpretation failed")
+        self.assertContains(response, "HTTP 503")
+        asset.refresh_from_db()
+        self.assertEqual(asset.lifecycle_status, LifecycleStatus.ASSIGNED)
+
+    @patch("inventory.views.propose_asset_intent")
+    def test_supported_deterministic_question_does_not_call_llm(self, propose_intent):
+        self.user.user_permissions.add(self.view_permission)
+        self.create_asset(
+            lifecycle_status=LifecycleStatus.RETURN_PENDING,
+            return_due_date=date(2026, 10, 19),
+        )
+
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Show overdue returns"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["result"]["source"], "deterministic")
+        propose_intent.assert_not_called()
+
+    @patch("inventory.views.propose_asset_intent")
+    def test_copilot_post_requires_asset_view_permission(self, propose_intent):
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Find my laptop"},
+        )
+        self.assertEqual(response.status_code, 403)
+        propose_intent.assert_not_called()
