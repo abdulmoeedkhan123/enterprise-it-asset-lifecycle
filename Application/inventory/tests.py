@@ -362,7 +362,7 @@ class AssetLifecycleTests(TestCase):
 
         approver = get_user_model().objects.create_user(
             username="procurement-approver",
-            ******,
+            password="test-only-password",
         )
         approver.user_permissions.add(
             *[
@@ -501,7 +501,7 @@ class AssetLifecycleTests(TestCase):
 
         reviewer = get_user_model().objects.create_user(
             username="disposal-reviewer",
-            ******,
+            password="test-only-password",
         )
         reviewer.user_permissions.add(
             Permission.objects.get(
@@ -519,7 +519,7 @@ class AssetLifecycleTests(TestCase):
 
         executor = get_user_model().objects.create_user(
             username="disposal-executor",
-            ******,
+            password="test-only-password",
         )
         executor.user_permissions.add(
             Permission.objects.get(
