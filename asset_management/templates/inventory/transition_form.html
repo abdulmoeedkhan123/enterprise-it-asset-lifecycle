@@ -1,0 +1,15 @@
+{% extends "inventory/base.html" %}
+{% block title %}Change status | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">CONTROLLED LIFECYCLE ACTION</p><h1>Change {{ asset.asset_id }} status</h1><p class="muted">Current status: {{ asset.lifecycle_status }}. The requested transition is validated and written to the audit history.</p></div></section>
+<section class="panel form-panel">
+  <form method="post" class="stack-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="error-message" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+    <div class="form-field">{{ field.label_tag }}{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>
+    {% endfor %}
+    <div class="actions"><button class="primary-button" type="submit">Validate and save transition</button><a class="secondary-button" href="{% url 'inventory:asset-detail' asset.pk %}">Cancel</a></div>
+  </form>
+</section>
+{% endblock %}

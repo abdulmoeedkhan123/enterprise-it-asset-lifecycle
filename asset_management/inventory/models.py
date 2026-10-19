@@ -140,3 +140,78 @@ class ImportRun(models.Model):
 
     def __str__(self) -> str:
         return f"{self.source_name} ({self.get_status_display()})"
+
+
+class IdentityLink(models.Model):
+    """Explicit mapping between a SCIM subject identifier and local custodian ref."""
+
+    provider = models.CharField(max_length=32, default="scim")
+    external_subject_id = models.CharField(max_length=255)
+    custodian_ref = models.CharField(max_length=32)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("provider", "external_subject_id"),
+                name="unique_provider_external_subject",
+            ),
+            models.UniqueConstraint(
+                fields=("provider", "custodian_ref"),
+                name="unique_provider_custodian_ref",
+            ),
+        ]
+        ordering = ("provider", "custodian_ref")
+
+    def __str__(self) -> str:
+        return f"{self.provider}: {self.custodian_ref}"
+
+
+class ReturnWorkItem(models.Model):
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        IN_PROGRESS = "in_progress", "In progress"
+        CLOSED = "closed", "Closed"
+        DISMISSED = "dismissed", "Dismissed"
+
+    asset = models.ForeignKey(Asset, on_delete=models.PROTECT, related_name="return_work_items")
+    source_provider = models.CharField(max_length=32, default="scim")
+    source_event_id = models.CharField(max_length=255, unique=True)
+    custodian_ref = models.CharField(max_length=32)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.OPEN, db_index=True
+    )
+    resolution_note = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    closed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("status", "-created_at")
+
+    def __str__(self) -> str:
+        return f"{self.asset.asset_id}: return review ({self.status})"
+
+
+class IntegrationRun(models.Model):
+    class Status(models.TextChoices):
+        RUNNING = "running", "Running"
+        SUCCEEDED = "succeeded", "Succeeded"
+        FAILED = "failed", "Failed"
+
+    provider = models.CharField(max_length=32, db_index=True)
+    status = models.CharField(max_length=16, choices=Status.choices, db_index=True)
+    records_received = models.PositiveIntegerField(default=0)
+    identities_matched = models.PositiveIntegerField(default=0)
+    work_items_created = models.PositiveIntegerField(default=0)
+    work_items_existing = models.PositiveIntegerField(default=0)
+    identities_unmatched = models.PositiveIntegerField(default=0)
+    error_summary = models.CharField(max_length=500, blank=True)
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("-started_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"{self.provider} integration ({self.get_status_display()})"

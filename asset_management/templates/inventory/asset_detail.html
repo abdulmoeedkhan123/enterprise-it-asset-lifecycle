@@ -1,0 +1,37 @@
+{% extends "inventory/base.html" %}
+{% block title %}{{ asset.asset_id }} | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">ASSET RECORD</p><h1>{{ asset.asset_id }}</h1><p class="muted">{{ asset.asset_type }} · {{ asset.manufacturer }} {{ asset.model }}</p></div>
+  <div class="actions">
+    {% if perms.inventory.change_asset %}<a class="secondary-button" href="{% url 'inventory:asset-update' asset.pk %}">Edit details</a>{% endif %}
+    {% if perms.inventory.transition_asset %}<a class="primary-button" href="{% url 'inventory:asset-transition' asset.pk %}">Change status</a>{% endif %}
+  </div>
+</section>
+<section class="two-column">
+  <article class="panel"><h2>Asset details</h2><dl class="details-grid">
+    <dt>Lifecycle status</dt><dd><span class="status-tag">{{ asset.lifecycle_status }}</span></dd>
+    <dt>Site / department</dt><dd>{{ asset.site }} / {{ asset.department }}</dd>
+    <dt>Custodian reference</dt><dd>{{ asset.custodian_ref|default:"—" }}</dd>
+    <dt>Serial reference</dt><dd>{{ asset.serial_ref|default:"—" }}</dd>
+    <dt>Purchase date</dt><dd>{{ asset.purchase_date|date:"j M Y" }}</dd>
+    <dt>Warranty end</dt><dd>{{ asset.warranty_end|date:"j M Y" }}</dd>
+    <dt>Return due</dt><dd>{{ asset.return_due_date|date:"j M Y"|default:"—" }}</dd>
+    <dt>Sanitisation required</dt><dd>{{ asset.sanitisation_required|yesno:"Yes,No" }}</dd>
+    <dt>Sanitisation result</dt><dd>{{ asset.sanitisation_result|default:"—" }}</dd>
+    <dt>Sanitisation evidence</dt><dd>{{ asset.sanitisation_evidence_ref|default:"—" }}</dd>
+    <dt>Disposal evidence</dt><dd>{{ asset.disposal_evidence_ref|default:"—" }}</dd>
+  </dl></article>
+  <article class="panel"><h2>Lifecycle history</h2>
+    <ol class="event-list">
+      {% for event in events %}
+      <li><strong>{{ event.get_event_type_display }}</strong><time>{{ event.created_at|date:"j M Y H:i" }}</time>
+        <span>{% if event.from_status %}{{ event.from_status }} → {% endif %}{{ event.to_status }}</span>
+        <small>{{ event.reason }}{% if event.actor %} · {{ event.actor.get_username }}{% else %} · system/import{% endif %}</small>
+      </li>
+      {% empty %}<li>No lifecycle events recorded.</li>{% endfor %}
+    </ol>
+  </article>
+</section>
+<p><a href="{% url 'inventory:asset-list' %}">Back to assets</a></p>
+{% endblock %}

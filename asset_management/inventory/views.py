@@ -71,9 +71,10 @@ def dashboard(request):
                     LifecycleStatus.DISPOSED,
                 ],
                 sanitisation_required=True,
-            ).exclude(
-                sanitisation_result="Passed",
-                sanitisation_evidence_ref__gt="",
+            )
+            & (
+                ~Q(sanitisation_result="Passed")
+                | Q(sanitisation_evidence_ref="")
             )
         ).order_by("asset_id")[:15],
     }

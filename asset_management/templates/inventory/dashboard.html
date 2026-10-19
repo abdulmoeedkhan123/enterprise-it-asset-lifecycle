@@ -1,0 +1,50 @@
+{% extends "inventory/base.html" %}
+{% block title %}Overview | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">OPERATIONS / ASSET INVENTORY</p>
+    <h1>Lifecycle overview</h1>
+    <p class="muted">Operational view of registered assets and items requiring follow-up.</p>
+  </div>
+  <div class="report-date">Reporting date <strong>{{ report_date|date:"j M Y" }}</strong></div>
+</section>
+<section class="kpi-grid" aria-label="Asset key performance indicators">
+  <article class="kpi-card"><span>Registered assets</span><strong>{{ asset_count }}</strong><small>All recorded lifecycle states</small></article>
+  <article class="kpi-card"><span>Assigned</span><strong>{{ assigned_count }}</strong><small>Currently recorded as assigned</small></article>
+  <article class="kpi-card warning"><span>Overdue returns</span><strong>{{ overdue_count }}</strong><small>Due before the reporting date</small></article>
+  <article class="kpi-card alert"><span>Active expired warranty</span><strong>{{ expired_warranty_count }}</strong><small>Excludes disposed and lost / stolen</small></article>
+</section>
+<section class="two-column">
+  <article class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">INVENTORY</p><h2>Lifecycle status</h2></div><a href="{% url 'inventory:asset-list' %}">View assets</a></div>
+    <div class="bar-list">
+      {% for row in status_counts %}
+      <div class="bar-row"><span>{{ row.lifecycle_status }}</span><span class="bar-track"><span class="bar-fill" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }}</strong></div>
+      {% empty %}<p class="muted">No assets registered.</p>{% endfor %}
+    </div>
+  </article>
+  <article class="panel">
+    <div class="panel-heading"><div><p class="eyebrow">DISTRIBUTION</p><h2>Assets by site</h2></div></div>
+    <div class="bar-list">
+      {% for row in site_counts %}
+      <div class="bar-row"><span>{{ row.site }}</span><span class="bar-track"><span class="bar-fill teal" style="width:{{ row.width }}%"></span></span><strong>{{ row.total }}</strong></div>
+      {% empty %}<p class="muted">No assets registered.</p>{% endfor %}
+    </div>
+  </article>
+</section>
+<section class="panel">
+  <div class="panel-heading"><div><p class="eyebrow">FOLLOW-UP</p><h2>Items for review</h2></div><a href="{% url 'inventory:asset-list' %}">Open inventory</a></div>
+  <p class="muted">Rule-based prompts for a human to review; not verified incidents or policy findings.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Asset</th><th>Site</th><th>Status</th><th>Prompt</th></tr></thead>
+    <tbody>
+      {% for asset in review_queue %}
+      <tr><td><a href="{% url 'inventory:asset-detail' asset.pk %}">{{ asset.asset_id }}</a></td><td>{{ asset.site }}</td><td>{{ asset.lifecycle_status }}</td>
+        <td>{% if asset.lifecycle_status == "Return Pending" %}Return due {{ asset.return_due_date }}{% elif asset.lifecycle_status == "Assigned" %}Custodian reference missing{% else %}Review sanitisation evidence{% endif %}</td></tr>
+      {% empty %}<tr><td colspan="4">No records match these review rules.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+</section>
+<p class="notice">Management application. Data is only synthetic until an authorised, governed source is deliberately configured.</p>
+{% endblock %}
