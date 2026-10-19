@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from django import forms
 
-from .models import Asset, LifecycleStatus, SanitisationResult
+from .models import (
+    Asset,
+    DisposalCase,
+    LifecycleStatus,
+    MaintenanceWorkOrder,
+    ProcurementQuote,
+    ProcurementRequest,
+    SanitisationResult,
+)
 from .services import ALLOWED_TRANSITIONS
 
 
@@ -122,3 +130,156 @@ class TransitionForm(forms.Form):
                 "Disposal evidence is required before disposal.",
             )
         return cleaned_data
+
+
+class MaintenanceWorkOrderForm(forms.ModelForm):
+    class Meta:
+        model = MaintenanceWorkOrder
+        fields = ("title", "description", "priority", "vendor", "target_date", "cost")
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 4}),
+            "target_date": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def clean_cost(self):
+        cost = self.cleaned_data.get("cost")
+        if cost is not None and cost < 0:
+            raise forms.ValidationError("Cost cannot be negative.")
+        return cost
+
+
+ALLOWED_WORK_ORDER_TRANSITIONS = {
+    MaintenanceWorkOrder.Status.OPEN: {
+        MaintenanceWorkOrder.Status.IN_PROGRESS,
+        MaintenanceWorkOrder.Status.CANCELLED,
+    },
+    MaintenanceWorkOrder.Status.IN_PROGRESS: {
+        MaintenanceWorkOrder.Status.WAITING_PARTS,
+        MaintenanceWorkOrder.Status.COMPLETED,
+        MaintenanceWorkOrder.Status.CANCELLED,
+    },
+    MaintenanceWorkOrder.Status.WAITING_PARTS: {
+        MaintenanceWorkOrder.Status.IN_PROGRESS,
+        MaintenanceWorkOrder.Status.CANCELLED,
+    },
+}
+
+
+class MaintenanceStatusForm(forms.Form):
+    status = forms.ChoiceField(label="Update status")
+
+    def __init__(self, *args, work_order: MaintenanceWorkOrder, **kwargs):
+        super().__init__(*args, **kwargs)
+        valid_statuses = ALLOWED_WORK_ORDER_TRANSITIONS.get(work_order.status, set())
+        self.fields["status"].choices = [
+            (status, MaintenanceWorkOrder.Status(status).label)
+            for status in sorted(valid_statuses)
+        ]
+
+
+class ProcurementRequestForm(forms.ModelForm):
+    class Meta:
+        model = ProcurementRequest
+        fields = ("title", "description", "justification", "quantity", "required_by")
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 3}),
+            "justification": forms.Textarea(attrs={"rows": 3}),
+            "required_by": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data["quantity"]
+        if quantity < 1:
+            raise forms.ValidationError("Quantity must be at least one.")
+        return quantity
+
+
+class ProcurementQuoteForm(forms.ModelForm):
+    class Meta:
+        model = ProcurementQuote
+        fields = ("supplier", "quote_reference", "unit_cost", "delivery_days", "notes")
+
+    def clean_unit_cost(self):
+        unit_cost = self.cleaned_data["unit_cost"]
+        if unit_cost <= 0:
+            raise forms.ValidationError("Quoted unit cost must be greater than zero.")
+        return unit_cost
+
+
+class ProcurementDecisionForm(forms.Form):
+    decision = forms.ChoiceField(
+        choices=(("approve", "Approve"), ("reject", "Reject"))
+    )
+    note = forms.CharField(max_length=255, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("decision") == "reject" and not cleaned_data.get("note", "").strip():
+            self.add_error("note", "Provide a reason when rejecting a request.")
+        return cleaned_data
+
+
+class PurchaseOrderForm(forms.Form):
+    purchase_order_reference = forms.CharField(max_length=64)
+
+
+class ProcurementReceiptForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1)
+    receipt_reference = forms.CharField(max_length=64)
+
+
+class DisposalRequestForm(forms.ModelForm):
+    class Meta:
+        model = DisposalCase
+        fields = (
+            "reason",
+            "method",
+            "sanitisation_result",
+            "sanitisation_evidence_ref",
+        )
+        widgets = {"reason": forms.Textarea(attrs={"rows": 3})}
+
+    def __init__(self, *args, asset: Asset, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.asset = asset
+        if not asset.sanitisation_required:
+            self.fields["sanitisation_result"].required = False
+            self.fields["sanitisation_evidence_ref"].required = False
+            self.fields["sanitisation_result"].help_text = (
+                "Optional because this asset is not marked for sanitisation."
+            )
+            self.fields["sanitisation_evidence_ref"].help_text = (
+                "Optional because this asset is not marked for sanitisation."
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.asset.sanitisation_required:
+            if cleaned_data.get("sanitisation_result") != SanitisationResult.PASSED:
+                self.add_error(
+                    "sanitisation_result",
+                    "Passed sanitisation is required before requesting disposal.",
+                )
+            if not cleaned_data.get("sanitisation_evidence_ref", "").strip():
+                self.add_error(
+                    "sanitisation_evidence_ref",
+                    "Sanitisation evidence is required before requesting disposal.",
+                )
+        return cleaned_data
+
+
+class DisposalReviewForm(forms.Form):
+    decision = forms.ChoiceField(
+        choices=(("approve", "Approve"), ("reject", "Reject"))
+    )
+    note = forms.CharField(max_length=255, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("decision") == "reject" and not cleaned_data.get("note", "").strip():
+            self.add_error("note", "Provide a reason when rejecting a disposal.")
+        return cleaned_data
+
+
+class DisposalCompletionForm(forms.Form):
+    disposal_evidence_ref = forms.CharField(max_length=64)

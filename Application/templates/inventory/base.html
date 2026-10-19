@@ -19,6 +19,9 @@
       <a href="{% url 'inventory:dashboard' %}">Overview</a>
       <a href="{% url 'inventory:asset-list' %}">Assets</a>
       {% if perms.inventory.view_asset %}<a href="{% url 'inventory:notifications' %}" aria-label="Notifications, {{ asset_notification_count }} active">Notifications{% if asset_notification_count %} <span class="notification-count">{{ asset_notification_count }}</span>{% endif %}</a>{% endif %}
+      {% if perms.inventory.view_maintenanceworkorder %}<a href="{% url 'inventory:maintenance-work-orders' %}">Maintenance</a>{% endif %}
+      {% if perms.inventory.view_purchaserequest %}<a href="{% url 'inventory:procurement-list' %}">Procurement</a>{% endif %}
+      {% if perms.inventory.view_disposalcase %}<a href="{% url 'inventory:disposal-list' %}">Disposals</a>{% endif %}
       {% if perms.inventory.view_returnworkitem %}<a href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
       {% if perms.inventory.view_asset %}<a href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
       {% if perms.inventory.add_asset %}<a href="{% url 'inventory:asset-create' %}">Register asset</a>{% endif %}

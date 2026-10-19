@@ -91,6 +91,11 @@ tbody tr:last-child td { border-bottom: 0; }
 .status-tag { display: inline-block; padding: .3rem .5rem; border-radius: .35rem; background: #edf4ff; color: var(--blue-dark); font-size: .69rem; white-space: nowrap; }
 .filter-form { display: grid; grid-template-columns: 1fr 1.1fr 1.7fr auto auto; align-items: end; gap: .75rem; margin-bottom: 1rem; }
 .filter-form label, .form-field label, .stack-form > label { display: grid; gap: .35rem; color: #41526c; font-size: .73rem; font-weight: 700; }
+.filters { display: flex; align-items: end; gap: .75rem; margin-bottom: 1rem; }
+.filters label { display: grid; gap: .35rem; color: #41526c; font-size: .73rem; font-weight: 700; }
+.inline-form { display: flex; align-items: center; gap: .35rem; min-width: 190px; }
+.inline-form select { min-width: 8rem; }
+.full-width { grid-column: 1 / -1; }
 input, select { width: 100%; min-height: 2.5rem; padding: .52rem .65rem; border: 1px solid #cbd5e1; border-radius: .45rem; background: white; color: var(--ink); font-size: .8rem; }
 input[type="checkbox"] { width: 1rem; min-height: 1rem; accent-color: var(--blue); }
 input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid #9cc4ff; outline-offset: 2px; }
@@ -132,6 +137,8 @@ input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px 
   .notification-item { grid-template-columns: auto 1fr; }
   .notification-item .secondary-button { grid-column: 2; justify-self: start; }
   .filter-form { grid-template-columns: 1fr 1fr; }
+  .filters { align-items: stretch; flex-direction: column; }
+  .inline-form { min-width: 0; flex-wrap: wrap; }
   .search-field { grid-column: 1 / -1; }
   .form-grid { grid-template-columns: 1fr; }
 }

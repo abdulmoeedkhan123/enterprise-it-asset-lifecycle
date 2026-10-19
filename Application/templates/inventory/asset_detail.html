@@ -33,5 +33,28 @@
     </ol>
   </article>
 </section>
+<section class="panel">
+  <div class="panel-heading">
+    <div><p class="eyebrow">ASSET SUPPORT</p><h2>Maintenance work orders</h2></div>
+    {% if perms.inventory.add_maintenanceworkorder %}<a class="secondary-button" href="{% url 'inventory:maintenance-work-order-create' asset.pk %}">Open work order</a>{% endif %}
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Work order</th><th>Priority</th><th>Status</th><th>Vendor</th><th>Target date</th></tr></thead>
+    <tbody>
+      {% for order in maintenance_orders %}
+      <tr><td>{{ order.title }}</td><td>{{ order.get_priority_display }}</td><td>{{ order.get_status_display }}</td><td>{{ order.vendor|default:"—" }}</td><td>{{ order.target_date|date:"j M Y"|default:"—" }}</td></tr>
+      {% empty %}<tr><td colspan="5">No maintenance work orders for this asset.</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% if perms.inventory.view_maintenanceworkorder %}<p><a href="{% url 'inventory:maintenance-work-orders' %}">View all maintenance work orders</a></p>{% endif %}
+</section>
+{% if perms.inventory.add_disposalcase and asset.lifecycle_status == "Ready for Disposal" %}
+<section class="panel">
+  <div class="panel-heading"><div><p class="eyebrow">SECURE END OF LIFE</p><h2>Disposal workflow</h2></div>
+    <a class="secondary-button" href="{% url 'inventory:disposal-create' asset.pk %}">Request disposal approval</a>
+  </div>
+  <p class="muted">Disposal needs independent approval and evidence before the asset can be marked disposed.</p>
+</section>
+{% endif %}
 <p><a href="{% url 'inventory:asset-list' %}">Back to assets</a></p>
 {% endblock %}

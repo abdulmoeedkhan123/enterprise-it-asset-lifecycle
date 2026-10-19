@@ -7,6 +7,8 @@ from .models import (
     ImportRun,
     IntegrationRun,
     LifecycleEvent,
+    MaintenanceWorkOrder,
+    MaintenanceWorkOrderEvent,
     ReturnWorkItem,
 )
 
@@ -168,6 +170,53 @@ class IntegrationRunAdmin(admin.ModelAdmin):
     )
     list_filter = ("provider", "status", "started_at")
     readonly_fields = tuple(field.name for field in IntegrationRun._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(MaintenanceWorkOrder)
+class MaintenanceWorkOrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "asset",
+        "title",
+        "priority",
+        "status",
+        "vendor",
+        "target_date",
+        "cost",
+        "created_at",
+    )
+    list_filter = ("status", "priority", "vendor", "created_at")
+    search_fields = ("asset__asset_id", "title", "vendor")
+    readonly_fields = (
+        "status",
+        "asset",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "completed_at",
+    )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(MaintenanceWorkOrderEvent)
+class MaintenanceWorkOrderEventAdmin(admin.ModelAdmin):
+    list_display = ("work_order", "from_status", "to_status", "actor", "created_at")
+    list_filter = ("to_status", "created_at")
+    search_fields = ("work_order__asset__asset_id", "work_order__title", "note")
+    readonly_fields = tuple(field.name for field in MaintenanceWorkOrderEvent._meta.fields)
 
     def has_add_permission(self, request):
         return False

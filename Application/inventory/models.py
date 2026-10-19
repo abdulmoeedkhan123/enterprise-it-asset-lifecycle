@@ -48,6 +48,13 @@ class Asset(models.Model):
     sanitisation_evidence_ref = models.CharField(max_length=64, blank=True)
     disposal_evidence_ref = models.CharField(max_length=64, blank=True)
     source_last_updated = models.DateField()
+    procurement_request = models.ForeignKey(
+        "ProcurementRequest",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="registered_assets",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -228,3 +235,299 @@ class IntegrationRun(models.Model):
 
     def __str__(self) -> str:
         return f"{self.provider} integration ({self.get_status_display()})"
+
+
+class MaintenanceWorkOrder(models.Model):
+    class Status(models.TextChoices):
+        OPEN = "open", "Open"
+        IN_PROGRESS = "in_progress", "In progress"
+        WAITING_PARTS = "waiting_parts", "Waiting for parts"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    class Priority(models.TextChoices):
+        LOW = "low", "Low"
+        NORMAL = "normal", "Normal"
+        HIGH = "high", "High"
+        URGENT = "urgent", "Urgent"
+
+    asset = models.ForeignKey(
+        Asset, on_delete=models.PROTECT, related_name="maintenance_orders"
+    )
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    status = models.CharField(
+        max_length=16, choices=Status.choices, default=Status.OPEN, db_index=True
+    )
+    priority = models.CharField(
+        max_length=8, choices=Priority.choices, default=Priority.NORMAL, db_index=True
+    )
+    vendor = models.CharField(max_length=128, blank=True)
+    target_date = models.DateField(null=True, blank=True, db_index=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="created_maintenance_orders",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("status", "-priority", "target_date", "-created_at")
+
+    def __str__(self) -> str:
+        return f"{self.asset.asset_id}: {self.title}"
+
+    def save(self, *args, **kwargs):
+        self.completed_at = (
+            self.completed_at or timezone.now()
+            if self.status == self.Status.COMPLETED
+            else None
+        )
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None:
+            kwargs["update_fields"] = set(update_fields) | {"completed_at"}
+        super().save(*args, **kwargs)
+
+
+class MaintenanceWorkOrderEvent(models.Model):
+    work_order = models.ForeignKey(
+        MaintenanceWorkOrder,
+        on_delete=models.PROTECT,
+        related_name="events",
+    )
+    from_status = models.CharField(
+        max_length=16, choices=MaintenanceWorkOrder.Status.choices, blank=True
+    )
+    to_status = models.CharField(
+        max_length=16, choices=MaintenanceWorkOrder.Status.choices
+    )
+    note = models.CharField(max_length=255, blank=True)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="maintenance_work_order_events",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"{self.work_order}: {self.get_to_status_display()}"
+
+
+class ProcurementRequest(models.Model):
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        PENDING_APPROVAL = "pending_approval", "Pending approval"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+        ORDERED = "ordered", "Ordered"
+        PARTIALLY_RECEIVED = "partially_received", "Partially received"
+        RECEIVED = "received", "Received"
+        CANCELLED = "cancelled", "Cancelled"
+
+    requester = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="procurement_requests",
+    )
+    title = models.CharField(max_length=120)
+    description = models.TextField(blank=True)
+    justification = models.TextField()
+    quantity = models.PositiveSmallIntegerField()
+    required_by = models.DateField(null=True, blank=True)
+    status = models.CharField(
+        max_length=24, choices=Status.choices, default=Status.DRAFT, db_index=True
+    )
+    selected_quote = models.ForeignKey(
+        "ProcurementQuote",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="selected_for_requests",
+    )
+    purchase_order_reference = models.CharField(max_length=64, blank=True)
+    quantity_received = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+        permissions = [
+            ("approve_procurementrequest", "Can approve procurement requests"),
+            ("manage_procurementrequest", "Can place and receive procurement orders"),
+        ]
+
+    def __str__(self) -> str:
+        return f"PR-{self.pk or 'new'}: {self.title}"
+
+
+class ProcurementQuote(models.Model):
+    request = models.ForeignKey(
+        ProcurementRequest, on_delete=models.CASCADE, related_name="quotes"
+    )
+    supplier = models.CharField(max_length=128)
+    quote_reference = models.CharField(max_length=64, blank=True)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_days = models.PositiveSmallIntegerField(null=True, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("unit_cost", "supplier")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("request", "supplier", "quote_reference"),
+                name="unique_procurement_supplier_quote",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.supplier}: {self.unit_cost}"
+
+
+class ProcurementEvent(models.Model):
+    class EventType(models.TextChoices):
+        CREATED = "created", "Request created"
+        QUOTE_ADDED = "quote_added", "Quote added"
+        QUOTE_SELECTED = "quote_selected", "Quote selected"
+        SUBMITTED = "submitted", "Submitted for approval"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+        ORDERED = "ordered", "Purchase order placed"
+        RECEIVED = "received", "Goods received"
+        ASSET_REGISTERED = "asset_registered", "Asset registered"
+        CANCELLED = "cancelled", "Cancelled"
+
+    request = models.ForeignKey(
+        ProcurementRequest, on_delete=models.PROTECT, related_name="events"
+    )
+    event_type = models.CharField(max_length=24, choices=EventType.choices)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="procurement_events",
+    )
+    details = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"{self.request}: {self.get_event_type_display()}"
+
+
+class DisposalCase(models.Model):
+    class Status(models.TextChoices):
+        PENDING_APPROVAL = "pending_approval", "Pending approval"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+        COMPLETED = "completed", "Completed"
+
+    class Method(models.TextChoices):
+        RECYCLE = "recycle", "Recycle"
+        SECURE_DESTRUCTION = "secure_destruction", "Secure destruction"
+        RESALE = "resale", "Resale"
+        DONATION = "donation", "Donation"
+        RETURN_TO_VENDOR = "return_to_vendor", "Return to vendor"
+        OTHER = "other", "Other"
+
+    asset = models.ForeignKey(
+        Asset, on_delete=models.PROTECT, related_name="disposal_cases"
+    )
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="requested_disposal_cases",
+    )
+    reason = models.TextField()
+    method = models.CharField(max_length=24, choices=Method.choices)
+    sanitisation_result = models.CharField(
+        max_length=16, choices=SanitisationResult.choices, blank=True
+    )
+    sanitisation_evidence_ref = models.CharField(max_length=64, blank=True)
+    disposal_evidence_ref = models.CharField(max_length=64, blank=True)
+    status = models.CharField(
+        max_length=24,
+        choices=Status.choices,
+        default=Status.PENDING_APPROVAL,
+        db_index=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("status", "-created_at")
+        permissions = [
+            ("approve_disposalcase", "Can approve disposal requests"),
+            ("complete_disposalcase", "Can complete approved disposals"),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=("asset",),
+                condition=models.Q(
+                    status__in=["pending_approval", "approved"]
+                ),
+                name="unique_active_disposal_case_per_asset",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.asset.asset_id}: disposal ({self.get_status_display()})"
+
+    def clean(self) -> None:
+        if self.asset_id and self.asset.lifecycle_status != LifecycleStatus.READY_FOR_DISPOSAL:
+            raise ValidationError(
+                {"asset": "Asset must be Ready for Disposal before a disposal request."}
+            )
+        if self.asset_id and self.asset.sanitisation_required:
+            if self.sanitisation_result != SanitisationResult.PASSED:
+                raise ValidationError(
+                    {"sanitisation_result": "Passed sanitisation is required."}
+                )
+            if not self.sanitisation_evidence_ref.strip():
+                raise ValidationError(
+                    {"sanitisation_evidence_ref": "Sanitisation evidence is required."}
+                )
+
+
+class DisposalEvent(models.Model):
+    class EventType(models.TextChoices):
+        REQUESTED = "requested", "Disposal requested"
+        APPROVED = "approved", "Approved"
+        REJECTED = "rejected", "Rejected"
+        COMPLETED = "completed", "Disposal completed"
+
+    case = models.ForeignKey(
+        DisposalCase, on_delete=models.PROTECT, related_name="events"
+    )
+    event_type = models.CharField(max_length=16, choices=EventType.choices)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="disposal_events",
+    )
+    note = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"{self.case}: {self.get_event_type_display()}"

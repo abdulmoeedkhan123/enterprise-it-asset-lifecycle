@@ -28,6 +28,7 @@ from .models import (
     IntegrationRun,
     LifecycleEvent,
     LifecycleStatus,
+    MaintenanceWorkOrder,
     ReturnWorkItem,
 )
 from .notifications import build_asset_notifications
@@ -188,6 +189,103 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(first_page.context["notification_page"].paginator.count, 51)
         self.assertEqual(len(first_page.context["notifications"]), 50)
         self.assertEqual(len(second_page.context["notifications"]), 1)
+
+    def test_maintenance_work_order_create_and_status_history(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_maintenanceworkorder",
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="add_maintenanceworkorder",
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="change_maintenanceworkorder",
+            ),
+        )
+        asset = self.create_asset()
+
+        response = self.client.post(
+            reverse("inventory:maintenance-work-order-create", args=[asset.pk]),
+            {
+                "title": "Replace damaged screen",
+                "description": "Screen flickers during use.",
+                "priority": MaintenanceWorkOrder.Priority.HIGH,
+                "vendor": "Example Repairs",
+                "target_date": (timezone.localdate() + timedelta(days=5)).isoformat(),
+                "cost": "180.00",
+            },
+        )
+
+        self.assertRedirects(response, reverse("inventory:maintenance-work-orders"))
+        work_order = MaintenanceWorkOrder.objects.get(asset=asset)
+        self.assertEqual(work_order.status, MaintenanceWorkOrder.Status.OPEN)
+        self.assertEqual(work_order.created_by, self.user)
+        self.assertEqual(work_order.events.count(), 1)
+
+        response = self.client.post(
+            reverse(
+                "inventory:maintenance-work-order-update",
+                args=[work_order.pk],
+            ),
+            {"status": MaintenanceWorkOrder.Status.IN_PROGRESS},
+        )
+
+        self.assertRedirects(response, reverse("inventory:maintenance-work-orders"))
+        work_order.refresh_from_db()
+        self.assertEqual(work_order.status, MaintenanceWorkOrder.Status.IN_PROGRESS)
+        self.assertEqual(work_order.events.count(), 2)
+        self.assertEqual(
+            work_order.events.first().actor,
+            self.user,
+        )
+
+        self.client.post(
+            reverse(
+                "inventory:maintenance-work-order-update",
+                args=[work_order.pk],
+            ),
+            {"status": MaintenanceWorkOrder.Status.COMPLETED},
+        )
+        work_order.refresh_from_db()
+        self.assertEqual(work_order.status, MaintenanceWorkOrder.Status.COMPLETED)
+        self.assertIsNotNone(work_order.completed_at)
+
+        self.client.post(
+            reverse(
+                "inventory:maintenance-work-order-update",
+                args=[work_order.pk],
+            ),
+            {"status": MaintenanceWorkOrder.Status.IN_PROGRESS},
+        )
+        work_order.refresh_from_db()
+        self.assertEqual(work_order.status, MaintenanceWorkOrder.Status.COMPLETED)
+
+    def test_maintenance_work_orders_require_view_permission(self):
+        response = self.client.get(reverse("inventory:maintenance-work-orders"))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_maintenance_work_order_cannot_be_created_for_disposed_asset(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="add_maintenanceworkorder",
+            )
+        )
+        asset = self.create_asset(
+            lifecycle_status=LifecycleStatus.DISPOSED,
+            disposal_evidence_ref="DISP-REF",
+        )
+
+        response = self.client.get(
+            reverse("inventory:maintenance-work-order-create", args=[asset.pk])
+        )
+
+        self.assertRedirects(response, reverse("inventory:asset-detail", args=[asset.pk]))
+        self.assertFalse(MaintenanceWorkOrder.objects.exists())
 
     def test_allowed_transition_updates_asset_and_writes_event(self):
         self.user.user_permissions.add(self.transition_permission)

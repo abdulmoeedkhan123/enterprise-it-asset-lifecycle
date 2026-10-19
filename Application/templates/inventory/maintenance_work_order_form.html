@@ -1,0 +1,29 @@
+{% extends "inventory/base.html" %}
+{% block title %}Open maintenance work order | Asset Lifecycle{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">ASSET SUPPORT</p><h1>Open maintenance work order</h1>
+    <p class="muted">For {{ asset.asset_id }} · {{ asset.asset_type }} · {{ asset.site }}</p>
+  </div>
+</section>
+<section class="panel form-panel">
+  <form method="post" class="stack-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="error-message">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-grid">
+      {% for field in form %}
+      <div class="form-field {% if field.name == 'description' %}full-width{% endif %}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="actions">
+      <button class="primary-button" type="submit">Create work order</button>
+      <a class="secondary-button" href="{% url 'inventory:asset-detail' asset.pk %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

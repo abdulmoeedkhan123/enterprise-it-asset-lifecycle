@@ -7,20 +7,41 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db import DatabaseError, connection
+from django.db import DatabaseError, connection, transaction
 from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 from django.utils import timezone
 
-from .forms import AssetForm, TransitionForm
+from .forms import (
+    AssetForm,
+    DisposalCompletionForm,
+    DisposalRequestForm,
+    DisposalReviewForm,
+    MaintenanceStatusForm,
+    MaintenanceWorkOrderForm,
+    ProcurementDecisionForm,
+    ProcurementQuoteForm,
+    ProcurementReceiptForm,
+    ProcurementRequestForm,
+    PurchaseOrderForm,
+    TransitionForm,
+)
 from .integrations.catalog import INTEGRATION_CATALOG
 from .models import (
     Asset,
+    DisposalCase,
+    DisposalEvent,
     ImportRun,
     IntegrationRun,
     LifecycleEvent,
     LifecycleStatus,
+    MaintenanceWorkOrder,
+    MaintenanceWorkOrderEvent,
+    ProcurementEvent,
+    ProcurementQuote,
+    ProcurementRequest,
     ReturnWorkItem,
 )
 from .notifications import build_asset_notifications
@@ -185,8 +206,562 @@ def asset_detail(request, pk: int):
     return render(
         request,
         "inventory/asset_detail.html",
-        {"asset": asset, "events": events},
+        {
+            "asset": asset,
+            "events": events,
+            "maintenance_orders": asset.maintenance_orders.select_related(
+                "created_by"
+            )[:5],
+        },
     )
+
+
+@login_required
+@permission_required("inventory.view_maintenanceworkorder", raise_exception=True)
+def maintenance_work_orders(request):
+    work_orders = MaintenanceWorkOrder.objects.select_related("asset", "created_by")
+    selected_status = request.GET.get("status", "").strip()
+    valid_statuses = {value for value, _label in MaintenanceWorkOrder.Status.choices}
+    if selected_status in valid_statuses:
+        work_orders = work_orders.filter(status=selected_status)
+    elif selected_status != "all":
+        selected_status = MaintenanceWorkOrder.Status.OPEN
+        work_orders = work_orders.filter(status=selected_status)
+    page = Paginator(work_orders, 50).get_page(request.GET.get("page"))
+    for order in page.object_list:
+        order.status_form = MaintenanceStatusForm(work_order=order)
+    return render(
+        request,
+        "inventory/maintenance_work_orders.html",
+        {
+            "work_orders": page.object_list,
+            "work_order_page": page,
+            "statuses": MaintenanceWorkOrder.Status.choices,
+            "selected_status": selected_status,
+        },
+    )
+
+
+@login_required
+@permission_required("inventory.add_maintenanceworkorder", raise_exception=True)
+def maintenance_work_order_create(request, asset_pk: int):
+    asset = get_object_or_404(Asset, pk=asset_pk)
+    if asset.lifecycle_status in {
+        LifecycleStatus.DISPOSED,
+        LifecycleStatus.LOST_STOLEN,
+    }:
+        messages.error(request, "Maintenance work orders cannot be opened for this asset.")
+        return redirect("inventory:asset-detail", pk=asset.pk)
+    form = MaintenanceWorkOrderForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        with transaction.atomic():
+            work_order = form.save(commit=False)
+            work_order.asset = asset
+            work_order.created_by = request.user
+            work_order.save()
+            MaintenanceWorkOrderEvent.objects.create(
+                work_order=work_order,
+                to_status=work_order.status,
+                note="Work order created.",
+                actor=request.user,
+            )
+        messages.success(request, f"Work order for {asset.asset_id} was created.")
+        return redirect("inventory:maintenance-work-orders")
+    return render(
+        request,
+        "inventory/maintenance_work_order_form.html",
+        {"form": form, "asset": asset},
+    )
+
+
+@login_required
+@permission_required("inventory.change_maintenanceworkorder", raise_exception=True)
+@require_POST
+def maintenance_work_order_update(request, pk: int):
+    with transaction.atomic():
+        work_order = get_object_or_404(
+            MaintenanceWorkOrder.objects.select_for_update(), pk=pk
+        )
+        form = MaintenanceStatusForm(request.POST, work_order=work_order)
+        if form.is_valid():
+            old_status = work_order.status
+            work_order.status = form.cleaned_data["status"]
+            work_order.save(update_fields=("status", "updated_at"))
+            MaintenanceWorkOrderEvent.objects.create(
+                work_order=work_order,
+                from_status=old_status,
+                to_status=work_order.status,
+                note="Work order status updated.",
+                actor=request.user,
+            )
+            messages.success(
+                request,
+                f"Work order for {work_order.asset.asset_id} was updated.",
+            )
+        else:
+            messages.error(request, "That status update is not allowed.")
+    return redirect("inventory:maintenance-work-orders")
+
+
+@login_required
+@permission_required("inventory.view_purchaserequest", raise_exception=True)
+def procurement_list(request):
+    requests = ProcurementRequest.objects.select_related("requester", "selected_quote")
+    selected_status = request.GET.get("status", "").strip()
+    valid_statuses = {value for value, _label in ProcurementRequest.Status.choices}
+    if selected_status in valid_statuses:
+        requests = requests.filter(status=selected_status)
+    elif selected_status != "all":
+        selected_status = ProcurementRequest.Status.PENDING_APPROVAL
+        requests = requests.filter(status=selected_status)
+    page = Paginator(requests, 50).get_page(request.GET.get("page"))
+    return render(
+        request,
+        "inventory/procurement_list.html",
+        {
+            "procurement_requests": page.object_list,
+            "procurement_page": page,
+            "statuses": ProcurementRequest.Status.choices,
+            "selected_status": selected_status,
+        },
+    )
+
+
+@login_required
+@permission_required("inventory.add_purchaserequest", raise_exception=True)
+def procurement_create(request):
+    form = ProcurementRequestForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        with transaction.atomic():
+            purchase_request = form.save(commit=False)
+            purchase_request.requester = request.user
+            purchase_request.save()
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.CREATED,
+                actor=request.user,
+            )
+        messages.success(request, "Procurement request saved as a draft.")
+        return redirect(
+            "inventory:procurement-detail",
+            pk=purchase_request.pk,
+        )
+    return render(
+        request,
+        "inventory/procurement_form.html",
+        {"form": form},
+    )
+
+
+@login_required
+@permission_required("inventory.view_purchaserequest", raise_exception=True)
+def procurement_detail(request, pk: int):
+    purchase_request = get_object_or_404(
+        ProcurementRequest.objects.select_related(
+            "requester", "selected_quote"
+        ).prefetch_related("quotes", "events__actor", "registered_assets"),
+        pk=pk,
+    )
+    return render(
+        request,
+        "inventory/procurement_detail.html",
+        {
+            "purchase_request": purchase_request,
+            "quotes": purchase_request.quotes.all(),
+            "events": purchase_request.events.select_related("actor").all(),
+            "quote_form": ProcurementQuoteForm(),
+            "decision_form": ProcurementDecisionForm(),
+            "purchase_order_form": PurchaseOrderForm(),
+            "receipt_form": ProcurementReceiptForm(),
+            "remaining_to_register": max(
+                purchase_request.quantity_received
+                - purchase_request.registered_assets.count(),
+                0,
+            ),
+        },
+    )
+
+
+def _procurement_owner_or_changer(request, purchase_request) -> bool:
+    return (
+        purchase_request.requester_id == request.user.pk
+        or request.user.has_perm("inventory.change_purchaserequest")
+    )
+
+
+@login_required
+@permission_required("inventory.change_purchaserequest", raise_exception=True)
+@require_POST
+def procurement_quote_add(request, pk: int):
+    purchase_request = get_object_or_404(
+        ProcurementRequest.objects.select_for_update(),
+        pk=pk,
+    )
+    form = ProcurementQuoteForm(request.POST)
+    if (
+        purchase_request.status != ProcurementRequest.Status.DRAFT
+        or not _procurement_owner_or_changer(request, purchase_request)
+    ):
+        messages.error(request, "Only the requester may add quotes to a draft.")
+    elif form.is_valid():
+        with transaction.atomic():
+            quote = form.save(commit=False)
+            quote.request = purchase_request
+            quote.save()
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.QUOTE_ADDED,
+                actor=request.user,
+                details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
+            )
+        messages.success(request, f"Quote from {quote.supplier} was added.")
+    else:
+        messages.error(request, form.errors.as_text())
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.change_purchaserequest", raise_exception=True)
+@require_POST
+def procurement_quote_select(request, pk: int, quote_pk: int):
+    purchase_request = get_object_or_404(
+        ProcurementRequest.objects.select_for_update(),
+        pk=pk,
+    )
+    quote = get_object_or_404(ProcurementQuote, pk=quote_pk, request=purchase_request)
+    if (
+        purchase_request.status != ProcurementRequest.Status.DRAFT
+        or not _procurement_owner_or_changer(request, purchase_request)
+    ):
+        messages.error(request, "A quote can only be selected by the requester on a draft.")
+    else:
+        with transaction.atomic():
+            purchase_request.selected_quote = quote
+            purchase_request.save(update_fields=("selected_quote", "updated_at"))
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.QUOTE_SELECTED,
+                actor=request.user,
+                details={"supplier": quote.supplier, "unit_cost": str(quote.unit_cost)},
+            )
+        messages.success(request, f"{quote.supplier} was selected for review.")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.change_purchaserequest", raise_exception=True)
+@require_POST
+def procurement_submit(request, pk: int):
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        if (
+            purchase_request.status != ProcurementRequest.Status.DRAFT
+            or not _procurement_owner_or_changer(request, purchase_request)
+        ):
+            messages.error(request, "Only the requester may submit a draft request.")
+        elif not purchase_request.selected_quote_id:
+            messages.error(request, "Select a supplier quote before requesting approval.")
+        else:
+            purchase_request.status = ProcurementRequest.Status.PENDING_APPROVAL
+            purchase_request.submitted_at = timezone.now()
+            purchase_request.save(
+                update_fields=("status", "submitted_at", "updated_at")
+            )
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.SUBMITTED,
+                actor=request.user,
+            )
+            messages.success(request, "Request submitted for independent approval.")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.approve_procurementrequest", raise_exception=True)
+@require_POST
+def procurement_review(request, pk: int):
+    form = ProcurementDecisionForm(request.POST)
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        if purchase_request.status != ProcurementRequest.Status.PENDING_APPROVAL:
+            messages.error(request, "This request is not awaiting approval.")
+        elif purchase_request.requester_id == request.user.pk:
+            messages.error(request, "Requesters cannot approve their own request.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        else:
+            approved = form.cleaned_data["decision"] == "approve"
+            purchase_request.status = (
+                ProcurementRequest.Status.APPROVED
+                if approved
+                else ProcurementRequest.Status.REJECTED
+            )
+            purchase_request.save(update_fields=("status", "updated_at"))
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=(
+                    ProcurementEvent.EventType.APPROVED
+                    if approved
+                    else ProcurementEvent.EventType.REJECTED
+                ),
+                actor=request.user,
+                details={"note": form.cleaned_data["note"]},
+            )
+            messages.success(
+                request,
+                "Request approved." if approved else "Request rejected.",
+            )
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@require_POST
+def procurement_order(request, pk: int):
+    form = PurchaseOrderForm(request.POST)
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update().select_related(
+                "selected_quote"
+            ),
+            pk=pk,
+        )
+        if purchase_request.status != ProcurementRequest.Status.APPROVED:
+            messages.error(request, "Only approved requests can be ordered.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        else:
+            purchase_request.status = ProcurementRequest.Status.ORDERED
+            purchase_request.purchase_order_reference = form.cleaned_data[
+                "purchase_order_reference"
+            ]
+            purchase_request.save(
+                update_fields=(
+                    "status",
+                    "purchase_order_reference",
+                    "updated_at",
+                )
+            )
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.ORDERED,
+                actor=request.user,
+                details={
+                    "purchase_order_reference": purchase_request.purchase_order_reference,
+                    "supplier": purchase_request.selected_quote.supplier,
+                },
+            )
+            messages.success(request, "Purchase order recorded.")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.manage_procurementrequest", raise_exception=True)
+@require_POST
+def procurement_receive(request, pk: int):
+    form = ProcurementReceiptForm(request.POST)
+    with transaction.atomic():
+        purchase_request = get_object_or_404(
+            ProcurementRequest.objects.select_for_update(),
+            pk=pk,
+        )
+        if purchase_request.status not in {
+            ProcurementRequest.Status.ORDERED,
+            ProcurementRequest.Status.PARTIALLY_RECEIVED,
+        }:
+            messages.error(request, "Only an open purchase order can be received.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        elif (
+            purchase_request.quantity_received + form.cleaned_data["quantity"]
+            > purchase_request.quantity
+        ):
+            messages.error(request, "Received quantity cannot exceed the requested amount.")
+        else:
+            received_now = form.cleaned_data["quantity"]
+            purchase_request.quantity_received += received_now
+            complete = purchase_request.quantity_received == purchase_request.quantity
+            purchase_request.status = (
+                ProcurementRequest.Status.RECEIVED
+                if complete
+                else ProcurementRequest.Status.PARTIALLY_RECEIVED
+            )
+            if complete:
+                purchase_request.completed_at = timezone.now()
+            purchase_request.save(
+                update_fields=(
+                    "quantity_received",
+                    "status",
+                    "completed_at",
+                    "updated_at",
+                )
+            )
+            ProcurementEvent.objects.create(
+                request=purchase_request,
+                event_type=ProcurementEvent.EventType.RECEIVED,
+                actor=request.user,
+                details={
+                    "quantity": received_now,
+                    "receipt_reference": form.cleaned_data["receipt_reference"],
+                    "quantity_received_total": purchase_request.quantity_received,
+                },
+            )
+            messages.success(request, f"Recorded receipt of {received_now} item(s).")
+    return redirect("inventory:procurement-detail", pk=pk)
+
+
+@login_required
+@permission_required("inventory.view_disposalcase", raise_exception=True)
+def disposal_list(request):
+    cases = DisposalCase.objects.select_related("asset", "requested_by")
+    selected_status = request.GET.get("status", "").strip()
+    valid_statuses = {value for value, _label in DisposalCase.Status.choices}
+    if selected_status in valid_statuses:
+        cases = cases.filter(status=selected_status)
+    elif selected_status != "all":
+        selected_status = DisposalCase.Status.PENDING_APPROVAL
+        cases = cases.filter(status=selected_status)
+    page = Paginator(cases, 50).get_page(request.GET.get("page"))
+    return render(
+        request,
+        "inventory/disposal_list.html",
+        {
+            "disposal_cases": page.object_list,
+            "disposal_page": page,
+            "statuses": DisposalCase.Status.choices,
+            "selected_status": selected_status,
+        },
+    )
+
+
+@login_required
+@permission_required("inventory.add_disposalcase", raise_exception=True)
+def disposal_create(request, asset_pk: int):
+    asset = get_object_or_404(Asset, pk=asset_pk)
+    if asset.lifecycle_status != LifecycleStatus.READY_FOR_DISPOSAL:
+        messages.error(request, "Move this asset to Ready for Disposal before requesting disposal.")
+        return redirect("inventory:asset-detail", pk=asset.pk)
+    active_statuses = [
+        DisposalCase.Status.PENDING_APPROVAL,
+        DisposalCase.Status.APPROVED,
+    ]
+    if DisposalCase.objects.filter(asset=asset, status__in=active_statuses).exists():
+        messages.error(request, "An active disposal request already exists for this asset.")
+        return redirect("inventory:asset-detail", pk=asset.pk)
+    form = DisposalRequestForm(request.POST or None, asset=asset)
+    if request.method == "POST" and form.is_valid():
+        with transaction.atomic():
+            case = form.save(commit=False)
+            case.asset = asset
+            case.requested_by = request.user
+            case.full_clean()
+            case.save()
+            DisposalEvent.objects.create(
+                case=case,
+                event_type=DisposalEvent.EventType.REQUESTED,
+                actor=request.user,
+            )
+        messages.success(request, f"Disposal request for {asset.asset_id} was submitted.")
+        return redirect("inventory:disposal-list")
+    return render(
+        request,
+        "inventory/disposal_form.html",
+        {"form": form, "asset": asset},
+    )
+
+
+@login_required
+@permission_required("inventory.approve_disposalcase", raise_exception=True)
+@require_POST
+def disposal_review(request, pk: int):
+    form = DisposalReviewForm(request.POST)
+    with transaction.atomic():
+        case = get_object_or_404(DisposalCase.objects.select_for_update(), pk=pk)
+        if case.status != DisposalCase.Status.PENDING_APPROVAL:
+            messages.error(request, "This disposal request is not awaiting approval.")
+        elif case.requested_by_id == request.user.pk:
+            messages.error(request, "Requesters cannot approve their own disposal.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        else:
+            approved = form.cleaned_data["decision"] == "approve"
+            case.status = (
+                DisposalCase.Status.APPROVED
+                if approved
+                else DisposalCase.Status.REJECTED
+            )
+            case.save(update_fields=("status", "updated_at"))
+            DisposalEvent.objects.create(
+                case=case,
+                event_type=(
+                    DisposalEvent.EventType.APPROVED
+                    if approved
+                    else DisposalEvent.EventType.REJECTED
+                ),
+                actor=request.user,
+                note=form.cleaned_data["note"],
+            )
+            messages.success(
+                request,
+                "Disposal approved." if approved else "Disposal rejected.",
+            )
+    return redirect("inventory:disposal-list")
+
+
+@login_required
+@permission_required("inventory.complete_disposalcase", raise_exception=True)
+@require_POST
+def disposal_complete(request, pk: int):
+    form = DisposalCompletionForm(request.POST)
+    with transaction.atomic():
+        case = get_object_or_404(
+            DisposalCase.objects.select_for_update().select_related("asset"),
+            pk=pk,
+        )
+        if case.status != DisposalCase.Status.APPROVED:
+            messages.error(request, "Only an approved disposal request can be completed.")
+        elif not form.is_valid():
+            messages.error(request, form.errors.as_text())
+        else:
+            evidence_ref = form.cleaned_data["disposal_evidence_ref"]
+            try:
+                transition_asset(
+                    asset_id=case.asset_id,
+                    to_status=LifecycleStatus.DISPOSED,
+                    actor=request.user,
+                    reason=f"Approved disposal case {case.pk} completed.",
+                    sanitisation_result=case.sanitisation_result,
+                    sanitisation_evidence_ref=case.sanitisation_evidence_ref,
+                    disposal_evidence_ref=evidence_ref,
+                )
+            except (Asset.DoesNotExist, ValidationError) as error:
+                messages.error(request, str(error))
+            else:
+                case.disposal_evidence_ref = evidence_ref
+                case.status = DisposalCase.Status.COMPLETED
+                case.completed_at = timezone.now()
+                case.save(
+                    update_fields=(
+                        "disposal_evidence_ref",
+                        "status",
+                        "completed_at",
+                        "updated_at",
+                    )
+                )
+                DisposalEvent.objects.create(
+                    case=case,
+                    event_type=DisposalEvent.EventType.COMPLETED,
+                    actor=request.user,
+                    note=f"Evidence: {evidence_ref}",
+                )
+                messages.success(request, "Approved disposal completed with evidence.")
+    return redirect("inventory:disposal-list")
 
 
 @login_required
