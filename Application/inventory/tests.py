@@ -126,6 +126,43 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(response.context["assigned_count"], 1)
         self.assertEqual(response.context["quality_report"]["asset_count"], 1)
 
+    def test_dashboard_charts_are_filter_links_and_renewals_are_actionable_insights(self):
+        self.user.user_permissions.add(
+            self.view_permission,
+            *[
+                Permission.objects.get(
+                    content_type__app_label="inventory",
+                    codename=codename,
+                )
+                for codename in (
+                    "view_softwareproduct",
+                    "view_softwarecontract",
+                )
+            ],
+        )
+        self.create_asset(asset_id="AST-CHART-SYD", site="Sydney")
+        product = SoftwareProduct.objects.create(
+            name="Planning Suite",
+            publisher="Example Publisher",
+        )
+        SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=10,
+            end_date=timezone.localdate() + timedelta(days=20),
+            renewal_notice_days=60,
+        )
+
+        response = self.client.get(reverse("inventory:dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Insights &amp; recommended actions")
+        self.assertContains(response, "Software renewals need attention")
+        self.assertContains(response, "Planning Suite")
+        self.assertContains(response, "chart-bar-link")
+        self.assertContains(response, "?site=Sydney&amp;status=")
+        self.assertContains(response, "?site=&amp;status=Assigned")
+
     def test_asset_list_filters_by_selected_fields_and_searches_all_asset_fields(self):
         self.user.user_permissions.add(self.view_permission)
         matching = self.create_asset(
