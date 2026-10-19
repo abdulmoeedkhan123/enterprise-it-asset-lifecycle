@@ -1,0 +1,18 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Migrate application database",
+      "type": "process",
+      "command": "${command:python.interpreterPath}",
+      "args": ["manage.py", "migrate", "--noinput"],
+      "options": {
+        "cwd": "${workspaceFolder}/Application",
+        "env": {
+          "DJANGO_DEBUG": "1"
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}

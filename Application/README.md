@@ -21,6 +21,24 @@ python Application/manage.py runserver 127.0.0.1:8001
 
 Open <http://127.0.0.1:8001/>. The default development database is SQLite and is stored in this folder. For PostgreSQL, use the local Docker deployment below.
 
+### Run from VS Code
+
+1. Open the repository root folder in VS Code.
+2. Select a Python interpreter that has the application requirements installed. If needed, open **Terminal → New Terminal** and run:
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   python -m pip install -r Application/requirements.txt
+   ```
+
+   On Windows PowerShell, activate with `.venv\Scripts\Activate.ps1`.
+3. Open **Run and Debug** and choose **Run Asset Lifecycle Django app**, then press **F5**.
+4. VS Code applies migrations and starts the development server at <http://127.0.0.1:8001/>.
+5. If you have not created a login yet, stop the server and run `python Application/manage.py createsuperuser` in the terminal, then start the app again and sign in.
+
+The VS Code launch profile uses the local SQLite database at `Application/db.sqlite3`. It is for development with synthetic data only.
+
 The case-study CSV is located at [`../ICT Business analysis/data/assets.csv`](<../ICT Business analysis/data/assets.csv>). Importing any data requires explicit authorization confirmation; use the synthetic sample only for development:
 
 ```bash

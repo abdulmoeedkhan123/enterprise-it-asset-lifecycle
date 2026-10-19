@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Asset Lifecycle Django app",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/Application/manage.py",
+      "args": ["runserver", "127.0.0.1:8001"],
+      "django": true,
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}/Application",
+      "env": {
+        "DJANGO_DEBUG": "1"
+      },
+      "preLaunchTask": "Migrate application database"
+    }
+  ]
+}
