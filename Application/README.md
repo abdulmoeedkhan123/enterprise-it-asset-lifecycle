@@ -69,6 +69,19 @@ Stop the services with Ctrl+C or `docker compose down`. The named PostgreSQL vol
 
 The Compose configuration disables secure cookies only for its loopback-bound local HTTP setup. For any real deployment, use HTTPS, secure cookies, managed secrets, a controlled migration/release process, backups, monitoring, and a reviewed security/privacy design. Do not expose this local Compose configuration to a network or load real organizational data.
 
+## Read-only asset copilot (MVP)
+
+The **AI Copilot** page is an initial, read-only question interface available to signed-in users with the existing `inventory.view_asset` permission. It currently uses deterministic intent matching rather than an external language model. Supported questions include:
+
+- Show overdue returns.
+- Show warranties expiring soon, or within a specified number of days (up to 365).
+- List assets in a supported lifecycle status, such as assigned or in repair.
+- Find an asset by its exact asset ID, serial reference, or custodian reference.
+
+Results are limited to the first 10 matching assets and link to the existing asset detail page. Unsupported prompts return guidance instead of attempting an action. The copilot does not call an external AI provider, write to the database, reassign assets, approve requests, initiate disposal, or certify sanitisation. This intentionally keeps the first iteration low-risk while the query interface and permission boundary are validated.
+
+**Approval-first AI roadmap:** if an LLM is added later, it should only propose a validated structured intent. Server-side permissions and business rules remain authoritative. Any write operation must be shown as a proposed action with the target records and consequences, then require explicit approval from an authorised human; sensitive disposal and sanitisation actions must never be executed solely on an AI decision. Configure provider credentials and data-sharing approvals separately before sending any organizational data to an external service.
+
 ## ETL and reporting
 
 The first asset ETL source is the synthetic CSV in the portfolio folder. `import_assets` performs these stages:
