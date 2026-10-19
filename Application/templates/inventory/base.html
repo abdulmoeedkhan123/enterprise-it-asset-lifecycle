@@ -28,7 +28,7 @@
     {% if request.user.is_authenticated %}
     <nav class="nav" aria-label="Main navigation">
       <a {% if request.resolver_match.url_name == "dashboard" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:dashboard' %}">Overview</a>
-      <a {% if request.resolver_match.url_name == "asset-list" or request.resolver_match.url_name == "asset-detail" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:asset-list' %}">Assets</a>
+      <a {% if request.resolver_match.url_name == "asset-list" or request.resolver_match.url_name == "asset-detail" or request.resolver_match.url_name == "asset-create" or request.resolver_match.url_name == "asset-update" or request.resolver_match.url_name == "asset-transition" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:asset-list' %}">Assets</a>
       {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "copilot" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:copilot' %}">AI Copilot</a>{% endif %}
       {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "notifications" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:notifications' %}" aria-label="Notifications, {{ asset_notification_count }} active">Notifications{% if asset_notification_count %} <span class="notification-count">{{ asset_notification_count }}</span>{% endif %}</a>{% endif %}
       {% if perms.inventory.view_maintenanceworkorder %}<a {% if request.resolver_match.url_name == "maintenance-work-orders" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:maintenance-work-orders' %}">Maintenance</a>{% endif %}
@@ -36,7 +36,7 @@
       {% if perms.inventory.view_disposalcase %}<a {% if request.resolver_match.url_name == "disposal-list" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:disposal-list' %}">Disposals</a>{% endif %}
       {% if perms.inventory.view_returnworkitem %}<a {% if request.resolver_match.url_name == "return-work-queue" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:return-work-queue' %}">Return reviews</a>{% endif %}
       {% if perms.inventory.view_asset %}<a {% if request.resolver_match.url_name == "integration-catalog" %}class="is-active" aria-current="page"{% endif %} href="{% url 'inventory:integration-catalog' %}">Integrations</a>{% endif %}
-      {% if perms.inventory.add_asset %}<a class="nav-action" {% if request.resolver_match.url_name == "asset-create" %}aria-current="page"{% endif %} href="{% url 'inventory:asset-create' %}">+ Register asset</a>{% endif %}
+      {% if perms.inventory.add_asset %}<a class="nav-action" href="{% url 'inventory:asset-create' %}">+ Register asset</a>{% endif %}
       {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %}
     </nav>
     {% endif %}
