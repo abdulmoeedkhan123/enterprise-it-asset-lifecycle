@@ -288,7 +288,11 @@ class AssetLifecycleTests(TestCase):
             reverse("inventory:maintenance-work-order-create", args=[asset.pk])
         )
 
-        self.assertRedirects(response, reverse("inventory:asset-detail", args=[asset.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.headers["Location"],
+            reverse("inventory:asset-detail", args=[asset.pk]),
+        )
         self.assertFalse(MaintenanceWorkOrder.objects.exists())
 
     def test_procurement_quote_approval_order_delivery_and_receiving_workflow(self):
