@@ -239,6 +239,74 @@ class IntegrationRun(models.Model):
         return f"{self.provider} integration ({self.get_status_display()})"
 
 
+class IntuneSyncRun(models.Model):
+    class Status(models.TextChoices):
+        RUNNING = "running", "Running"
+        SUCCEEDED = "succeeded", "Succeeded"
+        FAILED = "failed", "Failed"
+
+    status = models.CharField(max_length=16, choices=Status.choices, db_index=True)
+    records_received = models.PositiveIntegerField(default=0)
+    devices_matched = models.PositiveIntegerField(default=0)
+    devices_unmatched = models.PositiveIntegerField(default=0)
+    devices_duplicate = models.PositiveIntegerField(default=0)
+    error_summary = models.CharField(max_length=500, blank=True)
+    started_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("-started_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"Intune device sync ({self.get_status_display()})"
+
+
+class IntuneDevice(models.Model):
+    class MatchStatus(models.TextChoices):
+        MATCHED = "matched", "Matched"
+        UNMATCHED = "unmatched", "Unmatched"
+        DUPLICATE = "duplicate", "Duplicate identifier"
+
+    managed_device_id = models.CharField(max_length=128, unique=True)
+    device_name = models.CharField(max_length=255, blank=True)
+    serial_number = models.CharField(max_length=128, blank=True, db_index=True)
+    manufacturer = models.CharField(max_length=128, blank=True)
+    model = models.CharField(max_length=128, blank=True)
+    operating_system = models.CharField(max_length=64, blank=True)
+    os_version = models.CharField(max_length=64, blank=True)
+    compliance_state = models.CharField(max_length=32, blank=True, db_index=True)
+    last_sync_at = models.DateTimeField(null=True, blank=True)
+    match_status = models.CharField(
+        max_length=16,
+        choices=MatchStatus.choices,
+        default=MatchStatus.UNMATCHED,
+        db_index=True,
+    )
+    match_detail = models.CharField(max_length=255, blank=True)
+    matched_asset = models.ForeignKey(
+        Asset,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="intune_devices",
+    )
+    last_seen_run = models.ForeignKey(
+        IntuneSyncRun,
+        on_delete=models.PROTECT,
+        related_name="devices",
+    )
+    fetched_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("match_status", "device_name", "managed_device_id")
+        permissions = [
+            ("sync_intunedevice", "Can run the read-only Intune device sync"),
+        ]
+
+    def __str__(self) -> str:
+        return self.device_name or self.managed_device_id
+
+
 class MaintenanceWorkOrder(models.Model):
     class Status(models.TextChoices):
         OPEN = "open", "Open"

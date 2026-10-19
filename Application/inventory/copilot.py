@@ -8,7 +8,7 @@ the source of truth for validation and data access.
 from __future__ import annotations
 
 import re
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.db.models import Q
 from django.utils import timezone
@@ -93,7 +93,7 @@ def run_copilot_query(query: str, *, today=None) -> dict:
             queryset,
         )
 
-    if "warranty" in normalized and any(word in normalized for word in ("expir", "due", "next", "soon", "ending")):
+    if "warrant" in normalized and any(word in normalized for word in ("expir", "due", "next", "soon", "ending")):
         match = re.search(r"\b(\d{1,3})\s+days?\b", normalized)
         days = int(match.group(1)) if match else DEFAULT_WARRANTY_WINDOW_DAYS
         days = max(1, min(days, MAX_WARRANTY_WINDOW_DAYS))
@@ -147,3 +147,81 @@ def run_copilot_query(query: str, *, today=None) -> dict:
         "metadata": {},
         "read_only": True,
     }
+
+
+def run_copilot_intent(intent_document: dict, *, today: date | None = None) -> dict:
+    """Execute only a validated, read-only intent through Django ORM queries."""
+    from .copilot_llm import validate_asset_intent
+
+    intent = validate_asset_intent(intent_document)
+    if intent is None:
+        raise ValueError("Copilot intent is empty.")
+    today = today or timezone.localdate()
+    assets = Asset.objects.all()
+    intent_name = intent["intent"]
+    if intent_name == "overdue_returns":
+        return _result(
+            "overdue_returns",
+            "Overdue return records found. Review each record before taking action.",
+            assets.filter(
+                lifecycle_status=LifecycleStatus.RETURN_PENDING,
+                return_due_date__lt=today,
+            ).order_by("return_due_date", "asset_id"),
+        )
+    if intent_name == "warranty_expiry":
+        days = intent["days"]
+        end_date = today + timedelta(days=days)
+        return _result(
+            "warranty_expiry",
+            f"Active-asset warranties expiring in the next {days} days (inclusive of today).",
+            assets.exclude(
+                lifecycle_status__in=(
+                    LifecycleStatus.DISPOSED,
+                    LifecycleStatus.LOST_STOLEN,
+                )
+            )
+            .filter(warranty_end__range=(today, end_date))
+            .order_by("warranty_end", "asset_id"),
+            metadata={
+                "days": days,
+                "from_date": today.isoformat(),
+                "to_date": end_date.isoformat(),
+            },
+        )
+    if intent_name == "lifecycle_status":
+        status = intent["status"]
+        return _result(
+            "lifecycle_status",
+            f"Assets currently recorded as '{status}'. This is based on stored lifecycle status.",
+            assets.filter(lifecycle_status=status).order_by("asset_id"),
+            metadata={"status": status},
+        )
+    if intent_name == "asset_search":
+        term = intent["term"]
+        field = intent["field"]
+        searchable_fields = {
+            "asset_id",
+            "asset_type",
+            "manufacturer",
+            "model",
+            "serial_ref",
+            "site",
+            "department",
+            "custodian_ref",
+        }
+        if field == "any":
+            filters = Q()
+            for searchable_field in searchable_fields:
+                filters |= Q(**{f"{searchable_field}__icontains": term})
+            queryset = assets.filter(filters)
+        elif field in searchable_fields:
+            queryset = assets.filter(**{f"{field}__icontains": term})
+        else:
+            raise ValueError("Copilot intent contains an unsupported search field.")
+        return _result(
+            "asset_search",
+            f"Asset search results for '{term}'.",
+            queryset.order_by("asset_id"),
+            metadata={"term": term, "field": field},
+        )
+    raise ValueError("Copilot intent is not supported.")

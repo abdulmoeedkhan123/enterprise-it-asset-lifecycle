@@ -16,7 +16,12 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.http import require_GET
 from django.utils import timezone
 
-from .copilot import run_copilot_query
+from .copilot import run_copilot_intent, run_copilot_query
+from .copilot_llm import (
+    CopilotLLMError,
+    CopilotLLMNotConfigured,
+    propose_asset_intent,
+)
 from .forms import (
     AssetForm,
     DisposalCompletionForm,
@@ -42,6 +47,8 @@ from .models import (
     DisposalEvent,
     ImportRun,
     IntegrationRun,
+    IntuneDevice,
+    IntuneSyncRun,
     LifecycleEvent,
     LifecycleStatus,
     MaintenanceWorkOrder,
@@ -122,6 +129,25 @@ def copilot(request):
     if request.method == "POST":
         query = request.POST.get("query", "")
         result = run_copilot_query(query)
+        result["source"] = "deterministic"
+        if result["intent"] == "unsupported":
+            try:
+                proposed_intent = propose_asset_intent(query)
+            except CopilotLLMNotConfigured:
+                result["llm_status"] = "not_configured"
+            except CopilotLLMError as error:
+                result["llm_status"] = "failed"
+                result["llm_error"] = str(error)
+                result["message"] = (
+                    "AI assistance could not interpret this question. "
+                    "No inventory records were sent back or changed."
+                )
+            else:
+                if proposed_intent is not None:
+                    result = run_copilot_intent(proposed_intent)
+                    result["source"] = "llm"
+                else:
+                    result["llm_status"] = "unsupported"
     return render(
         request,
         "inventory/copilot.html",
@@ -1353,6 +1379,38 @@ def integration_catalog(request):
         request,
         "inventory/integration_catalog.html",
         {"integration_categories": categories.items()},
+    )
+
+
+@login_required
+@permission_required("inventory.view_intunedevice", raise_exception=True)
+def intune_devices(request):
+    selected_match_status = request.GET.get("match", "").strip()
+    devices = IntuneDevice.objects.select_related(
+        "matched_asset", "last_seen_run"
+    )
+    if selected_match_status in IntuneDevice.MatchStatus.values:
+        devices = devices.filter(match_status=selected_match_status)
+    else:
+        selected_match_status = ""
+    page = Paginator(devices, 50).get_page(request.GET.get("page"))
+    latest_run = IntuneSyncRun.objects.order_by("-started_at", "-pk").first()
+    latest_success = (
+        IntuneSyncRun.objects.filter(status=IntuneSyncRun.Status.SUCCEEDED)
+        .order_by("-completed_at", "-pk")
+        .first()
+    )
+    return render(
+        request,
+        "inventory/intune_devices.html",
+        {
+            "devices": page.object_list,
+            "device_page": page,
+            "latest_run": latest_run,
+            "latest_success": latest_success,
+            "match_statuses": IntuneDevice.MatchStatus.choices,
+            "selected_match_status": selected_match_status,
+        },
     )
 
 

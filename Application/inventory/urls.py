@@ -91,6 +91,7 @@ urlpatterns = [
     ),
     path("returns/", views.return_work_queue, name="return-work-queue"),
     path("integrations/", views.integration_catalog, name="integration-catalog"),
+    path("integrations/intune/", views.intune_devices, name="intune-devices"),
     path("software/", views.software_catalog, name="software-catalog"),
     path("software/new/", views.software_product_create, name="software-create"),
     path(

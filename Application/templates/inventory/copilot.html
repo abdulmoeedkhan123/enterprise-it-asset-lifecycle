@@ -18,7 +18,7 @@
     </div>
     <span aria-hidden="true" class="copilot-mark">AI</span>
   </div>
-  <p class="muted">This first version uses deterministic query rules and your existing asset-view permission. It does not send data to an external AI provider, modify records, approve requests, or trigger workflows.</p>
+  <p class="muted">Common questions use deterministic Python queries. If an approved LLM endpoint is configured, it may translate other questions into a small, validated read-only search intent. Only your question text is sent; asset records are never sent to the LLM.</p>
 
   <form method="post" class="copilot-form">
     {% csrf_token %}
@@ -49,6 +49,8 @@
     <span class="status-pill">Read-only</span>
   </div>
   <p>{{ result.message }}</p>
+  {% if result.source %}<p class="muted">Interpreted by {% if result.source == "llm" %}validated AI intent{% else %}deterministic query rules{% endif %}. Results are read-only.</p>{% endif %}
+  {% if result.llm_status == "failed" %}<p class="error-message" role="alert">AI interpretation failed: {{ result.llm_error }} No data changes were made.</p>{% elif result.llm_status == "not_configured" %}<p class="muted">AI interpretation is not configured; deterministic examples remain available.</p>{% endif %}
   {% if result.assets %}
     <p class="muted">{% if result.truncated %}Showing the first 10 records; there are more matches.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
     <div class="table-wrap">
@@ -83,6 +85,8 @@
   <ul>
     <li>All results use the application's existing <code>inventory.view_asset</code> permission.</li>
     <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, or certify sanitisation.</li>
+    <li>LLM output is limited to validated search intents. It cannot access SQL, tools, application credentials, or remote device actions.</li>
+    <li>Only enable an LLM endpoint after organizational data-sharing approval. Do not include secrets or sensitive personal details in questions.</li>
     <li>Any future write action must go through a server-side policy check and an authorised human approval workflow.</li>
   </ul>
 </section>

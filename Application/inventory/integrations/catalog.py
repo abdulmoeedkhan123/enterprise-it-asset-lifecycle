@@ -103,13 +103,16 @@ INTEGRATION_CATALOG: tuple[IntegrationOption, ...] = (
     {
         "name": "Microsoft Intune",
         "category": "Endpoint management",
-        "availability": "Adapter required",
+        "availability": "Implemented - read-only sync",
         "protocol": "Microsoft Graph device-management APIs",
         "workflow": "Enrich inventory with approved managed-device attributes",
         "data_direction": "Read-only source -> application",
         "notes": (
-            "Requires device identifier reconciliation, field ownership rules, Graph "
-            "permission review, and duplicate/conflict handling."
+            "Read-only managed-device sync is implemented through Microsoft Graph. "
+            "Requires tenant approval for the least-privilege "
+            "DeviceManagementManagedDevices.Read.All application permission, app "
+            "credentials, and sandbox verification. Matching uses only unique exact "
+            "serial references; duplicates and unmatched records need review."
         ),
     },
     {
