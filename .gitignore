@@ -5,3 +5,4 @@ venv/
 Application/db.sqlite3
 Application/staticfiles/
 .env
+.env.local

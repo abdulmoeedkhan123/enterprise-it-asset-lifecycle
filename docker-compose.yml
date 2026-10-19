@@ -39,6 +39,7 @@ services:
       DB_PORT: "5432"
       SCIM_BASE_URL: ${SCIM_BASE_URL:-}
       SCIM_BEARER_TOKEN: ${SCIM_BEARER_TOKEN:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
     ports:
       - "127.0.0.1:8001:8000"
     depends_on:
