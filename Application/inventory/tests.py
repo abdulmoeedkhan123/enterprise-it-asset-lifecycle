@@ -160,8 +160,8 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, "Software renewals need attention")
         self.assertContains(response, "Planning Suite")
         self.assertContains(response, "chart-bar-link")
-        self.assertContains(response, "?site=Sydney&amp;status=")
-        self.assertContains(response, "?site=&amp;status=Assigned")
+        self.assertContains(response, "?site=Sydney&status=")
+        self.assertContains(response, "?site=&status=Assigned")
 
     def test_asset_list_filters_by_selected_fields_and_searches_all_asset_fields(self):
         self.user.user_permissions.add(self.view_permission)
