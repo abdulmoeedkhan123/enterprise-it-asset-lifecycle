@@ -221,6 +221,23 @@ class ProcurementDecisionForm(forms.Form):
 
 class PurchaseOrderForm(forms.Form):
     purchase_order_reference = forms.CharField(max_length=64)
+    expected_delivery_date = forms.DateField(
+        required=False, widget=forms.DateInput(attrs={"type": "date"})
+    )
+    tracking_reference = forms.CharField(max_length=64, required=False)
+
+
+class ProcurementDeliveryUpdateForm(forms.Form):
+    delivery_status = forms.ChoiceField(
+        choices=(
+            (ProcurementRequest.DeliveryStatus.IN_TRANSIT, "In transit"),
+            (ProcurementRequest.DeliveryStatus.DELAYED, "Delayed"),
+        )
+    )
+    expected_delivery_date = forms.DateField(
+        required=False, widget=forms.DateInput(attrs={"type": "date"})
+    )
+    tracking_reference = forms.CharField(max_length=64, required=False)
 
 
 class ProcurementReceiptForm(forms.Form):

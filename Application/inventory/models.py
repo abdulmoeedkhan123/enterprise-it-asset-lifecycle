@@ -28,7 +28,7 @@ class Asset(models.Model):
     asset_type = models.CharField(max_length=32)
     manufacturer = models.CharField(max_length=64)
     model = models.CharField(max_length=96)
-    serial_ref = models.CharField(max_length=64, blank=True)
+    serial_ref = models.CharField(max_length=64, blank=True, db_index=True)
     site = models.CharField(max_length=64)
     department = models.CharField(max_length=64)
     custodian_ref = models.CharField(max_length=32, blank=True)
@@ -334,6 +334,14 @@ class ProcurementRequest(models.Model):
         RECEIVED = "received", "Received"
         CANCELLED = "cancelled", "Cancelled"
 
+    class DeliveryStatus(models.TextChoices):
+        NOT_ORDERED = "not_ordered", "Not ordered"
+        ORDERED = "ordered", "Ordered"
+        IN_TRANSIT = "in_transit", "In transit"
+        DELAYED = "delayed", "Delayed"
+        PARTIALLY_RECEIVED = "partially_received", "Partially received"
+        RECEIVED = "received", "Received"
+
     requester = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
@@ -355,6 +363,14 @@ class ProcurementRequest(models.Model):
         related_name="selected_for_requests",
     )
     purchase_order_reference = models.CharField(max_length=64, blank=True)
+    delivery_status = models.CharField(
+        max_length=24,
+        choices=DeliveryStatus.choices,
+        default=DeliveryStatus.NOT_ORDERED,
+        db_index=True,
+    )
+    expected_delivery_date = models.DateField(null=True, blank=True)
+    tracking_reference = models.CharField(max_length=64, blank=True)
     quantity_received = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -405,6 +421,7 @@ class ProcurementEvent(models.Model):
         APPROVED = "approved", "Approved"
         REJECTED = "rejected", "Rejected"
         ORDERED = "ordered", "Purchase order placed"
+        DELIVERY_UPDATED = "delivery_updated", "Delivery status updated"
         RECEIVED = "received", "Goods received"
         ASSET_REGISTERED = "asset_registered", "Asset registered"
         CANCELLED = "cancelled", "Cancelled"

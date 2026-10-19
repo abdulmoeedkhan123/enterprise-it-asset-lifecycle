@@ -3,12 +3,17 @@ from django.db import transaction
 
 from .models import (
     Asset,
+    DisposalCase,
+    DisposalEvent,
     IdentityLink,
     ImportRun,
     IntegrationRun,
     LifecycleEvent,
     MaintenanceWorkOrder,
     MaintenanceWorkOrderEvent,
+    ProcurementEvent,
+    ProcurementQuote,
+    ProcurementRequest,
     ReturnWorkItem,
 )
 
@@ -207,9 +212,6 @@ class MaintenanceWorkOrderAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 @admin.register(MaintenanceWorkOrderEvent)
 class MaintenanceWorkOrderEventAdmin(admin.ModelAdmin):
@@ -217,6 +219,101 @@ class MaintenanceWorkOrderEventAdmin(admin.ModelAdmin):
     list_filter = ("to_status", "created_at")
     search_fields = ("work_order__asset__asset_id", "work_order__title", "note")
     readonly_fields = tuple(field.name for field in MaintenanceWorkOrderEvent._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ProcurementRequest)
+class ProcurementRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "requester",
+        "status",
+        "quantity",
+        "quantity_received",
+        "purchase_order_reference",
+        "delivery_status",
+        "created_at",
+    )
+    list_filter = ("status", "delivery_status", "created_at")
+    search_fields = ("title", "purchase_order_reference", "requester__username")
+    readonly_fields = tuple(field.name for field in ProcurementRequest._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ProcurementQuote)
+class ProcurementQuoteAdmin(admin.ModelAdmin):
+    list_display = ("request", "supplier", "quote_reference", "unit_cost", "created_at")
+    list_filter = ("supplier", "created_at")
+    search_fields = ("request__title", "supplier", "quote_reference")
+    readonly_fields = tuple(field.name for field in ProcurementQuote._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ProcurementEvent)
+class ProcurementEventAdmin(admin.ModelAdmin):
+    list_display = ("request", "event_type", "actor", "created_at")
+    list_filter = ("event_type", "created_at")
+    search_fields = ("request__title", "details")
+    readonly_fields = tuple(field.name for field in ProcurementEvent._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(DisposalCase)
+class DisposalCaseAdmin(admin.ModelAdmin):
+    list_display = ("asset", "method", "status", "requested_by", "created_at", "completed_at")
+    list_filter = ("status", "method", "created_at")
+    search_fields = ("asset__asset_id", "reason", "disposal_evidence_ref")
+    readonly_fields = tuple(field.name for field in DisposalCase._meta.fields)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(DisposalEvent)
+class DisposalEventAdmin(admin.ModelAdmin):
+    list_display = ("case", "event_type", "actor", "created_at")
+    list_filter = ("event_type", "created_at")
+    search_fields = ("case__asset__asset_id", "note")
+    readonly_fields = tuple(field.name for field in DisposalEvent._meta.fields)
 
     def has_add_permission(self, request):
         return False
