@@ -1,6 +1,7 @@
-# ICT Business Analyst Portfolio
+# ICT Business Analyst Project 
 
-**Three-project portfolio | Project 01 developed: IT Asset Lifecycle Management**
+Project 01 developed:
+IT Asset Lifecycle Management**
 
 This repository presents a practical, fictional portfolio case study for an ICT Business Analyst role. Project 01 demonstrates business analysis, requirements, process modelling, data analysis, dashboard prototyping, testing design, and project governance. Projects 02 and 03 are portfolio roadmap concepts; they are not presented as completed case studies.
 
