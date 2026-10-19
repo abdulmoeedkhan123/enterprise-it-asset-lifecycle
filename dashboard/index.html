@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Portfolio dashboard prototype for a fictional IT asset lifecycle scenario.">
+  <title>Asset Operations | Portfolio Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Asset Operations dashboard home">
+      <span class="brand-mark" aria-hidden="true">AO</span>
+      <span><strong>Asset Operations</strong><small>Lifecycle overview</small></span>
+    </a>
+    <div class="topbar-meta">
+      <span class="demo-tag">SIMULATED DATA</span>
+      <span class="report-date">As of <time datetime="2026-10-19">19 Oct 2026</time></span>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">ICT BUSINESS ANALYST PORTFOLIO / PROJECT 01</p>
+        <h1>IT asset lifecycle</h1>
+        <p class="lede">A sample operational view for inventory, returns, warranty exposure, and disposition follow-up.</p>
+      </div>
+      <div class="refresh-state"><span class="status-dot" aria-hidden="true"></span><span id="load-state" role="status">Loading sample snapshot...</span></div>
+    </section>
+
+    <section class="notice" aria-label="Simulation notice">
+      <strong>Portfolio prototype</strong>
+      <span>Fictional records and calculated example indicators only. Not a live operational system or verified business outcome.</span>
+    </section>
+
+    <section class="filter-panel" aria-label="Dashboard filters">
+      <div class="filter-heading">
+        <div><p class="eyebrow">OPERATIONS VIEW</p><h2>Asset snapshot</h2></div>
+        <button id="reset-filters" class="text-button" type="button">Reset filters</button>
+      </div>
+      <div class="filters">
+        <label for="site-filter">Site
+          <select id="site-filter"><option value="">All sites</option></select>
+        </label>
+        <label for="status-filter">Lifecycle status
+          <select id="status-filter"><option value="">All statuses</option></select>
+        </label>
+        <label class="search-label" for="search-filter">Find an asset
+          <input id="search-filter" type="search" placeholder="Asset ID, site, or custodian" autocomplete="off">
+        </label>
+        <p id="filter-summary" class="filter-summary" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="kpi-heading">
+      <div class="section-heading"><div><p class="eyebrow">KEY INDICATORS</p><h2 id="kpi-heading">Current snapshot</h2></div><span class="section-note">Filtered view</span></div>
+      <div id="kpi-grid" class="kpi-grid"></div>
+    </section>
+
+    <section class="visual-grid" aria-label="Asset breakdowns">
+      <article class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">DISTRIBUTION</p><h2>By lifecycle status</h2></div></div>
+        <div id="status-chart" class="bar-list"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">DISTRIBUTION</p><h2>By site</h2></div></div>
+        <div id="site-chart" class="bar-list"></div>
+      </article>
+    </section>
+
+    <section class="panel review-panel" aria-labelledby="review-heading">
+      <div class="panel-heading review-heading">
+        <div><p class="eyebrow">HUMAN REVIEW REQUIRED</p><h2 id="review-heading">Example follow-up queue</h2><p class="panel-description">Rule-based sample flags to support investigation; not confirmed exceptions.</p></div>
+        <span id="review-count" class="count-pill">0 items</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Asset</th><th scope="col">Site</th><th scope="col">Status</th><th scope="col">Review prompt</th></tr></thead>
+          <tbody id="review-table"></tbody>
+        </table>
+      </div>
+      <p id="empty-review" class="empty-state" hidden>No sample review flags match the current filters.</p>
+      <p class="table-footnote">Example flags: overdue return, assigned record without custodian reference, or incomplete sanitisation control information at disposition.</p>
+    </section>
+
+    <footer class="page-footer">
+      <p>Data: 120 generated fictional asset records. Reporting date and metric rules are fixed for demonstration.</p>
+      <a href="../analysis/metric-definitions.md">View metric definitions</a>
+    </footer>
+  </main>
+</body>
+</html>

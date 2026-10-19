@@ -1,8 +1,9 @@
 # Data Dictionary — Synthetic Asset Snapshot
 
-File: `assets.csv`  
-Rows: 120 synthetic asset records (excluding header).  
-Generation: Randomised fictional records for demonstration.  
+File: `assets.csv`
+Rows: 1,200 synthetic asset records (excluding header).
+Generation: Deterministic fictional records for demonstration; generated with a fixed seed by [`../analysis/generate_assets.py`](../analysis/generate_assets.py).
+Reporting cut-off: 2026-10-19 (used by example dashboard metrics).
 Personal data: No real names, email addresses, phone numbers or street addresses.
 
 | Field | Type | Meaning | Example / rules |
@@ -27,6 +28,8 @@ Personal data: No real names, email addresses, phone numbers or street addresses
 
 ## Data quality caveats
 - The data is generated for dashboard and SQL practice, not a representative operational sample.
+- All identifiers and reference values are synthetic. Manufacturer names are generic labels and do not imply vendor involvement or a real purchase.
+- The generator deliberately includes a small number of incomplete records to exercise validation and exception-review behavior.
 - Missing evidence values are intentional for exception-analysis practice.
 - A snapshot cannot calculate true historical turnaround times; event-level history would be required.
 - “Overdue” uses a fixed demonstration reporting date embedded in the dashboard. A production solution should use a configurable business date/timezone and agreed calendar.

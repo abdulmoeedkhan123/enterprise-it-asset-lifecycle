@@ -1,121 +1,1201 @@
 asset_id,asset_type,manufacturer,model,serial_ref,site,department,custodian_ref,lifecycle_status,purchase_date,warranty_end,return_due_date,sanitisation_required,sanitisation_result,sanitisation_evidence_ref,disposal_evidence_ref,last_updated
-AST-0001,Laptop,Lenovo,Business Laptop,SYN-00001,Melbourne,Finance,,In Stock,2024-12-26,2027-12-26,,false,,,,2026-07-18
-AST-0002,Laptop,Apple,Business Laptop,SYN-00002,Sydney,Operations,EMP-0012,Return Pending,2023-06-22,2026-06-21,2026-10-27,false,,,,2026-10-09
-AST-0003,Desktop,Samsung,Business Desktop,SYN-00003,Melbourne,HR,EMP-0004,Assigned,2023-02-26,2026-02-25,,false,,,,2026-08-28
-AST-0004,Desktop,Lenovo,Business Desktop,SYN-00004,Remote,Sales,EMP-0001,Assigned,2024-12-20,2027-12-20,,false,,,,2026-09-15
-AST-0005,Desktop,Dell,Business Desktop,SYN-00005,Sydney,IT,EMP-0044,Assigned,2022-04-01,2025-03-31,,false,,,,2026-10-08
-AST-0006,Monitor,Dell,Office Monitor,SYN-00006,Remote,HR,EMP-0034,Ready for Disposal,2023-02-22,2026-02-21,,false,,,,2026-10-05
-AST-0007,Phone,Samsung,Corporate Phone,SYN-00007,Brisbane,HR,,In Stock,2024-11-19,2027-11-19,,false,,,,2026-09-26
-AST-0008,Laptop,HP,Business Laptop,SYN-00008,Sydney,Finance,,In Stock,2025-04-02,2028-04-01,,false,,,,2026-07-02
-AST-0009,Laptop,Lenovo,Business Laptop,SYN-00009,Brisbane,Sales,EMP-0047,Assigned,2023-12-27,2026-12-26,,false,,,,2026-09-24
-AST-0010,Monitor,Samsung,Office Monitor,SYN-00010,Melbourne,HR,EMP-0010,In Repair,2022-09-12,2025-09-11,,false,,,,2026-07-19
-AST-0011,Desktop,Samsung,Business Desktop,SYN-00011,Melbourne,Sales,EMP-0035,Assigned,2024-05-26,2027-05-26,,false,,,,2026-07-05
-AST-0012,Laptop,Apple,Business Laptop,SYN-00012,Brisbane,Operations,EMP-0041,Assigned,2026-05-08,2029-05-07,,false,,,,2026-09-23
-AST-0013,Tablet,Apple,Business Tablet,SYN-00013,Remote,Finance,EMP-0028,Ready for Disposal,2024-10-06,2027-10-06,,true,Failed,,,2026-09-17
-AST-0014,Desktop,HP,Business Desktop,SYN-00014,Remote,HR,EMP-0069,Assigned,2023-05-20,2026-05-19,,false,,,,2026-08-30
-AST-0015,Monitor,Apple,Office Monitor,SYN-00015,Sydney,Operations,EMP-0066,Assigned,2025-10-02,2028-10-01,,false,,,,2026-07-02
-AST-0016,Laptop,Apple,Business Laptop,SYN-00016,Sydney,IT,,In Stock,2025-08-19,2028-08-18,,false,,,,2026-09-02
-AST-0017,Tablet,Samsung,Business Tablet,SYN-00017,Sydney,Operations,EMP-0033,Lost / Stolen,2023-07-25,2026-07-24,,false,,,,2026-07-25
-AST-0018,Tablet,Dell,Business Tablet,SYN-00018,Brisbane,IT,EMP-0044,In Repair,2022-03-21,2025-03-20,,false,,,,2026-09-30
-AST-0019,Phone,HP,Corporate Phone,SYN-00019,Melbourne,HR,,In Stock,2022-06-25,2025-06-24,,false,,,,2026-06-26
-AST-0020,Laptop,Lenovo,Business Laptop,SYN-00020,Melbourne,Sales,EMP-0065,Ready for Disposal,2024-11-08,2027-11-08,,true,,,,2026-07-15
-AST-0021,Desktop,Dell,Business Desktop,SYN-00021,Brisbane,IT,EMP-0068,Assigned,2022-03-01,2025-02-28,,false,,,,2026-10-18
-AST-0022,Laptop,Lenovo,Business Laptop,SYN-00022,Sydney,Operations,,Disposed,2022-01-02,2025-01-01,,true,Pending,,,2026-07-19
-AST-0023,Phone,Apple,Corporate Phone,SYN-00023,Melbourne,Sales,EMP-0069,Sanitisation Pending,2022-04-07,2025-04-06,,true,Passed,,,2026-08-14
-AST-0024,Tablet,Lenovo,Business Tablet,SYN-00024,Brisbane,IT,EMP-0070,Assigned,2025-05-05,2028-05-04,,false,,,,2026-07-27
-AST-0025,Monitor,Dell,Office Monitor,SYN-00025,Melbourne,Finance,EMP-0058,Assigned,2023-08-18,2026-08-17,,false,,,,2026-10-12
-AST-0026,Monitor,Lenovo,Office Monitor,SYN-00026,Melbourne,Operations,,In Stock,2023-06-04,2026-06-03,,false,,,,2026-10-11
-AST-0027,Laptop,Dell,Business Laptop,SYN-00027,Melbourne,Sales,EMP-0043,Assigned,2026-05-09,2029-05-08,,false,,,,2026-07-27
-AST-0028,Phone,Samsung,Corporate Phone,SYN-00028,Remote,Finance,EMP-0074,Assigned,2025-10-15,2028-10-14,,false,,,,2026-07-12
-AST-0029,Phone,HP,Corporate Phone,SYN-00029,Remote,IT,EMP-0013,Sanitisation Pending,2025-06-18,2028-06-17,,true,Passed,EVD-00029,,2026-08-22
-AST-0030,Laptop,Apple,Business Laptop,SYN-00030,Brisbane,Operations,EMP-0013,Return Pending,2022-11-27,2025-11-26,2026-09-23,false,,,,2026-09-19
-AST-0031,Desktop,Apple,Business Desktop,SYN-00031,Melbourne,Sales,EMP-0018,Assigned,2024-01-06,2027-01-05,,false,,,,2026-08-22
-AST-0032,Desktop,Dell,Business Desktop,SYN-00032,Sydney,HR,EMP-0057,Ready for Disposal,2026-02-08,2029-02-07,,true,,,,2026-07-05
-AST-0033,Laptop,Lenovo,Business Laptop,SYN-00033,Remote,Operations,,Disposed,2022-04-21,2025-04-20,,true,Passed,,DSP-00033,2026-09-29
-AST-0034,Phone,HP,Corporate Phone,SYN-00034,Remote,Sales,,In Stock,2024-05-04,2027-05-04,,false,,,,2026-08-27
-AST-0035,Tablet,HP,Business Tablet,SYN-00035,Melbourne,Operations,EMP-0020,Return Pending,2023-10-20,2026-10-19,2026-10-02,false,,,,2026-08-07
-AST-0036,Tablet,Dell,Business Tablet,SYN-00036,Sydney,HR,,In Stock,2024-10-08,2027-10-08,,false,,,,2026-08-20
-AST-0037,Tablet,Lenovo,Business Tablet,SYN-00037,Sydney,HR,,Disposed,2023-07-21,2026-07-20,,true,Passed,,DSP-00037,2026-10-12
-AST-0038,Desktop,Samsung,Business Desktop,SYN-00038,Sydney,HR,EMP-0032,Assigned,2023-05-03,2026-05-02,,false,,,,2026-10-10
-AST-0039,Phone,HP,Corporate Phone,SYN-00039,Melbourne,Sales,EMP-0067,Return Pending,2023-05-12,2026-05-11,2026-10-10,false,,,,2026-09-20
-AST-0040,Monitor,Apple,Office Monitor,SYN-00040,Brisbane,Operations,EMP-0039,Assigned,2022-10-06,2025-10-05,,false,,,,2026-10-19
-AST-0041,Phone,Samsung,Corporate Phone,SYN-00041,Melbourne,HR,EMP-0013,Return Pending,2023-05-16,2026-05-15,2026-09-24,false,,,,2026-09-17
-AST-0042,Desktop,Samsung,Business Desktop,SYN-00042,Brisbane,HR,,Disposed,2026-02-22,2029-02-21,,true,Passed,EVD-00042,,2026-07-09
-AST-0043,Tablet,Samsung,Business Tablet,SYN-00043,Brisbane,Operations,,In Stock,2021-12-12,2024-12-11,,false,,,,2026-06-22
-AST-0044,Desktop,Lenovo,Business Desktop,SYN-00044,Brisbane,Sales,EMP-0071,Assigned,2025-12-05,2028-12-04,,false,,,,2026-08-04
-AST-0045,Desktop,Samsung,Business Desktop,SYN-00045,Remote,Sales,EMP-0034,In Repair,2025-05-22,2028-05-21,,false,,,,2026-06-27
-AST-0046,Laptop,HP,Business Laptop,SYN-00046,Sydney,Operations,,In Stock,2024-02-26,2027-02-25,,false,,,,2026-09-08
-AST-0047,Desktop,Apple,Business Desktop,SYN-00047,Remote,HR,EMP-0021,Return Pending,2025-01-22,2028-01-22,2026-11-06,false,,,,2026-10-19
-AST-0048,Laptop,Lenovo,Business Laptop,SYN-00048,Sydney,Sales,,In Stock,2022-08-27,2025-08-26,,false,,,,2026-08-07
-AST-0049,Tablet,Dell,Business Tablet,SYN-00049,Brisbane,Sales,,In Stock,2025-10-24,2028-10-23,,false,,,,2026-06-27
-AST-0050,Laptop,Samsung,Business Laptop,SYN-00050,Remote,HR,,Disposed,2025-05-08,2028-05-07,,true,Passed,EVD-00050,DSP-00050,2026-07-17
-AST-0051,Desktop,Apple,Business Desktop,SYN-00051,Sydney,Finance,,Disposed,2025-03-15,2028-03-14,,true,Passed,EVD-00051,DSP-00051,2026-07-18
-AST-0052,Monitor,HP,Office Monitor,SYN-00052,Melbourne,Operations,EMP-0032,Sanitisation Pending,2024-03-21,2027-03-21,,false,,,,2026-09-02
-AST-0053,Laptop,HP,Business Laptop,SYN-00053,Brisbane,Finance,EMP-0026,Ready for Disposal,2025-04-13,2028-04-12,,true,Failed,,,2026-09-22
-AST-0054,Laptop,Dell,Business Laptop,SYN-00054,Brisbane,Sales,EMP-0043,Return Pending,2024-04-17,2027-04-17,2026-10-07,false,,,,2026-07-30
-AST-0055,Tablet,Dell,Business Tablet,SYN-00055,Sydney,Sales,EMP-0043,Assigned,2023-07-10,2026-07-09,,false,,,,2026-09-28
-AST-0056,Tablet,HP,Business Tablet,SYN-00056,Remote,HR,,Disposed,2025-01-15,2028-01-15,,true,Passed,,DSP-00056,2026-08-16
-AST-0057,Laptop,HP,Business Laptop,SYN-00057,Sydney,IT,EMP-0025,Assigned,2023-04-19,2026-04-18,,false,,,,2026-10-20
-AST-0058,Tablet,HP,Business Tablet,SYN-00058,Brisbane,Operations,,Disposed,2023-07-06,2026-07-05,,true,Passed,EVD-00058,,2026-07-20
-AST-0059,Monitor,HP,Office Monitor,SYN-00059,Remote,Sales,EMP-0053,Assigned,2022-10-16,2025-10-15,,false,,,,2026-08-11
-AST-0060,Desktop,Lenovo,Business Desktop,SYN-00060,Brisbane,IT,EMP-0049,Assigned,2022-10-20,2025-10-19,,false,,,,2026-08-11
-AST-0061,Laptop,Samsung,Business Laptop,SYN-00061,Brisbane,IT,EMP-0056,Assigned,2025-05-08,2028-05-07,,false,,,,2026-08-25
-AST-0062,Phone,Lenovo,Corporate Phone,SYN-00062,Sydney,Sales,EMP-0061,Return Pending,2023-08-31,2026-08-30,2026-11-09,false,,,,2026-08-16
-AST-0063,Tablet,HP,Business Tablet,SYN-00063,Melbourne,Finance,EMP-0031,Assigned,2021-12-09,2024-12-08,,false,,,,2026-10-02
-AST-0064,Laptop,Samsung,Business Laptop,SYN-00064,Sydney,IT,,In Stock,2023-11-12,2026-11-11,,false,,,,2026-08-28
-AST-0065,Tablet,Apple,Business Tablet,SYN-00065,Remote,Finance,EMP-0050,Assigned,2022-08-16,2025-08-15,,false,,,,2026-10-02
-AST-0066,Laptop,Samsung,Business Laptop,SYN-00066,Remote,Operations,,Disposed,2022-03-18,2025-03-17,,true,Passed,EVD-00066,,2026-08-10
-AST-0067,Desktop,Apple,Business Desktop,SYN-00067,Brisbane,IT,,Disposed,2025-11-06,2028-11-05,,true,Failed,,,2026-08-03
-AST-0068,Tablet,Lenovo,Business Tablet,SYN-00068,Remote,IT,EMP-0058,Assigned,2023-06-16,2026-06-15,,false,,,,2026-09-17
-AST-0069,Desktop,Lenovo,Business Desktop,SYN-00069,Brisbane,IT,EMP-0067,Sanitisation Pending,2024-12-22,2027-12-22,,true,Failed,,,2026-10-11
-AST-0070,Monitor,Samsung,Office Monitor,SYN-00070,Sydney,Finance,EMP-0041,Assigned,2024-08-24,2027-08-24,,false,,,,2026-10-01
-AST-0071,Desktop,Dell,Business Desktop,SYN-00071,Remote,IT,EMP-0028,Assigned,2025-09-03,2028-09-02,,false,,,,2026-09-08
-AST-0072,Tablet,Apple,Business Tablet,SYN-00072,Remote,HR,EMP-0027,Assigned,2026-03-07,2029-03-06,,false,,,,2026-07-23
-AST-0073,Laptop,Apple,Business Laptop,SYN-00073,Sydney,Sales,EMP-0074,Ready for Disposal,2022-03-28,2025-03-27,,true,Failed,,,2026-09-12
-AST-0074,Phone,Samsung,Corporate Phone,SYN-00074,Melbourne,IT,EMP-0069,Ready for Disposal,2024-03-06,2027-03-06,,true,,,,2026-09-22
-AST-0075,Monitor,HP,Office Monitor,SYN-00075,Remote,Finance,EMP-0050,Assigned,2026-05-14,2029-05-13,,false,,,,2026-07-05
-AST-0076,Phone,Apple,Corporate Phone,SYN-00076,Sydney,Operations,,Disposed,2023-01-15,2026-01-14,,true,,,,2026-07-30
-AST-0077,Phone,Lenovo,Corporate Phone,SYN-00077,Sydney,Sales,,In Stock,2023-12-10,2026-12-09,,false,,,,2026-09-02
-AST-0078,Monitor,Apple,Office Monitor,SYN-00078,Brisbane,IT,EMP-0044,Assigned,2024-09-11,2027-09-11,,false,,,,2026-09-18
-AST-0079,Laptop,Dell,Business Laptop,SYN-00079,Brisbane,Finance,EMP-0070,Assigned,2022-04-30,2025-04-29,,false,,,,2026-07-29
-AST-0080,Laptop,Lenovo,Business Laptop,SYN-00080,Sydney,HR,EMP-0006,Sanitisation Pending,2022-11-16,2025-11-15,,true,Passed,EVD-00080,,2026-10-01
-AST-0081,Desktop,Dell,Business Desktop,SYN-00081,Melbourne,IT,,In Stock,2022-10-10,2025-10-09,,false,,,,2026-07-23
-AST-0082,Monitor,Samsung,Office Monitor,SYN-00082,Sydney,Finance,EMP-0078,In Repair,2025-08-03,2028-08-02,,false,,,,2026-09-11
-AST-0083,Laptop,Apple,Business Laptop,SYN-00083,Remote,Finance,EMP-0074,Assigned,2024-10-12,2027-10-12,,false,,,,2026-10-11
-AST-0084,Tablet,HP,Business Tablet,SYN-00084,Sydney,HR,EMP-0032,Return Pending,2023-01-05,2026-01-04,2026-09-26,false,,,,2026-07-12
-AST-0085,Laptop,Dell,Business Laptop,SYN-00085,Brisbane,Operations,EMP-0048,Assigned,2024-02-16,2027-02-15,,false,,,,2026-07-04
-AST-0086,Phone,Apple,Corporate Phone,SYN-00086,Melbourne,IT,EMP-0056,Sanitisation Pending,2025-12-08,2028-12-07,,true,Pending,,,2026-09-28
-AST-0087,Tablet,Samsung,Business Tablet,SYN-00087,Remote,IT,,Disposed,2025-01-05,2028-01-05,,true,,,DSP-00087,2026-08-26
-AST-0088,Tablet,HP,Business Tablet,SYN-00088,Remote,Finance,EMP-0012,Assigned,2025-02-25,2028-02-25,,false,,,,2026-07-16
-AST-0089,Phone,HP,Corporate Phone,SYN-00089,Sydney,IT,EMP-0049,Assigned,2022-10-13,2025-10-12,,false,,,,2026-07-04
-AST-0090,Monitor,HP,Office Monitor,SYN-00090,Brisbane,Sales,EMP-0046,Assigned,2025-05-04,2028-05-03,,false,,,,2026-06-30
-AST-0091,Tablet,Dell,Business Tablet,SYN-00091,Melbourne,Operations,EMP-0072,In Repair,2024-12-24,2027-12-24,,false,,,,2026-09-20
-AST-0092,Phone,Apple,Corporate Phone,SYN-00092,Remote,IT,EMP-0031,Assigned,2022-04-12,2025-04-11,,false,,,,2026-07-11
-AST-0093,Laptop,Apple,Business Laptop,SYN-00093,Melbourne,Sales,,In Stock,2025-04-15,2028-04-14,,false,,,,2026-07-28
-AST-0094,Tablet,HP,Business Tablet,SYN-00094,Remote,HR,EMP-0068,Assigned,2023-06-05,2026-06-04,,false,,,,2026-09-08
-AST-0095,Monitor,HP,Office Monitor,SYN-00095,Melbourne,Operations,EMP-0040,In Repair,2025-01-04,2028-01-04,,false,,,,2026-07-20
-AST-0096,Desktop,Lenovo,Business Desktop,SYN-00096,Melbourne,Finance,EMP-0069,Assigned,2022-05-13,2025-05-12,,false,,,,2026-07-18
-AST-0097,Phone,Samsung,Corporate Phone,SYN-00097,Brisbane,Operations,EMP-0068,Assigned,2023-03-23,2026-03-22,,false,,,,2026-07-06
-AST-0098,Desktop,HP,Business Desktop,SYN-00098,Sydney,HR,EMP-0023,Assigned,2024-07-03,2027-07-03,,false,,,,2026-10-04
-AST-0099,Monitor,Samsung,Office Monitor,SYN-00099,Brisbane,Finance,,In Stock,2026-03-23,2029-03-22,,false,,,,2026-07-31
-AST-0100,Phone,Samsung,Corporate Phone,SYN-00100,Brisbane,IT,,In Stock,2026-06-17,2029-06-16,,false,,,,2026-08-20
-AST-0101,Phone,Apple,Corporate Phone,SYN-00101,Sydney,Operations,EMP-0033,Assigned,2026-03-29,2029-03-28,,false,,,,2026-08-30
-AST-0102,Phone,Dell,Corporate Phone,SYN-00102,Melbourne,Finance,,In Stock,2022-12-31,2025-12-30,,false,,,,2026-07-09
-AST-0103,Tablet,Samsung,Business Tablet,SYN-00103,Melbourne,HR,,Disposed,2026-01-19,2029-01-18,,true,Passed,,DSP-00103,2026-09-02
-AST-0104,Phone,HP,Corporate Phone,SYN-00104,Sydney,HR,,Disposed,2024-11-11,2027-11-11,,true,,,DSP-00104,2026-07-18
-AST-0105,Laptop,Lenovo,Business Laptop,SYN-00105,Melbourne,HR,,Disposed,2025-05-13,2028-05-12,,true,Passed,EVD-00105,,2026-10-11
-AST-0106,Desktop,Samsung,Business Desktop,SYN-00106,Remote,Sales,,In Stock,2024-01-02,2027-01-01,,false,,,,2026-10-16
-AST-0107,Desktop,Dell,Business Desktop,SYN-00107,Melbourne,Sales,EMP-0059,Assigned,2024-12-10,2027-12-10,,false,,,,2026-07-12
-AST-0108,Tablet,Samsung,Business Tablet,SYN-00108,Melbourne,Finance,EMP-0055,Return Pending,2025-06-02,2028-06-01,2026-09-27,false,,,,2026-06-26
-AST-0109,Monitor,Lenovo,Office Monitor,SYN-00109,Brisbane,HR,EMP-0008,Sanitisation Pending,2026-02-16,2029-02-15,,false,,,,2026-07-17
-AST-0110,Tablet,Apple,Business Tablet,SYN-00110,Brisbane,HR,,Disposed,2024-01-25,2027-01-24,,true,Passed,EVD-00110,DSP-00110,2026-08-12
-AST-0111,Phone,Apple,Corporate Phone,SYN-00111,Brisbane,HR,EMP-0006,Assigned,2023-03-06,2026-03-05,,false,,,,2026-09-18
-AST-0112,Laptop,Samsung,Business Laptop,SYN-00112,Sydney,Sales,,In Stock,2022-10-01,2025-09-30,,false,,,,2026-08-08
-AST-0113,Laptop,Samsung,Business Laptop,SYN-00113,Remote,Sales,EMP-0061,In Repair,2025-07-19,2028-07-18,,false,,,,2026-09-27
-AST-0114,Tablet,Dell,Business Tablet,SYN-00114,Remote,Sales,EMP-0063,Assigned,2021-12-18,2024-12-17,,false,,,,2026-08-29
-AST-0115,Monitor,HP,Office Monitor,SYN-00115,Remote,IT,EMP-0021,Assigned,2025-12-10,2028-12-09,,false,,,,2026-09-14
-AST-0116,Phone,Dell,Corporate Phone,SYN-00116,Brisbane,Sales,EMP-0005,Sanitisation Pending,2023-06-12,2026-06-11,,true,Failed,,,2026-09-09
-AST-0117,Laptop,Dell,Business Laptop,SYN-00117,Remote,IT,EMP-0066,Lost / Stolen,2024-04-06,2027-04-06,,false,,,,2026-10-14
-AST-0118,Desktop,Apple,Business Desktop,SYN-00118,Sydney,Finance,EMP-0064,Assigned,2023-01-14,2026-01-13,,false,,,,2026-09-16
-AST-0119,Tablet,Apple,Business Tablet,SYN-00119,Remote,Operations,,In Stock,2024-11-30,2027-11-30,,false,,,,2026-10-17
-AST-0120,Tablet,Samsung,Business Tablet,SYN-00120,Sydney,HR,EMP-0021,Sanitisation Pending,2022-07-20,2025-07-19,,true,Pending,,,2026-08-29
+AST-0001,Tablet,HP,Business Tablet,SYN-00001,Melbourne,Finance,EMP-0137,Assigned,2025-04-30,2026-04-30,,false,,,,2026-08-20
+AST-0002,Tablet,Dell,Business Tablet,SYN-00002,Sydney,Finance,EMP-0198,Assigned,2023-08-20,2026-08-20,,false,,,,2026-09-09
+AST-0003,Desktop,HP,Business Desktop,SYN-00003,Melbourne,Sales,EMP-0341,Assigned,2022-11-15,2023-11-15,,false,,,,2026-07-03
+AST-0004,Laptop,HP,Business Laptop,SYN-00004,Remote,Operations,,Disposed,2022-07-21,2025-07-21,,false,,,DSP-00004,2026-10-15
+AST-0005,Tablet,Dell,Business Tablet,SYN-00005,Sydney,Operations,EMP-0056,In Repair,2020-07-29,2022-07-29,,false,,,,2026-09-08
+AST-0006,Laptop,Samsung,Business Laptop,SYN-00006,Melbourne,Finance,EMP-0159,Assigned,2024-04-09,2026-04-09,,false,,,,2026-10-13
+AST-0007,Tablet,HP,Business Tablet,SYN-00007,Brisbane,IT,,Sanitisation Pending,2023-12-25,2025-12-24,,true,Pending,,,2026-07-02
+AST-0008,Laptop,Lenovo,Business Laptop,SYN-00008,Remote,HR,EMP-0139,Assigned,2024-10-31,2027-11-01,,false,,,,2026-08-07
+AST-0009,Monitor,Samsung,Office Monitor,SYN-00009,Remote,HR,EMP-0363,Assigned,2025-07-30,2027-07-30,,false,,,,2026-07-31
+AST-0010,Monitor,HP,Office Monitor,SYN-00010,Sydney,HR,EMP-0166,In Repair,2022-05-31,2024-05-30,,true,,,,2026-07-02
+AST-0011,Tablet,Samsung,Business Tablet,SYN-00011,Remote,HR,,In Stock,2021-02-11,2023-02-11,,false,,,,2026-08-22
+AST-0012,Monitor,HP,Office Monitor,SYN-00012,Melbourne,HR,EMP-0417,Assigned,2026-06-02,2028-06-01,,false,,,,2026-09-30
+AST-0013,Desktop,Apple,Business Desktop,SYN-00013,Brisbane,Operations,,Disposed,2022-11-02,2025-11-02,,false,,,DSP-00013,2026-08-10
+AST-0014,Laptop,Lenovo,Business Laptop,SYN-00014,Brisbane,Finance,EMP-0146,Return Pending,2024-09-04,2027-09-05,2026-09-10,true,Failed,,,2026-07-29
+AST-0015,Phone,HP,Corporate Phone,SYN-00015,Sydney,IT,EMP-0279,Assigned,2024-12-23,2025-12-23,,false,,,,2026-08-09
+AST-0016,Desktop,Samsung,Business Desktop,SYN-00016,Remote,Sales,EMP-0173,Assigned,2022-08-15,2023-08-15,,false,,,,2026-08-22
+AST-0017,Laptop,Dell,Business Laptop,SYN-00017,Melbourne,HR,,In Stock,2026-05-14,2029-05-14,,true,,,,2026-08-13
+AST-0018,Tablet,Samsung,Business Tablet,SYN-00018,Brisbane,Finance,,Disposed,2024-01-04,2027-01-04,,false,,,DSP-00018,2026-07-29
+AST-0019,Monitor,Dell,Office Monitor,SYN-00019,Sydney,IT,,In Stock,2025-05-23,2027-05-23,,false,,,,2026-08-13
+AST-0020,Phone,HP,Corporate Phone,SYN-00020,Remote,HR,EMP-0311,Assigned,2026-03-21,2028-03-20,,false,,,,2026-07-27
+AST-0021,Monitor,HP,Office Monitor,SYN-00021,Sydney,Sales,EMP-0364,Assigned,2020-12-15,2022-12-15,,false,,,,2026-08-02
+AST-0022,Desktop,Samsung,Business Desktop,SYN-00022,Remote,Finance,,In Stock,2020-05-13,2022-05-13,,false,,,,2026-09-28
+AST-0023,Monitor,Apple,Office Monitor,SYN-00023,Remote,IT,EMP-0103,Assigned,2020-02-19,2023-02-19,,false,,,,2026-08-25
+AST-0024,Laptop,HP,Business Laptop,SYN-00024,Remote,Finance,,In Stock,2026-01-24,2027-01-24,,false,,,,2026-09-04
+AST-0025,Desktop,Apple,Business Desktop,SYN-00025,Brisbane,Operations,EMP-0109,Return Pending,2023-04-26,2026-04-26,2026-11-07,true,,,,2026-08-08
+AST-0026,Monitor,HP,Office Monitor,SYN-00026,Sydney,Sales,,In Stock,2020-02-18,2022-02-17,,false,,,,2026-09-29
+AST-0027,Tablet,Lenovo,Business Tablet,SYN-00027,Brisbane,HR,EMP-0143,Return Pending,2020-04-26,2021-04-26,2026-10-19,false,,,,2026-10-19
+AST-0028,Phone,Samsung,Corporate Phone,SYN-00028,Brisbane,HR,EMP-0346,Assigned,2025-03-13,2027-03-13,,true,,,,2026-07-24
+AST-0029,Desktop,Apple,Business Desktop,SYN-00029,Melbourne,Sales,EMP-0231,Assigned,2022-01-21,2025-01-21,,false,,,,2026-10-11
+AST-0030,Desktop,HP,Business Desktop,SYN-00030,Remote,Finance,EMP-0274,Return Pending,2021-10-16,2023-10-16,2026-11-16,false,,,,2026-07-15
+AST-0031,Desktop,Samsung,Business Desktop,SYN-00031,Brisbane,Operations,EMP-0417,Return Pending,2026-08-11,2027-08-11,2026-10-29,false,,,,2026-10-10
+AST-0032,Desktop,Apple,Business Desktop,SYN-00032,Brisbane,IT,EMP-0366,In Repair,2024-03-29,2026-03-29,,false,,,,2026-07-25
+AST-0033,Desktop,Apple,Business Desktop,SYN-00033,Remote,Sales,EMP-0141,Assigned,2024-06-16,2027-06-17,,true,,,,2026-08-22
+AST-0034,Desktop,Apple,Business Desktop,SYN-00034,Brisbane,IT,,Sanitisation Pending,2022-10-01,2025-10-01,,true,Pending,,,2026-10-15
+AST-0035,Laptop,Apple,Business Laptop,SYN-00035,Melbourne,Sales,EMP-0186,Return Pending,2024-04-24,2026-04-24,2026-10-05,false,,,,2026-08-26
+AST-0036,Phone,Lenovo,Corporate Phone,SYN-00036,Brisbane,Finance,,Sanitisation Pending,2022-04-11,2025-04-11,,true,Pending,,,2026-08-28
+AST-0037,Laptop,Apple,Business Laptop,SYN-00037,Brisbane,IT,,In Stock,2024-10-22,2025-10-22,,false,,,,2026-10-18
+AST-0038,Laptop,Apple,Business Laptop,SYN-00038,Brisbane,Operations,EMP-0087,Assigned,2020-09-15,2021-09-15,,false,,,,2026-09-08
+AST-0039,Laptop,Samsung,Business Laptop,SYN-00039,Sydney,Sales,EMP-0299,Assigned,2022-02-10,2023-02-10,,false,,,,2026-09-18
+AST-0040,Tablet,Apple,Business Tablet,SYN-00040,Melbourne,Finance,EMP-0157,Lost / Stolen,2023-08-09,2025-08-08,,false,,,,2026-07-15
+AST-0041,Monitor,HP,Office Monitor,SYN-00041,Brisbane,Sales,,Disposed,2021-05-19,2024-05-19,,false,,,,2026-08-05
+AST-0042,Phone,HP,Corporate Phone,SYN-00042,Brisbane,Sales,,Disposed,2021-04-23,2024-04-23,,false,,,DSP-00042,2026-09-30
+AST-0043,Desktop,Dell,Business Desktop,SYN-00043,Melbourne,IT,,Disposed,2020-05-20,2023-05-21,,false,,,DSP-00043,2026-07-08
+AST-0044,Desktop,Dell,Business Desktop,SYN-00044,Brisbane,Finance,,Disposed,2023-04-25,2024-04-24,,true,Failed,,DSP-00044,2026-09-12
+AST-0045,Laptop,HP,Business Laptop,SYN-00045,Brisbane,IT,EMP-0155,Assigned,2026-08-05,2028-08-04,,true,Failed,,,2026-09-19
+AST-0046,Desktop,Lenovo,Business Desktop,SYN-00046,Melbourne,HR,EMP-0321,Assigned,2024-03-30,2025-03-30,,false,,,,2026-08-05
+AST-0047,Phone,Dell,Corporate Phone,SYN-00047,Remote,Sales,EMP-0215,Assigned,2025-01-28,2026-01-28,,false,,,,2026-10-05
+AST-0048,Tablet,Apple,Business Tablet,SYN-00048,Brisbane,HR,EMP-0428,Return Pending,2022-04-07,2025-04-07,2026-11-15,false,,,,2026-10-01
+AST-0049,Laptop,HP,Business Laptop,SYN-00049,Remote,Sales,,In Stock,2022-02-08,2023-02-08,,true,,,,2026-09-13
+AST-0050,Desktop,Lenovo,Business Desktop,SYN-00050,Sydney,Sales,EMP-0338,Assigned,2023-01-15,2025-01-14,,false,,,,2026-07-02
+AST-0051,Phone,Dell,Corporate Phone,SYN-00051,Melbourne,Sales,,In Stock,2021-03-26,2023-03-26,,false,,,,2026-08-27
+AST-0052,Laptop,Lenovo,Business Laptop,SYN-00052,Remote,HR,EMP-0151,Assigned,2025-10-05,2026-10-05,,false,,,,2026-09-10
+AST-0053,Monitor,Dell,Office Monitor,SYN-00053,Remote,Finance,EMP-0061,Assigned,2024-01-08,2025-01-07,,false,,,,2026-08-28
+AST-0054,Desktop,Apple,Business Desktop,SYN-00054,Brisbane,HR,EMP-0375,Assigned,2024-06-11,2027-06-12,,true,,,,2026-09-06
+AST-0055,Phone,HP,Corporate Phone,SYN-00055,Melbourne,Sales,,Disposed,2025-10-30,2026-10-30,,false,,,DSP-00055,2026-08-26
+AST-0056,Monitor,Apple,Office Monitor,SYN-00056,Remote,Operations,EMP-0483,Assigned,2021-12-19,2024-12-19,,false,,,,2026-09-15
+AST-0057,Desktop,Samsung,Business Desktop,SYN-00057,Sydney,Sales,,In Stock,2020-03-23,2023-03-24,,false,,,,2026-10-07
+AST-0058,Laptop,Apple,Business Laptop,SYN-00058,Melbourne,HR,EMP-0205,Assigned,2026-01-08,2027-01-08,,false,,,,2026-09-25
+AST-0059,Phone,HP,Corporate Phone,SYN-00059,Remote,Finance,EMP-0451,Assigned,2025-03-14,2027-03-14,,true,,,,2026-07-13
+AST-0060,Laptop,Apple,Business Laptop,SYN-00060,Sydney,HR,EMP-0125,Assigned,2025-05-03,2028-05-03,,false,,,,2026-08-11
+AST-0061,Laptop,Lenovo,Business Laptop,SYN-00061,Sydney,Finance,,Ready for Disposal,2024-10-04,2027-10-05,,true,Pending,,,2026-07-19
+AST-0062,Laptop,Apple,Business Laptop,SYN-00062,Sydney,Sales,,Assigned,2024-07-22,2025-07-22,,false,,,,2026-09-08
+AST-0063,Tablet,Lenovo,Business Tablet,SYN-00063,Brisbane,Sales,EMP-0039,Assigned,2020-10-05,2023-10-06,,false,,,,2026-10-16
+AST-0064,Desktop,HP,Business Desktop,SYN-00064,Sydney,Sales,,In Stock,2026-03-28,2029-03-28,,false,,,,2026-09-11
+AST-0065,Tablet,Lenovo,Business Tablet,SYN-00065,Brisbane,IT,,Sanitisation Pending,2021-02-21,2022-02-21,,true,Pending,,,2026-08-20
+AST-0066,Phone,Lenovo,Corporate Phone,SYN-00066,Remote,Finance,EMP-0085,Assigned,2026-02-22,2027-02-22,,false,,,,2026-08-27
+AST-0067,Monitor,HP,Office Monitor,SYN-00067,Sydney,Sales,,In Stock,2024-11-24,2026-11-24,,false,,,,2026-07-25
+AST-0068,Desktop,Apple,Business Desktop,SYN-00068,Melbourne,Sales,,Ready for Disposal,2024-07-06,2026-07-06,,true,Passed,EVD-00068,,2026-10-17
+AST-0069,Phone,Dell,Corporate Phone,SYN-00069,Sydney,IT,EMP-0268,Assigned,2022-11-26,2025-11-26,,true,,,,2026-09-19
+AST-0070,Laptop,Apple,Business Laptop,SYN-00070,Melbourne,Operations,EMP-0289,Assigned,2021-01-27,2022-01-27,,false,,,,2026-08-05
+AST-0071,Desktop,Samsung,Business Desktop,SYN-00071,Remote,IT,,Disposed,2022-01-20,2025-01-20,,false,,,,2026-09-29
+AST-0072,Tablet,Apple,Business Tablet,SYN-00072,Remote,HR,EMP-0056,Assigned,2025-02-19,2026-02-19,,false,,,,2026-07-24
+AST-0073,Phone,Dell,Corporate Phone,SYN-00073,Remote,Operations,EMP-0320,Return Pending,2024-04-11,2027-04-12,2026-09-11,false,,,,2026-09-20
+AST-0074,Phone,Lenovo,Corporate Phone,SYN-00074,Remote,HR,EMP-0201,Assigned,2026-05-30,2027-05-30,,false,,,,2026-09-30
+AST-0075,Laptop,Apple,Business Laptop,SYN-00075,Brisbane,IT,EMP-0027,Assigned,2021-08-14,2024-08-14,,false,,,,2026-10-08
+AST-0076,Desktop,HP,Business Desktop,SYN-00076,Sydney,Finance,,Disposed,2023-01-13,2025-01-12,,false,,,DSP-00076,2026-09-17
+AST-0077,Tablet,Lenovo,Business Tablet,SYN-00077,Brisbane,IT,EMP-0098,Assigned,2023-12-23,2026-12-23,,true,Failed,,,2026-08-07
+AST-0078,Desktop,Apple,Business Desktop,SYN-00078,Sydney,IT,,In Stock,2024-08-02,2027-08-03,,true,,,,2026-09-23
+AST-0079,Desktop,Apple,Business Desktop,SYN-00079,Melbourne,Finance,,In Stock,2025-06-03,2027-06-03,,false,,,,2026-07-11
+AST-0080,Monitor,Lenovo,Office Monitor,SYN-00080,Remote,Operations,EMP-0066,Return Pending,2025-02-18,2027-02-18,2026-10-19,false,,,,2026-10-14
+AST-0081,Monitor,Dell,Office Monitor,SYN-00081,Sydney,Sales,EMP-0028,Assigned,2021-03-27,2024-03-27,,false,,,,2026-09-08
+AST-0082,Monitor,Samsung,Office Monitor,SYN-00082,Remote,HR,EMP-0031,Assigned,2022-05-10,2025-05-10,,true,Failed,,,2026-07-21
+AST-0083,Laptop,Lenovo,Business Laptop,SYN-00083,Melbourne,Sales,,In Stock,2020-05-05,2021-05-05,,false,,,,2026-07-20
+AST-0084,Desktop,Apple,Business Desktop,SYN-00084,Sydney,IT,EMP-0281,Assigned,2025-01-16,2027-01-16,,false,,,,2026-07-19
+AST-0085,Phone,Lenovo,Corporate Phone,SYN-00085,Melbourne,IT,EMP-0266,Assigned,2023-08-04,2026-08-04,,true,,,,2026-08-23
+AST-0086,Desktop,Apple,Business Desktop,SYN-00086,Brisbane,IT,,In Stock,2023-11-17,2026-11-17,,true,,,,2026-09-03
+AST-0087,Laptop,Apple,Business Laptop,SYN-00087,Melbourne,Finance,,Ready for Disposal,2021-05-21,2024-05-21,,true,Passed,EVD-00087,,2026-10-08
+AST-0088,Laptop,Apple,Business Laptop,SYN-00088,Melbourne,Finance,,In Stock,2025-12-30,2026-12-30,,true,,,,2026-07-05
+AST-0089,Tablet,Samsung,Business Tablet,SYN-00089,Sydney,Sales,EMP-0168,Return Pending,2023-11-27,2024-11-26,2026-11-08,true,,,,2026-09-07
+AST-0090,Phone,Apple,Corporate Phone,SYN-00090,Melbourne,Operations,EMP-0110,Assigned,2021-08-08,2024-08-08,,false,,,,2026-07-08
+AST-0091,Tablet,Lenovo,Business Tablet,SYN-00091,Sydney,Finance,EMP-0062,Assigned,2021-09-11,2024-09-11,,false,,,,2026-10-12
+AST-0092,Monitor,Dell,Office Monitor,SYN-00092,Melbourne,IT,EMP-0088,Assigned,2022-12-28,2025-12-28,,false,,,,2026-10-17
+AST-0093,Tablet,Dell,Business Tablet,SYN-00093,Remote,Operations,EMP-0234,Assigned,2024-06-26,2026-06-26,,true,,,,2026-09-05
+AST-0094,Phone,Lenovo,Corporate Phone,SYN-00094,Remote,HR,,Disposed,2026-05-28,2029-05-28,,false,,,DSP-00094,2026-07-02
+AST-0095,Desktop,Dell,Business Desktop,SYN-00095,Brisbane,Sales,EMP-0411,Assigned,2022-07-30,2025-07-30,,false,,,,2026-10-13
+AST-0096,Tablet,Apple,Business Tablet,SYN-00096,Sydney,Operations,,Disposed,2023-09-10,2025-09-09,,false,,,DSP-00096,2026-09-06
+AST-0097,Monitor,Apple,Office Monitor,SYN-00097,Melbourne,Operations,,In Stock,2022-07-08,2023-07-08,,true,,,,2026-10-10
+AST-0098,Laptop,Samsung,Business Laptop,SYN-00098,Brisbane,Finance,,Sanitisation Pending,2023-03-11,2024-03-10,,true,Pending,,,2026-08-12
+AST-0099,Tablet,Samsung,Business Tablet,SYN-00099,Brisbane,Finance,EMP-0479,Assigned,2021-02-11,2024-02-12,,true,,,,2026-09-10
+AST-0100,Tablet,Lenovo,Business Tablet,SYN-00100,Melbourne,Operations,EMP-0276,Assigned,2023-10-02,2024-10-01,,false,,,,2026-10-06
+AST-0101,Desktop,Samsung,Business Desktop,SYN-00101,Melbourne,Operations,,Assigned,2021-08-14,2022-08-14,,false,,,,2026-09-03
+AST-0102,Monitor,Samsung,Office Monitor,SYN-00102,Melbourne,Operations,EMP-0059,In Repair,2021-04-20,2022-04-20,,false,,,,2026-09-01
+AST-0103,Monitor,Apple,Office Monitor,SYN-00103,Remote,Operations,EMP-0452,In Repair,2023-06-11,2026-06-11,,false,,,,2026-10-08
+AST-0104,Tablet,Dell,Business Tablet,SYN-00104,Sydney,HR,EMP-0068,Assigned,2024-11-15,2025-11-15,,false,,,,2026-10-12
+AST-0105,Phone,Samsung,Corporate Phone,SYN-00105,Remote,Finance,EMP-0405,Assigned,2025-08-05,2027-08-05,,false,,,,2026-09-29
+AST-0106,Desktop,Dell,Business Desktop,SYN-00106,Sydney,IT,EMP-0021,In Repair,2025-11-05,2027-11-05,,false,,,,2026-08-25
+AST-0107,Tablet,Apple,Business Tablet,SYN-00107,Sydney,Sales,EMP-0491,Assigned,2020-11-14,2022-11-14,,false,,,,2026-09-06
+AST-0108,Laptop,Lenovo,Business Laptop,SYN-00108,Brisbane,HR,EMP-0387,Assigned,2020-10-24,2021-10-24,,false,,,,2026-08-13
+AST-0109,Phone,Samsung,Corporate Phone,SYN-00109,Brisbane,HR,,Disposed,2025-04-09,2026-04-09,,false,,,DSP-00109,2026-08-03
+AST-0110,Laptop,Apple,Business Laptop,SYN-00110,Melbourne,Finance,,Return Pending,2024-04-15,2027-04-16,2026-09-07,false,,,,2026-10-15
+AST-0111,Monitor,Lenovo,Office Monitor,SYN-00111,Melbourne,Finance,EMP-0206,Assigned,2020-07-27,2021-07-27,,true,,,,2026-08-11
+AST-0112,Desktop,HP,Business Desktop,SYN-00112,Melbourne,HR,EMP-0239,Assigned,2023-04-24,2026-04-24,,false,,,,2026-09-12
+AST-0113,Tablet,HP,Business Tablet,SYN-00113,Remote,Operations,EMP-0125,Assigned,2020-05-04,2023-05-05,,false,,,,2026-09-30
+AST-0114,Tablet,Lenovo,Business Tablet,SYN-00114,Melbourne,Sales,,In Stock,2022-11-08,2025-11-08,,false,,,,2026-07-19
+AST-0115,Laptop,Apple,Business Laptop,SYN-00115,Brisbane,Sales,,Sanitisation Pending,2020-03-02,2022-03-02,,true,Pending,,,2026-07-31
+AST-0116,Monitor,Lenovo,Office Monitor,SYN-00116,Brisbane,IT,EMP-0388,Assigned,2025-11-02,2028-11-02,,false,,,,2026-09-20
+AST-0117,Laptop,Apple,Business Laptop,SYN-00117,Remote,Sales,EMP-0265,Assigned,2023-01-20,2026-01-20,,false,,,,2026-10-15
+AST-0118,Laptop,Dell,Business Laptop,SYN-00118,Brisbane,Finance,,In Stock,2021-08-08,2024-08-08,,true,,,,2026-07-31
+AST-0119,Laptop,Apple,Business Laptop,SYN-00119,Remote,HR,EMP-0461,Return Pending,2024-01-09,2025-01-08,2026-11-08,true,Pending,,,2026-09-16
+AST-0120,Laptop,Apple,Business Laptop,SYN-00120,Sydney,Finance,EMP-0002,Assigned,2020-09-03,2022-09-03,,false,,,,2026-10-05
+AST-0121,Laptop,Apple,Business Laptop,SYN-00121,Brisbane,Operations,,Disposed,2023-12-31,2025-12-30,,false,,,DSP-00121,2026-07-08
+AST-0122,Laptop,HP,Business Laptop,SYN-00122,Sydney,Sales,EMP-0009,Return Pending,2020-02-27,2023-02-27,2026-11-24,false,,,,2026-10-15
+AST-0123,Desktop,Lenovo,Business Desktop,SYN-00123,Sydney,Sales,,In Stock,2020-04-11,2022-04-11,,true,,,,2026-09-26
+AST-0124,Laptop,HP,Business Laptop,SYN-00124,Brisbane,Finance,EMP-0395,In Repair,2020-08-01,2023-08-02,,false,,,,2026-08-17
+AST-0125,Phone,Lenovo,Corporate Phone,SYN-00125,Remote,Operations,EMP-0109,In Repair,2025-04-28,2028-04-28,,false,,,,2026-10-17
+AST-0126,Laptop,Dell,Business Laptop,SYN-00126,Remote,HR,EMP-0438,Assigned,2026-05-01,2027-05-01,,false,,,,2026-09-17
+AST-0127,Desktop,Apple,Business Desktop,SYN-00127,Remote,Operations,EMP-0338,Assigned,2026-05-15,2027-05-15,,true,,,,2026-07-12
+AST-0128,Laptop,Apple,Business Laptop,SYN-00128,Sydney,Operations,,Disposed,2022-08-10,2025-08-10,,false,,,DSP-00128,2026-08-31
+AST-0129,Phone,Lenovo,Corporate Phone,SYN-00129,Brisbane,IT,,Sanitisation Pending,2025-12-20,2028-12-20,,true,Pending,,,2026-07-03
+AST-0130,Monitor,HP,Office Monitor,SYN-00130,Brisbane,IT,EMP-0064,Return Pending,2025-10-01,2028-10-01,2026-11-06,false,,,,2026-07-24
+AST-0131,Desktop,Lenovo,Business Desktop,SYN-00131,Brisbane,Finance,EMP-0181,Assigned,2022-03-11,2024-03-10,,false,,,,2026-08-11
+AST-0132,Desktop,Lenovo,Business Desktop,SYN-00132,Melbourne,Sales,,In Stock,2026-05-12,2029-05-12,,false,,,,2026-07-18
+AST-0133,Tablet,Lenovo,Business Tablet,SYN-00133,Sydney,Finance,EMP-0059,Assigned,2024-01-08,2027-01-08,,true,Failed,,,2026-10-11
+AST-0134,Monitor,Apple,Office Monitor,SYN-00134,Brisbane,Sales,EMP-0487,Assigned,2021-12-21,2022-12-21,,true,,,,2026-09-22
+AST-0135,Monitor,Samsung,Office Monitor,SYN-00135,Brisbane,Finance,EMP-0173,Assigned,2024-09-05,2026-09-05,,false,,,,2026-08-10
+AST-0136,Phone,Samsung,Corporate Phone,SYN-00136,Sydney,Sales,,Sanitisation Pending,2025-03-22,2028-03-22,,true,Pending,,,2026-07-09
+AST-0137,Phone,Apple,Corporate Phone,SYN-00137,Remote,Operations,EMP-0137,Assigned,2023-10-10,2024-10-09,,false,,,,2026-08-06
+AST-0138,Desktop,Apple,Business Desktop,SYN-00138,Sydney,Sales,EMP-0500,Assigned,2020-12-16,2021-12-16,,false,,,,2026-10-17
+AST-0139,Phone,Samsung,Corporate Phone,SYN-00139,Melbourne,Operations,,Disposed,2020-06-09,2021-06-09,,true,Passed,EVD-00139,DSP-00139,2026-09-28
+AST-0140,Tablet,HP,Business Tablet,SYN-00140,Sydney,Finance,EMP-0484,Assigned,2026-05-04,2028-05-03,,false,,,,2026-08-26
+AST-0141,Laptop,Apple,Business Laptop,SYN-00141,Sydney,HR,,Ready for Disposal,2025-09-21,2027-09-21,,false,,,,2026-08-12
+AST-0142,Desktop,Dell,Business Desktop,SYN-00142,Sydney,Operations,EMP-0485,Return Pending,2024-01-06,2025-01-05,2026-10-22,false,,,,2026-07-20
+AST-0143,Monitor,Dell,Office Monitor,SYN-00143,Remote,HR,EMP-0469,Assigned,2023-06-14,2024-06-13,,false,,,,2026-07-04
+AST-0144,Tablet,HP,Business Tablet,SYN-00144,Sydney,Finance,EMP-0245,In Repair,2026-03-26,2027-03-26,,false,,,,2026-09-14
+AST-0145,Laptop,Dell,Business Laptop,SYN-00145,Brisbane,Finance,,Disposed,2023-05-24,2025-05-23,,false,,,DSP-00145,2026-09-26
+AST-0146,Monitor,HP,Office Monitor,SYN-00146,Melbourne,HR,,In Stock,2025-07-23,2028-07-23,,false,,,,2026-09-22
+AST-0147,Tablet,Dell,Business Tablet,SYN-00147,Sydney,Finance,EMP-0280,Assigned,2021-04-14,2023-04-14,,false,,,,2026-08-16
+AST-0148,Tablet,HP,Business Tablet,SYN-00148,Melbourne,Operations,EMP-0424,In Repair,2020-10-19,2022-10-19,,false,,,,2026-09-07
+AST-0149,Desktop,HP,Business Desktop,SYN-00149,Brisbane,IT,,Disposed,2021-11-19,2024-11-19,,false,,,DSP-00149,2026-10-16
+AST-0150,Desktop,Samsung,Business Desktop,SYN-00150,Sydney,Finance,EMP-0125,Assigned,2023-01-26,2025-01-25,,true,,,,2026-09-18
+AST-0151,Tablet,Apple,Business Tablet,SYN-00151,Sydney,Finance,EMP-0416,Assigned,2022-02-13,2025-02-13,,false,,,,2026-07-25
+AST-0152,Laptop,Dell,Business Laptop,SYN-00152,Brisbane,IT,EMP-0143,Assigned,2024-08-19,2027-08-20,,true,,,,2026-07-11
+AST-0153,Monitor,HP,Office Monitor,SYN-00153,Sydney,IT,,In Stock,2025-07-04,2027-07-04,,true,,,,2026-07-27
+AST-0154,Phone,Apple,Corporate Phone,SYN-00154,Brisbane,HR,EMP-0141,Return Pending,2025-01-21,2027-01-21,2026-09-28,true,,,,2026-07-04
+AST-0155,Desktop,Dell,Business Desktop,SYN-00155,Melbourne,Finance,,In Stock,2025-11-04,2026-11-04,,false,,,,2026-08-16
+AST-0156,Phone,Apple,Corporate Phone,SYN-00156,Brisbane,Sales,,In Stock,2022-01-10,2025-01-10,,false,,,,2026-08-13
+AST-0157,Desktop,HP,Business Desktop,SYN-00157,Remote,HR,EMP-0018,Assigned,2023-02-04,2024-02-04,,false,,,,2026-07-04
+AST-0158,Desktop,Lenovo,Business Desktop,SYN-00158,Remote,Finance,EMP-0191,Lost / Stolen,2023-12-22,2025-12-21,,true,,,,2026-09-19
+AST-0159,Monitor,HP,Office Monitor,SYN-00159,Melbourne,Finance,EMP-0333,Lost / Stolen,2021-09-30,2022-09-30,,false,,,,2026-07-13
+AST-0160,Monitor,Apple,Office Monitor,SYN-00160,Remote,Operations,EMP-0117,Assigned,2025-11-01,2027-11-01,,false,,,,2026-08-25
+AST-0161,Tablet,Apple,Business Tablet,SYN-00161,Melbourne,Operations,EMP-0434,Return Pending,2025-12-17,2026-12-17,2026-09-21,true,,,,2026-07-18
+AST-0162,Desktop,Samsung,Business Desktop,SYN-00162,Remote,Sales,EMP-0212,Assigned,2024-09-22,2027-09-23,,true,,,,2026-08-08
+AST-0163,Phone,Lenovo,Corporate Phone,SYN-00163,Melbourne,IT,EMP-0202,Assigned,2022-07-08,2023-07-08,,false,,,,2026-07-03
+AST-0164,Tablet,Samsung,Business Tablet,SYN-00164,Melbourne,HR,,Disposed,2025-05-11,2028-05-11,,false,,,DSP-00164,2026-09-24
+AST-0165,Laptop,Dell,Business Laptop,SYN-00165,Brisbane,Finance,,In Stock,2022-08-07,2025-08-07,,false,,,,2026-07-13
+AST-0166,Laptop,Apple,Business Laptop,SYN-00166,Sydney,HR,,In Stock,2024-07-24,2025-07-24,,false,,,,2026-08-08
+AST-0167,Desktop,Lenovo,Business Desktop,SYN-00167,Brisbane,Operations,EMP-0194,Return Pending,2022-01-11,2023-01-11,2026-10-13,false,,,,2026-10-18
+AST-0168,Phone,Lenovo,Corporate Phone,SYN-00168,Melbourne,Operations,,Disposed,2024-05-05,2026-05-05,,false,,,DSP-00168,2026-07-25
+AST-0169,Phone,Dell,Corporate Phone,SYN-00169,Melbourne,HR,EMP-0268,Assigned,2023-12-14,2025-12-13,,false,,,,2026-07-18
+AST-0170,Tablet,Apple,Business Tablet,SYN-00170,Remote,Operations,,Sanitisation Pending,2026-08-11,2029-08-11,,true,Pending,,,2026-09-27
+AST-0171,Monitor,Samsung,Office Monitor,SYN-00171,Melbourne,Sales,EMP-0107,Assigned,2024-08-30,2026-08-30,,false,,,,2026-10-10
+AST-0172,Tablet,Samsung,Business Tablet,SYN-00172,Melbourne,IT,EMP-0021,Assigned,2022-07-18,2024-07-17,,false,,,,2026-09-20
+AST-0173,Laptop,Apple,Business Laptop,SYN-00173,Remote,Operations,,In Stock,2023-11-10,2026-11-10,,false,,,,2026-08-06
+AST-0174,Desktop,Dell,Business Desktop,SYN-00174,Remote,Finance,,Ready for Disposal,2026-06-18,2029-06-18,,false,,,,2026-07-02
+AST-0175,Laptop,Lenovo,Business Laptop,SYN-00175,Brisbane,Finance,,Disposed,2023-06-01,2025-05-31,,false,,,DSP-00175,2026-09-20
+AST-0176,Tablet,Samsung,Business Tablet,SYN-00176,Brisbane,Finance,EMP-0077,Assigned,2025-03-22,2027-03-22,,false,,,,2026-08-27
+AST-0177,Tablet,Samsung,Business Tablet,SYN-00177,Brisbane,IT,,Disposed,2026-02-14,2029-02-14,,false,,,DSP-00177,2026-08-09
+AST-0178,Tablet,Lenovo,Business Tablet,SYN-00178,Sydney,Sales,EMP-0121,Return Pending,2025-09-17,2028-09-17,2026-10-04,false,,,,2026-10-04
+AST-0179,Phone,Dell,Corporate Phone,SYN-00179,Melbourne,Operations,EMP-0102,In Repair,2021-08-06,2024-08-06,,false,,,,2026-10-02
+AST-0180,Tablet,Apple,Business Tablet,SYN-00180,Brisbane,Sales,EMP-0205,Assigned,2020-03-06,2022-03-06,,false,,,,2026-08-15
+AST-0181,Monitor,Lenovo,Office Monitor,SYN-00181,Sydney,Operations,,In Stock,2020-08-03,2023-08-04,,true,,,,2026-08-26
+AST-0182,Tablet,Dell,Business Tablet,SYN-00182,Remote,HR,,Disposed,2021-09-21,2024-09-21,,false,,,DSP-00182,2026-09-03
+AST-0183,Desktop,Lenovo,Business Desktop,SYN-00183,Brisbane,IT,EMP-0210,Return Pending,2020-04-29,2022-04-29,2026-09-21,true,,,,2026-08-11
+AST-0184,Tablet,Lenovo,Business Tablet,SYN-00184,Brisbane,HR,EMP-0155,Assigned,2025-09-03,2028-09-03,,false,,,,2026-07-15
+AST-0185,Desktop,Samsung,Business Desktop,SYN-00185,Sydney,IT,,In Repair,2025-03-25,2026-03-25,,false,,,,2026-07-08
+AST-0186,Tablet,Lenovo,Business Tablet,SYN-00186,Brisbane,Sales,,Assigned,2022-01-21,2024-01-21,,true,,,,2026-08-20
+AST-0187,Monitor,Lenovo,Office Monitor,SYN-00187,Brisbane,Operations,EMP-0080,Lost / Stolen,2021-03-11,2023-03-11,,true,Pending,,,2026-09-04
+AST-0188,Laptop,HP,Business Laptop,SYN-00188,Melbourne,Operations,EMP-0143,Assigned,2023-03-12,2025-03-11,,false,,,,2026-08-04
+AST-0189,Tablet,Samsung,Business Tablet,SYN-00189,Remote,Operations,EMP-0398,In Repair,2022-12-31,2025-12-31,,true,,,,2026-09-21
+AST-0190,Phone,Apple,Corporate Phone,SYN-00190,Remote,Sales,EMP-0133,Assigned,2022-11-21,2025-11-21,,false,,,,2026-10-06
+AST-0191,Monitor,Samsung,Office Monitor,SYN-00191,Remote,HR,EMP-0344,Assigned,2020-05-13,2022-05-13,,false,,,,2026-10-17
+AST-0192,Phone,Apple,Corporate Phone,SYN-00192,Brisbane,IT,,Assigned,2021-10-10,2023-10-10,,false,,,,2026-10-09
+AST-0193,Desktop,Apple,Business Desktop,SYN-00193,Brisbane,Operations,,Sanitisation Pending,2020-08-12,2023-08-13,,true,Pending,,,2026-09-03
+AST-0194,Phone,HP,Corporate Phone,SYN-00194,Sydney,Operations,EMP-0041,Lost / Stolen,2020-08-29,2023-08-30,,false,,,,2026-07-19
+AST-0195,Monitor,Samsung,Office Monitor,SYN-00195,Melbourne,Finance,,In Stock,2022-03-23,2023-03-23,,true,,,,2026-08-10
+AST-0196,Monitor,Apple,Office Monitor,SYN-00196,Melbourne,Operations,EMP-0062,Assigned,2025-06-06,2026-06-06,,false,,,,2026-09-26
+AST-0197,Monitor,Dell,Office Monitor,SYN-00197,Remote,Sales,EMP-0426,Assigned,2025-04-20,2027-04-20,,false,,,,2026-09-22
+AST-0198,Phone,Samsung,Corporate Phone,SYN-00198,Melbourne,HR,EMP-0350,Return Pending,2023-03-10,2024-03-09,2026-10-09,false,,,,2026-09-14
+AST-0199,Monitor,Dell,Office Monitor,SYN-00199,Sydney,Finance,EMP-0015,Assigned,2024-05-15,2026-05-15,,false,,,,2026-09-19
+AST-0200,Phone,Lenovo,Corporate Phone,SYN-00200,Melbourne,HR,,In Stock,2021-09-10,2024-09-10,,false,,,,2026-09-17
+AST-0201,Monitor,HP,Office Monitor,SYN-00201,Sydney,HR,,Disposed,2024-07-19,2025-07-19,,true,Pending,,DSP-00201,2026-09-14
+AST-0202,Phone,HP,Corporate Phone,SYN-00202,Remote,HR,EMP-0341,Assigned,2023-06-03,2025-06-02,,false,,,,2026-08-28
+AST-0203,Laptop,Lenovo,Business Laptop,SYN-00203,Remote,IT,,In Stock,2020-02-08,2022-02-07,,false,,,,2026-10-03
+AST-0204,Phone,Dell,Corporate Phone,SYN-00204,Sydney,Finance,EMP-0110,Return Pending,2022-12-24,2025-12-24,2026-10-28,true,,,,2026-08-18
+AST-0205,Laptop,Apple,Business Laptop,SYN-00205,Brisbane,HR,EMP-0354,Return Pending,2020-10-05,2021-10-05,2026-11-13,true,,,,2026-09-15
+AST-0206,Phone,HP,Corporate Phone,SYN-00206,Melbourne,IT,,Disposed,2025-01-07,2026-01-07,,false,,,DSP-00206,2026-10-15
+AST-0207,Phone,HP,Corporate Phone,SYN-00207,Melbourne,Finance,EMP-0402,Assigned,2022-06-21,2024-06-20,,true,,,,2026-09-15
+AST-0208,Desktop,HP,Business Desktop,SYN-00208,Brisbane,Operations,,In Stock,2020-11-12,2023-11-13,,true,,,,2026-07-11
+AST-0209,Desktop,Lenovo,Business Desktop,SYN-00209,Remote,Finance,EMP-0029,Return Pending,2025-01-11,2027-01-11,2026-09-27,true,,,,2026-07-06
+AST-0210,Desktop,Lenovo,Business Desktop,SYN-00210,Remote,HR,EMP-0005,Assigned,2022-12-21,2024-12-20,,true,,,,2026-08-30
+AST-0211,Tablet,Samsung,Business Tablet,SYN-00211,Sydney,Operations,EMP-0466,Assigned,2025-06-24,2026-06-24,,false,,,,2026-08-08
+AST-0212,Phone,Dell,Corporate Phone,SYN-00212,Melbourne,Finance,EMP-0110,Return Pending,2023-12-05,2026-12-05,2026-10-31,false,,,,2026-08-30
+AST-0213,Laptop,Dell,Business Laptop,SYN-00213,Brisbane,HR,EMP-0144,Assigned,2023-07-11,2024-07-10,,false,,,,2026-08-14
+AST-0214,Monitor,Samsung,Office Monitor,SYN-00214,Brisbane,IT,,In Stock,2020-03-15,2023-03-16,,true,,,,2026-10-06
+AST-0215,Monitor,Samsung,Office Monitor,SYN-00215,Brisbane,HR,EMP-0261,Assigned,2025-04-09,2028-04-09,,false,,,,2026-07-10
+AST-0216,Tablet,Dell,Business Tablet,SYN-00216,Brisbane,IT,EMP-0247,Assigned,2024-04-10,2027-04-11,,false,,,,2026-09-10
+AST-0217,Phone,HP,Corporate Phone,SYN-00217,Melbourne,HR,EMP-0103,Assigned,2024-10-16,2025-10-16,,true,,,,2026-09-16
+AST-0218,Tablet,Apple,Business Tablet,SYN-00218,Remote,Operations,,Lost / Stolen,2023-08-09,2026-08-09,,false,,,,2026-10-13
+AST-0219,Laptop,HP,Business Laptop,SYN-00219,Remote,Finance,EMP-0289,Assigned,2025-10-04,2027-10-04,,false,,,,2026-08-01
+AST-0220,Desktop,Samsung,Business Desktop,SYN-00220,Melbourne,IT,EMP-0431,Assigned,2021-07-31,2023-07-31,,false,,,,2026-07-20
+AST-0221,Monitor,Apple,Office Monitor,SYN-00221,Remote,IT,EMP-0167,Assigned,2025-05-18,2028-05-18,,false,,,,2026-09-15
+AST-0222,Monitor,Dell,Office Monitor,SYN-00222,Melbourne,IT,EMP-0083,Assigned,2024-04-19,2025-04-19,,false,,,,2026-07-22
+AST-0223,Phone,Lenovo,Corporate Phone,SYN-00223,Sydney,Operations,,Ready for Disposal,2022-12-30,2023-12-30,,true,Passed,EVD-00223,,2026-09-29
+AST-0224,Phone,Lenovo,Corporate Phone,SYN-00224,Remote,IT,,Ready for Disposal,2023-03-12,2024-03-11,,false,,,,2026-09-16
+AST-0225,Tablet,Samsung,Business Tablet,SYN-00225,Sydney,Operations,,In Stock,2025-07-26,2028-07-26,,false,,,,2026-07-05
+AST-0226,Laptop,Lenovo,Business Laptop,SYN-00226,Remote,Finance,EMP-0301,Return Pending,2025-09-12,2026-09-12,2026-11-04,false,,,,2026-08-11
+AST-0227,Phone,Samsung,Corporate Phone,SYN-00227,Brisbane,Operations,EMP-0367,Assigned,2025-10-20,2026-10-20,,false,,,,2026-10-10
+AST-0228,Laptop,Apple,Business Laptop,SYN-00228,Brisbane,Finance,,In Stock,2022-01-31,2023-01-31,,false,,,,2026-08-11
+AST-0229,Phone,HP,Corporate Phone,SYN-00229,Sydney,Finance,EMP-0457,Assigned,2023-05-03,2026-05-03,,true,,,,2026-09-16
+AST-0230,Monitor,Apple,Office Monitor,SYN-00230,Melbourne,Operations,,Disposed,2021-07-12,2022-07-12,,false,,,DSP-00230,2026-07-19
+AST-0231,Monitor,Lenovo,Office Monitor,SYN-00231,Brisbane,HR,,In Stock,2024-03-31,2027-04-01,,false,,,,2026-07-29
+AST-0232,Desktop,Lenovo,Business Desktop,SYN-00232,Brisbane,HR,EMP-0263,Assigned,2023-02-05,2025-02-04,,false,,,,2026-09-21
+AST-0233,Laptop,Apple,Business Laptop,SYN-00233,Brisbane,Operations,EMP-0408,In Repair,2022-11-12,2024-11-11,,true,,,,2026-08-19
+AST-0234,Phone,Dell,Corporate Phone,SYN-00234,Brisbane,Finance,EMP-0032,Assigned,2021-12-28,2024-12-28,,false,,,,2026-09-10
+AST-0235,Laptop,Samsung,Business Laptop,SYN-00235,Remote,IT,,Disposed,2023-10-20,2024-10-19,,true,Passed,EVD-00235,DSP-00235,2026-10-13
+AST-0236,Laptop,Dell,Business Laptop,SYN-00236,Melbourne,Operations,EMP-0150,In Repair,2020-11-15,2021-11-15,,false,,,,2026-08-10
+AST-0237,Phone,Lenovo,Corporate Phone,SYN-00237,Remote,IT,EMP-0489,Assigned,2023-11-29,2025-11-28,,true,Failed,,,2026-09-05
+AST-0238,Phone,Dell,Corporate Phone,SYN-00238,Remote,HR,EMP-0351,Assigned,2025-01-07,2026-01-07,,false,,,,2026-07-16
+AST-0239,Desktop,HP,Business Desktop,SYN-00239,Remote,Operations,EMP-0408,Assigned,2021-01-14,2024-01-15,,false,,,,2026-08-16
+AST-0240,Monitor,HP,Office Monitor,SYN-00240,Remote,Sales,,Disposed,2022-02-14,2025-02-14,,false,,,DSP-00240,2026-08-31
+AST-0241,Phone,Dell,Corporate Phone,SYN-00241,Sydney,IT,EMP-0499,Assigned,2021-07-11,2022-07-11,,false,,,,2026-09-19
+AST-0242,Tablet,Lenovo,Business Tablet,SYN-00242,Melbourne,IT,EMP-0365,Assigned,2020-05-09,2021-05-09,,false,,,,2026-07-16
+AST-0243,Tablet,Samsung,Business Tablet,SYN-00243,Sydney,Operations,EMP-0361,Assigned,2024-06-25,2025-06-25,,false,,,,2026-09-09
+AST-0244,Monitor,HP,Office Monitor,SYN-00244,Brisbane,HR,,Disposed,2020-06-02,2022-06-02,,true,Passed,EVD-00244,DSP-00244,2026-07-21
+AST-0245,Desktop,Lenovo,Business Desktop,SYN-00245,Melbourne,IT,EMP-0456,Assigned,2025-11-05,2027-11-05,,false,,,,2026-07-19
+AST-0246,Monitor,Apple,Office Monitor,SYN-00246,Brisbane,Finance,EMP-0225,Assigned,2020-09-20,2022-09-20,,true,,,,2026-07-08
+AST-0247,Desktop,Dell,Business Desktop,SYN-00247,Remote,Operations,,Disposed,2026-02-03,2028-02-03,,false,,,DSP-00247,2026-10-09
+AST-0248,Tablet,Samsung,Business Tablet,SYN-00248,Sydney,Finance,,Disposed,2022-08-29,2025-08-29,,false,,,DSP-00248,2026-10-10
+AST-0249,Laptop,Lenovo,Business Laptop,SYN-00249,Sydney,Finance,,Ready for Disposal,2025-05-17,2028-05-17,,false,,,,2026-08-19
+AST-0250,Laptop,HP,Business Laptop,SYN-00250,Remote,HR,EMP-0017,Assigned,2022-12-23,2023-12-23,,true,,,,2026-09-21
+AST-0251,Phone,HP,Corporate Phone,SYN-00251,Remote,IT,EMP-0330,Assigned,2020-04-02,2023-04-03,,false,,,,2026-10-06
+AST-0252,Monitor,Lenovo,Office Monitor,SYN-00252,Remote,Operations,EMP-0295,Lost / Stolen,2021-07-22,2023-07-22,,false,,,,2026-09-16
+AST-0253,Laptop,Samsung,Business Laptop,SYN-00253,Brisbane,Finance,EMP-0472,Assigned,2020-07-11,2022-07-11,,false,,,,2026-09-20
+AST-0254,Tablet,Apple,Business Tablet,SYN-00254,Melbourne,HR,EMP-0353,Assigned,2021-01-18,2023-01-18,,false,,,,2026-10-05
+AST-0255,Desktop,Dell,Business Desktop,SYN-00255,Sydney,IT,,In Stock,2020-05-15,2023-05-16,,true,,,,2026-07-16
+AST-0256,Laptop,HP,Business Laptop,SYN-00256,Melbourne,Finance,EMP-0230,Assigned,2026-05-14,2028-05-13,,false,,,,2026-10-18
+AST-0257,Laptop,Dell,Business Laptop,SYN-00257,Sydney,Sales,EMP-0199,Assigned,2023-05-17,2025-05-16,,false,,,,2026-08-05
+AST-0258,Tablet,Lenovo,Business Tablet,SYN-00258,Brisbane,Finance,,In Stock,2024-11-10,2025-11-10,,false,,,,2026-10-14
+AST-0259,Tablet,Apple,Business Tablet,SYN-00259,Remote,Sales,EMP-0089,Assigned,2022-04-28,2025-04-28,,true,,,,2026-09-29
+AST-0260,Tablet,Apple,Business Tablet,SYN-00260,Sydney,IT,EMP-0027,Assigned,2025-09-04,2027-09-04,,false,,,,2026-10-09
+AST-0261,Tablet,Apple,Business Tablet,SYN-00261,Sydney,Operations,EMP-0051,Assigned,2025-06-10,2028-06-10,,false,,,,2026-08-24
+AST-0262,Tablet,Dell,Business Tablet,SYN-00262,Melbourne,Finance,,Disposed,2026-02-14,2029-02-14,,false,,,DSP-00262,2026-09-30
+AST-0263,Laptop,Apple,Business Laptop,SYN-00263,Sydney,Sales,,In Stock,2020-05-10,2021-05-10,,true,,,,2026-08-31
+AST-0264,Monitor,Samsung,Office Monitor,SYN-00264,Melbourne,Sales,EMP-0159,Return Pending,2022-05-26,2025-05-26,2026-09-05,false,,,,2026-09-28
+AST-0265,Tablet,Apple,Business Tablet,SYN-00265,Brisbane,IT,EMP-0482,Assigned,2023-11-17,2026-11-17,,false,,,,2026-09-19
+AST-0266,Monitor,Dell,Office Monitor,SYN-00266,Brisbane,IT,EMP-0273,Assigned,2022-08-10,2025-08-10,,false,,,,2026-10-01
+AST-0267,Laptop,Lenovo,Business Laptop,SYN-00267,Remote,Operations,EMP-0449,Assigned,2022-06-13,2024-06-12,,false,,,,2026-08-07
+AST-0268,Desktop,Dell,Business Desktop,SYN-00268,Melbourne,Finance,,In Stock,2024-02-25,2026-02-24,,false,,,,2026-09-17
+AST-0269,Tablet,Apple,Business Tablet,SYN-00269,Melbourne,Operations,,Sanitisation Pending,2022-11-28,2025-11-28,,true,Pending,,,2026-09-06
+AST-0270,Tablet,Dell,Business Tablet,SYN-00270,Melbourne,Sales,EMP-0159,Assigned,2022-12-28,2023-12-28,,false,,,,2026-10-12
+AST-0271,Tablet,Dell,Business Tablet,SYN-00271,Sydney,Operations,EMP-0090,Assigned,2024-04-13,2027-04-14,,false,,,,2026-10-04
+AST-0272,Desktop,HP,Business Desktop,SYN-00272,Melbourne,HR,,In Stock,2022-10-10,2025-10-10,,false,,,,2026-07-20
+AST-0273,Phone,Lenovo,Corporate Phone,SYN-00273,Brisbane,Sales,,In Stock,2025-04-23,2027-04-23,,false,,,,2026-07-04
+AST-0274,Laptop,Lenovo,Business Laptop,SYN-00274,Melbourne,Sales,,Sanitisation Pending,2021-04-18,2022-04-18,,true,Pending,,,2026-07-14
+AST-0275,Phone,Lenovo,Corporate Phone,SYN-00275,Brisbane,Operations,EMP-0180,Return Pending,2023-09-30,2026-09-30,2026-09-24,false,,,,2026-07-07
+AST-0276,Tablet,HP,Business Tablet,SYN-00276,Remote,Operations,EMP-0277,In Repair,2024-03-05,2025-03-05,,false,,,,2026-10-17
+AST-0277,Laptop,Lenovo,Business Laptop,SYN-00277,Sydney,IT,,Lost / Stolen,2023-07-04,2024-07-03,,false,,,,2026-10-07
+AST-0278,Tablet,Dell,Business Tablet,SYN-00278,Brisbane,Sales,,Sanitisation Pending,2020-04-29,2021-04-29,,true,Pending,,,2026-07-14
+AST-0279,Desktop,Samsung,Business Desktop,SYN-00279,Sydney,Finance,EMP-0311,Assigned,2020-09-23,2021-09-23,,false,,,,2026-10-11
+AST-0280,Phone,Dell,Corporate Phone,SYN-00280,Melbourne,HR,EMP-0083,Assigned,2022-07-13,2023-07-13,,false,,,,2026-09-29
+AST-0281,Laptop,HP,Business Laptop,SYN-00281,Remote,Sales,,In Stock,2023-09-02,2026-09-02,,false,,,,2026-08-08
+AST-0282,Phone,Lenovo,Corporate Phone,SYN-00282,Brisbane,Sales,EMP-0332,Assigned,2024-08-14,2026-08-14,,false,,,,2026-08-20
+AST-0283,Tablet,Apple,Business Tablet,SYN-00283,Remote,IT,EMP-0311,Assigned,2022-07-22,2025-07-22,,true,,,,2026-08-21
+AST-0284,Laptop,Samsung,Business Laptop,SYN-00284,Melbourne,Finance,,Ready for Disposal,2023-12-14,2025-12-13,,false,,,,2026-10-03
+AST-0285,Tablet,Apple,Business Tablet,SYN-00285,Melbourne,Sales,,Disposed,2022-10-13,2024-10-12,,false,,,DSP-00285,2026-10-15
+AST-0286,Monitor,Dell,Office Monitor,SYN-00286,Sydney,Finance,EMP-0261,Assigned,2022-03-28,2025-03-28,,false,,,,2026-09-26
+AST-0287,Laptop,HP,Business Laptop,SYN-00287,Remote,Sales,EMP-0048,Assigned,2026-03-17,2027-03-17,,false,,,,2026-07-04
+AST-0288,Tablet,Samsung,Business Tablet,SYN-00288,Brisbane,IT,EMP-0414,Assigned,2022-03-05,2023-03-05,,false,,,,2026-08-22
+AST-0289,Phone,Lenovo,Corporate Phone,SYN-00289,Sydney,Sales,EMP-0484,Assigned,2024-04-05,2025-04-05,,false,,,,2026-08-17
+AST-0290,Tablet,Apple,Business Tablet,SYN-00290,Remote,Sales,EMP-0367,Assigned,2026-03-08,2029-03-08,,false,,,,2026-07-21
+AST-0291,Phone,Lenovo,Corporate Phone,SYN-00291,Sydney,Sales,EMP-0460,Assigned,2026-05-27,2027-05-27,,false,,,,2026-09-20
+AST-0292,Tablet,Apple,Business Tablet,SYN-00292,Brisbane,Finance,,Assigned,2023-09-10,2024-09-09,,false,,,,2026-09-21
+AST-0293,Laptop,Dell,Business Laptop,SYN-00293,Brisbane,Finance,,In Stock,2021-07-10,2022-07-10,,false,,,,2026-09-20
+AST-0294,Desktop,Apple,Business Desktop,SYN-00294,Sydney,HR,,Disposed,2026-06-23,2028-06-22,,false,,,DSP-00294,2026-10-04
+AST-0295,Desktop,HP,Business Desktop,SYN-00295,Sydney,Sales,EMP-0060,Return Pending,2025-11-06,2026-11-06,2026-11-08,true,,,,2026-08-24
+AST-0296,Phone,HP,Corporate Phone,SYN-00296,Sydney,HR,,In Stock,2024-02-14,2025-02-13,,false,,,,2026-10-03
+AST-0297,Phone,Apple,Corporate Phone,SYN-00297,Brisbane,HR,,Disposed,2020-08-24,2023-08-25,,true,,,DSP-00297,2026-09-01
+AST-0298,Monitor,Samsung,Office Monitor,SYN-00298,Sydney,IT,,In Stock,2024-02-19,2027-02-19,,false,,,,2026-09-03
+AST-0299,Laptop,HP,Business Laptop,SYN-00299,Melbourne,IT,,Disposed,2023-02-04,2025-02-03,,false,,,DSP-00299,2026-09-17
+AST-0300,Monitor,HP,Office Monitor,SYN-00300,Remote,Sales,EMP-0252,Assigned,2024-02-21,2026-02-20,,true,,,,2026-08-16
+AST-0301,Laptop,Dell,Business Laptop,SYN-00301,Brisbane,Sales,,In Stock,2026-01-27,2029-01-27,,false,,,,2026-08-04
+AST-0302,Desktop,Apple,Business Desktop,SYN-00302,Brisbane,Finance,EMP-0236,Assigned,2024-06-22,2026-06-22,,true,,,,2026-07-14
+AST-0303,Phone,Dell,Corporate Phone,SYN-00303,Sydney,IT,,Disposed,2021-07-22,2022-07-22,,false,,,DSP-00303,2026-09-29
+AST-0304,Laptop,Apple,Business Laptop,SYN-00304,Remote,HR,EMP-0302,Return Pending,2021-03-02,2023-03-02,2026-09-27,false,,,,2026-10-11
+AST-0305,Laptop,Lenovo,Business Laptop,SYN-00305,Remote,HR,,Disposed,2023-11-24,2026-11-24,,false,,,DSP-00305,2026-10-06
+AST-0306,Tablet,Apple,Business Tablet,SYN-00306,Sydney,Finance,,In Repair,2020-10-29,2022-10-29,,false,,,,2026-08-17
+AST-0307,Desktop,Apple,Business Desktop,SYN-00307,Brisbane,Sales,,In Stock,2023-01-24,2025-01-23,,false,,,,2026-09-29
+AST-0308,Phone,Dell,Corporate Phone,SYN-00308,Melbourne,Finance,EMP-0190,Assigned,2022-01-05,2025-01-05,,false,,,,2026-08-14
+AST-0309,Phone,Lenovo,Corporate Phone,SYN-00309,Sydney,Operations,,In Stock,2023-05-29,2025-05-28,,false,,,,2026-08-12
+AST-0310,Phone,HP,Corporate Phone,SYN-00310,Remote,Sales,,Disposed,2020-11-28,2023-11-29,,false,,,,2026-09-28
+AST-0311,Laptop,Dell,Business Laptop,SYN-00311,Brisbane,Finance,,Disposed,2026-08-02,2027-08-02,,true,Passed,EVD-00311,DSP-00311,2026-10-09
+AST-0312,Monitor,HP,Office Monitor,SYN-00312,Remote,IT,EMP-0420,Assigned,2026-03-10,2029-03-10,,false,,,,2026-09-18
+AST-0313,Monitor,Samsung,Office Monitor,SYN-00313,Sydney,Operations,EMP-0158,Assigned,2021-12-31,2023-12-31,,false,,,,2026-10-09
+AST-0314,Monitor,Samsung,Office Monitor,SYN-00314,Melbourne,Finance,,Sanitisation Pending,2025-07-30,2028-07-30,,true,Pending,,,2026-10-04
+AST-0315,Monitor,Lenovo,Office Monitor,SYN-00315,Brisbane,HR,EMP-0244,Assigned,2025-09-12,2028-09-12,,false,,,,2026-10-18
+AST-0316,Monitor,Samsung,Office Monitor,SYN-00316,Brisbane,Sales,EMP-0496,Assigned,2022-05-19,2025-05-19,,false,,,,2026-08-26
+AST-0317,Phone,Lenovo,Corporate Phone,SYN-00317,Sydney,Finance,,Disposed,2021-02-14,2024-02-15,,true,Passed,EVD-00317,DSP-00317,2026-09-13
+AST-0318,Laptop,Lenovo,Business Laptop,SYN-00318,Brisbane,Operations,EMP-0178,Assigned,2020-06-05,2021-06-05,,false,,,,2026-09-10
+AST-0319,Laptop,Apple,Business Laptop,SYN-00319,Remote,Finance,,In Stock,2022-10-12,2023-10-12,,true,,,,2026-08-11
+AST-0320,Laptop,Samsung,Business Laptop,SYN-00320,Sydney,Sales,,Disposed,2026-02-21,2028-02-21,,true,,,,2026-07-02
+AST-0321,Tablet,HP,Business Tablet,SYN-00321,Melbourne,IT,EMP-0174,In Repair,2022-10-28,2023-10-28,,false,,,,2026-10-13
+AST-0322,Monitor,Dell,Office Monitor,SYN-00322,Remote,IT,,In Stock,2021-03-26,2024-03-26,,false,,,,2026-09-05
+AST-0323,Phone,HP,Corporate Phone,SYN-00323,Sydney,IT,EMP-0391,Assigned,2023-06-23,2026-06-23,,false,,,,2026-08-14
+AST-0324,Phone,Dell,Corporate Phone,SYN-00324,Sydney,Operations,EMP-0366,Return Pending,2020-02-22,2021-02-21,2026-11-06,false,,,,2026-08-30
+AST-0325,Tablet,Apple,Business Tablet,SYN-00325,Remote,IT,,In Stock,2022-04-30,2025-04-30,,false,,,,2026-10-01
+AST-0326,Phone,Lenovo,Corporate Phone,SYN-00326,Melbourne,Operations,,Lost / Stolen,2026-05-02,2029-05-02,,false,,,,2026-09-19
+AST-0327,Phone,Lenovo,Corporate Phone,SYN-00327,Remote,IT,EMP-0108,Assigned,2021-05-13,2022-05-13,,false,,,,2026-09-17
+AST-0328,Laptop,Lenovo,Business Laptop,SYN-00328,Melbourne,Finance,,Disposed,2021-03-13,2024-03-13,,true,Passed,EVD-00328,,2026-07-27
+AST-0329,Desktop,Lenovo,Business Desktop,SYN-00329,Brisbane,IT,EMP-0380,Assigned,2020-12-25,2023-12-26,,true,,,,2026-08-27
+AST-0330,Phone,HP,Corporate Phone,SYN-00330,Melbourne,IT,EMP-0127,Assigned,2023-04-14,2024-04-13,,false,,,,2026-08-19
+AST-0331,Desktop,HP,Business Desktop,SYN-00331,Brisbane,HR,EMP-0318,Return Pending,2020-12-07,2021-12-07,2026-09-15,true,,,,2026-07-20
+AST-0332,Phone,Apple,Corporate Phone,SYN-00332,Brisbane,IT,EMP-0405,Assigned,2023-01-06,2025-01-05,,false,,,,2026-08-12
+AST-0333,Laptop,Lenovo,Business Laptop,SYN-00333,Remote,Sales,EMP-0253,Assigned,2021-09-17,2024-09-17,,false,,,,2026-09-20
+AST-0334,Tablet,Samsung,Business Tablet,SYN-00334,Remote,Operations,EMP-0380,In Repair,2025-06-10,2027-06-10,,false,,,,2026-08-05
+AST-0335,Tablet,Lenovo,Business Tablet,SYN-00335,Remote,Finance,,In Stock,2024-11-26,2026-11-26,,true,,,,2026-10-02
+AST-0336,Laptop,HP,Business Laptop,SYN-00336,Melbourne,Operations,,In Stock,2026-06-20,2028-06-19,,false,,,,2026-07-10
+AST-0337,Monitor,HP,Office Monitor,SYN-00337,Brisbane,HR,EMP-0283,Assigned,2020-06-14,2023-06-15,,true,,,,2026-07-14
+AST-0338,Tablet,Samsung,Business Tablet,SYN-00338,Remote,Finance,,In Stock,2022-06-24,2025-06-24,,false,,,,2026-10-15
+AST-0339,Laptop,Apple,Business Laptop,SYN-00339,Sydney,HR,EMP-0497,In Repair,2021-01-04,2022-01-04,,false,,,,2026-09-05
+AST-0340,Laptop,HP,Business Laptop,SYN-00340,Remote,IT,EMP-0110,Assigned,2026-02-05,2028-02-05,,false,,,,2026-07-21
+AST-0341,Desktop,Dell,Business Desktop,SYN-00341,Sydney,HR,,In Stock,2024-06-07,2026-06-07,,false,,,,2026-10-10
+AST-0342,Phone,Samsung,Corporate Phone,SYN-00342,Remote,Finance,EMP-0251,Return Pending,2024-08-19,2025-08-19,2026-11-01,false,,,,2026-10-02
+AST-0343,Desktop,Samsung,Business Desktop,SYN-00343,Melbourne,Finance,EMP-0186,Assigned,2020-02-25,2023-02-25,,false,,,,2026-08-30
+AST-0344,Phone,Lenovo,Corporate Phone,SYN-00344,Brisbane,Operations,,In Stock,2023-04-08,2025-04-07,,false,,,,2026-07-27
+AST-0345,Tablet,Samsung,Business Tablet,SYN-00345,Sydney,IT,EMP-0052,Return Pending,2024-04-24,2025-04-24,2026-09-28,true,Pending,,,2026-07-04
+AST-0346,Desktop,Samsung,Business Desktop,SYN-00346,Remote,IT,,Ready for Disposal,2025-10-03,2026-10-03,,false,,,,2026-08-01
+AST-0347,Laptop,HP,Business Laptop,SYN-00347,Melbourne,Operations,,In Stock,2026-02-19,2027-02-19,,false,,,,2026-07-25
+AST-0348,Desktop,HP,Business Desktop,SYN-00348,Sydney,IT,,Ready for Disposal,2024-11-26,2025-11-26,,false,,,,2026-07-28
+AST-0349,Tablet,Samsung,Business Tablet,SYN-00349,Brisbane,IT,EMP-0179,Return Pending,2024-09-05,2026-09-05,2026-10-26,false,,,,2026-10-03
+AST-0350,Laptop,Lenovo,Business Laptop,SYN-00350,Sydney,Sales,EMP-0110,Assigned,2024-03-08,2027-03-09,,false,,,,2026-10-07
+AST-0351,Monitor,Dell,Office Monitor,SYN-00351,Brisbane,Sales,,In Stock,2021-01-10,2024-01-11,,false,,,,2026-08-27
+AST-0352,Tablet,Samsung,Business Tablet,SYN-00352,Melbourne,IT,EMP-0226,Assigned,2020-05-15,2023-05-16,,false,,,,2026-07-16
+AST-0353,Tablet,HP,Business Tablet,SYN-00353,Melbourne,Finance,EMP-0091,Return Pending,2024-02-02,2025-02-01,2026-11-03,true,,,,2026-10-07
+AST-0354,Tablet,Lenovo,Business Tablet,SYN-00354,Remote,Sales,EMP-0300,Assigned,2024-01-07,2026-01-06,,false,,,,2026-08-17
+AST-0355,Tablet,Samsung,Business Tablet,SYN-00355,Brisbane,HR,,In Stock,2020-05-02,2021-05-02,,true,,,,2026-10-13
+AST-0356,Tablet,Samsung,Business Tablet,SYN-00356,Melbourne,Sales,EMP-0260,Assigned,2024-09-18,2026-09-18,,true,,,,2026-09-21
+AST-0357,Laptop,Dell,Business Laptop,SYN-00357,Remote,Finance,EMP-0153,Assigned,2022-08-04,2024-08-03,,false,,,,2026-07-09
+AST-0358,Monitor,Dell,Office Monitor,SYN-00358,Remote,Finance,EMP-0299,Return Pending,2022-05-19,2023-05-19,2026-11-12,false,,,,2026-10-06
+AST-0359,Laptop,Samsung,Business Laptop,SYN-00359,Remote,IT,EMP-0316,Lost / Stolen,2020-02-05,2023-02-05,,true,Failed,,,2026-10-04
+AST-0360,Phone,Samsung,Corporate Phone,SYN-00360,Brisbane,Sales,,In Stock,2021-05-05,2024-05-05,,false,,,,2026-07-29
+AST-0361,Monitor,Lenovo,Office Monitor,SYN-00361,Melbourne,Sales,,Disposed,2025-07-07,2026-07-07,,false,,,DSP-00361,2026-07-02
+AST-0362,Phone,Apple,Corporate Phone,SYN-00362,Remote,Sales,EMP-0043,Assigned,2022-04-10,2024-04-09,,false,,,,2026-07-05
+AST-0363,Monitor,HP,Office Monitor,SYN-00363,Melbourne,Finance,EMP-0403,Assigned,2021-05-09,2024-05-09,,false,,,,2026-08-30
+AST-0364,Tablet,Samsung,Business Tablet,SYN-00364,Brisbane,HR,EMP-0047,Assigned,2022-07-12,2025-07-12,,false,,,,2026-08-29
+AST-0365,Tablet,HP,Business Tablet,SYN-00365,Remote,HR,,Disposed,2025-11-10,2026-11-10,,true,Passed,EVD-00365,,2026-09-25
+AST-0366,Laptop,Dell,Business Laptop,SYN-00366,Brisbane,Finance,,In Stock,2025-04-16,2026-04-16,,true,,,,2026-08-29
+AST-0367,Tablet,Samsung,Business Tablet,SYN-00367,Melbourne,IT,,In Stock,2023-09-01,2026-09-01,,false,,,,2026-07-03
+AST-0368,Desktop,HP,Business Desktop,SYN-00368,Remote,Sales,EMP-0186,Assigned,2026-06-28,2027-06-28,,true,,,,2026-08-25
+AST-0369,Phone,Samsung,Corporate Phone,SYN-00369,Melbourne,HR,,Disposed,2021-01-28,2022-01-28,,false,,,DSP-00369,2026-07-23
+AST-0370,Phone,HP,Corporate Phone,SYN-00370,Melbourne,HR,EMP-0001,In Repair,2025-04-15,2026-04-15,,false,,,,2026-10-06
+AST-0371,Phone,Dell,Corporate Phone,SYN-00371,Sydney,IT,EMP-0033,Lost / Stolen,2023-02-20,2025-02-19,,false,,,,2026-07-09
+AST-0372,Tablet,Samsung,Business Tablet,SYN-00372,Melbourne,Finance,EMP-0267,In Repair,2022-05-28,2023-05-28,,false,,,,2026-09-02
+AST-0373,Desktop,Dell,Business Desktop,SYN-00373,Remote,Operations,,In Stock,2021-04-13,2024-04-13,,false,,,,2026-10-07
+AST-0374,Phone,Lenovo,Corporate Phone,SYN-00374,Melbourne,Operations,EMP-0164,Assigned,2021-08-15,2023-08-15,,false,,,,2026-08-16
+AST-0375,Tablet,Samsung,Business Tablet,SYN-00375,Brisbane,Operations,,In Stock,2020-02-17,2021-02-16,,true,,,,2026-08-10
+AST-0376,Laptop,HP,Business Laptop,SYN-00376,Sydney,Sales,,In Stock,2022-01-14,2025-01-14,,true,,,,2026-08-28
+AST-0377,Phone,Samsung,Corporate Phone,SYN-00377,Brisbane,Finance,EMP-0448,Assigned,2026-05-08,2029-05-08,,false,,,,2026-09-29
+AST-0378,Tablet,Samsung,Business Tablet,SYN-00378,Sydney,Finance,EMP-0293,Assigned,2026-01-20,2029-01-20,,false,,,,2026-07-21
+AST-0379,Desktop,Samsung,Business Desktop,SYN-00379,Remote,Finance,,In Stock,2025-03-06,2026-03-06,,false,,,,2026-07-06
+AST-0380,Laptop,HP,Business Laptop,SYN-00380,Sydney,HR,EMP-0438,Lost / Stolen,2023-07-27,2026-07-27,,false,,,,2026-09-25
+AST-0381,Laptop,Samsung,Business Laptop,SYN-00381,Remote,IT,,Disposed,2024-03-08,2026-03-08,,true,,,DSP-00381,2026-09-24
+AST-0382,Laptop,Lenovo,Business Laptop,SYN-00382,Brisbane,Sales,EMP-0431,In Repair,2022-06-24,2023-06-24,,false,,,,2026-10-04
+AST-0383,Laptop,Samsung,Business Laptop,SYN-00383,Sydney,IT,EMP-0138,In Repair,2025-05-02,2028-05-02,,false,,,,2026-07-25
+AST-0384,Phone,HP,Corporate Phone,SYN-00384,Melbourne,HR,EMP-0340,Assigned,2024-06-07,2027-06-08,,false,,,,2026-07-24
+AST-0385,Monitor,Samsung,Office Monitor,SYN-00385,Melbourne,Operations,,Disposed,2020-12-31,2021-12-31,,false,,,DSP-00385,2026-09-26
+AST-0386,Desktop,Lenovo,Business Desktop,SYN-00386,Remote,Sales,EMP-0116,Assigned,2023-05-15,2026-05-15,,true,,,,2026-07-06
+AST-0387,Monitor,HP,Office Monitor,SYN-00387,Sydney,IT,,In Stock,2020-02-18,2021-02-17,,false,,,,2026-10-13
+AST-0388,Phone,HP,Corporate Phone,SYN-00388,Sydney,Finance,,In Stock,2021-02-10,2022-02-10,,false,,,,2026-08-27
+AST-0389,Monitor,Apple,Office Monitor,SYN-00389,Melbourne,Operations,EMP-0113,In Repair,2020-11-29,2023-11-30,,false,,,,2026-10-14
+AST-0390,Desktop,Dell,Business Desktop,SYN-00390,Melbourne,Sales,,Disposed,2021-03-13,2024-03-13,,false,,,DSP-00390,2026-07-18
+AST-0391,Desktop,Samsung,Business Desktop,SYN-00391,Remote,Operations,,Disposed,2021-07-18,2022-07-18,,false,,,DSP-00391,2026-07-15
+AST-0392,Monitor,Apple,Office Monitor,SYN-00392,Melbourne,Finance,,Sanitisation Pending,2022-11-28,2024-11-27,,true,Pending,,,2026-09-01
+AST-0393,Monitor,Samsung,Office Monitor,SYN-00393,Brisbane,Finance,EMP-0311,Assigned,2024-06-07,2026-06-07,,false,,,,2026-09-24
+AST-0394,Monitor,Dell,Office Monitor,SYN-00394,Remote,Finance,EMP-0086,Return Pending,2025-07-05,2028-07-05,2026-10-11,false,,,,2026-09-07
+AST-0395,Phone,Apple,Corporate Phone,SYN-00395,Brisbane,Finance,EMP-0094,Return Pending,2024-09-25,2026-09-25,2026-10-05,true,,,,2026-07-04
+AST-0396,Tablet,Dell,Business Tablet,SYN-00396,Remote,Finance,EMP-0030,Assigned,2024-10-13,2027-10-14,,false,,,,2026-07-08
+AST-0397,Laptop,Dell,Business Laptop,SYN-00397,Remote,Sales,EMP-0324,Assigned,2022-05-19,2024-05-18,,false,,,,2026-08-11
+AST-0398,Laptop,Lenovo,Business Laptop,SYN-00398,Brisbane,Finance,,Return Pending,2021-10-31,2023-10-31,2026-11-23,true,,,,2026-10-12
+AST-0399,Monitor,Apple,Office Monitor,SYN-00399,Melbourne,Sales,,In Stock,2020-03-18,2023-03-19,,false,,,,2026-07-18
+AST-0400,Phone,HP,Corporate Phone,SYN-00400,Sydney,HR,EMP-0310,Assigned,2025-05-29,2027-05-29,,false,,,,2026-09-25
+AST-0401,Tablet,Dell,Business Tablet,SYN-00401,Brisbane,Sales,,Disposed,2024-09-25,2026-09-25,,false,,,DSP-00401,2026-08-18
+AST-0402,Laptop,Apple,Business Laptop,SYN-00402,Brisbane,Sales,EMP-0388,Assigned,2023-10-02,2025-10-01,,false,,,,2026-09-06
+AST-0403,Laptop,Samsung,Business Laptop,SYN-00403,Melbourne,IT,,Disposed,2023-05-31,2025-05-30,,true,Passed,,DSP-00403,2026-08-02
+AST-0404,Laptop,Lenovo,Business Laptop,SYN-00404,Sydney,Operations,,Disposed,2024-09-01,2026-09-01,,true,Passed,EVD-00404,DSP-00404,2026-09-13
+AST-0405,Monitor,Apple,Office Monitor,SYN-00405,Sydney,Sales,,In Stock,2022-06-06,2024-06-05,,true,,,,2026-08-24
+AST-0406,Desktop,HP,Business Desktop,SYN-00406,Melbourne,Sales,EMP-0311,Return Pending,2025-12-22,2027-12-22,2026-09-17,false,,,,2026-09-17
+AST-0407,Phone,Samsung,Corporate Phone,SYN-00407,Brisbane,Finance,,In Stock,2020-07-31,2022-07-31,,false,,,,2026-09-15
+AST-0408,Tablet,Lenovo,Business Tablet,SYN-00408,Melbourne,HR,EMP-0131,Assigned,2024-01-02,2025-01-01,,true,,,,2026-07-02
+AST-0409,Monitor,HP,Office Monitor,SYN-00409,Melbourne,Sales,EMP-0386,Assigned,2022-02-20,2025-02-20,,false,,,,2026-10-03
+AST-0410,Laptop,Dell,Business Laptop,SYN-00410,Melbourne,Finance,EMP-0290,Assigned,2024-02-25,2026-02-24,,false,,,,2026-09-08
+AST-0411,Phone,Samsung,Corporate Phone,SYN-00411,Melbourne,Operations,,In Stock,2024-05-29,2026-05-29,,false,,,,2026-10-10
+AST-0412,Monitor,Dell,Office Monitor,SYN-00412,Brisbane,HR,,Disposed,2021-08-11,2024-08-11,,false,,,DSP-00412,2026-10-15
+AST-0413,Phone,Samsung,Corporate Phone,SYN-00413,Melbourne,Operations,EMP-0322,Assigned,2023-05-08,2025-05-07,,false,,,,2026-08-12
+AST-0414,Tablet,Apple,Business Tablet,SYN-00414,Sydney,HR,EMP-0366,Assigned,2022-05-20,2023-05-20,,true,,,,2026-09-08
+AST-0415,Laptop,Lenovo,Business Laptop,SYN-00415,Brisbane,Finance,EMP-0096,Assigned,2026-02-18,2029-02-18,,false,,,,2026-10-16
+AST-0416,Monitor,Lenovo,Office Monitor,SYN-00416,Sydney,Sales,EMP-0413,Assigned,2026-07-21,2027-07-21,,false,,,,2026-10-06
+AST-0417,Monitor,Dell,Office Monitor,SYN-00417,Brisbane,IT,EMP-0214,Assigned,2022-07-29,2024-07-28,,false,,,,2026-07-17
+AST-0418,Monitor,Apple,Office Monitor,SYN-00418,Brisbane,Finance,EMP-0380,Assigned,2023-01-07,2024-01-07,,false,,,,2026-07-30
+AST-0419,Monitor,Samsung,Office Monitor,SYN-00419,Remote,IT,EMP-0047,Lost / Stolen,2021-09-16,2024-09-16,,false,,,,2026-10-13
+AST-0420,Tablet,Lenovo,Business Tablet,SYN-00420,Sydney,Finance,EMP-0226,Assigned,2021-04-12,2023-04-12,,true,,,,2026-07-12
+AST-0421,Desktop,Dell,Business Desktop,SYN-00421,Sydney,Finance,,In Stock,2023-11-21,2025-11-20,,true,,,,2026-09-13
+AST-0422,Desktop,Apple,Business Desktop,SYN-00422,Remote,IT,,Disposed,2021-01-10,2024-01-11,,false,,,DSP-00422,2026-08-08
+AST-0423,Desktop,Apple,Business Desktop,SYN-00423,Melbourne,Operations,EMP-0255,Assigned,2025-02-12,2026-02-12,,true,Pending,,,2026-10-11
+AST-0424,Tablet,Samsung,Business Tablet,SYN-00424,Brisbane,IT,,In Stock,2023-08-02,2024-08-01,,false,,,,2026-10-10
+AST-0425,Monitor,Samsung,Office Monitor,SYN-00425,Melbourne,Finance,EMP-0445,Assigned,2021-04-08,2024-04-08,,false,,,,2026-10-12
+AST-0426,Monitor,Samsung,Office Monitor,SYN-00426,Sydney,Sales,,Ready for Disposal,2023-08-25,2024-08-24,,false,,,,2026-08-10
+AST-0427,Tablet,HP,Business Tablet,SYN-00427,Melbourne,Operations,EMP-0491,Assigned,2022-07-26,2024-07-25,,true,,,,2026-08-26
+AST-0428,Desktop,Apple,Business Desktop,SYN-00428,Sydney,HR,EMP-0440,Assigned,2024-03-06,2026-03-06,,false,,,,2026-09-05
+AST-0429,Laptop,HP,Business Laptop,SYN-00429,Brisbane,Operations,,Disposed,2023-02-02,2024-02-02,,false,,,DSP-00429,2026-07-05
+AST-0430,Monitor,Samsung,Office Monitor,SYN-00430,Brisbane,Finance,,In Stock,2024-04-26,2025-04-26,,true,,,,2026-08-21
+AST-0431,Monitor,Apple,Office Monitor,SYN-00431,Melbourne,Finance,,Disposed,2023-04-25,2024-04-24,,true,Pending,,DSP-00431,2026-10-12
+AST-0432,Laptop,Dell,Business Laptop,SYN-00432,Brisbane,HR,EMP-0471,Assigned,2026-07-12,2029-07-12,,false,,,,2026-09-30
+AST-0433,Laptop,HP,Business Laptop,SYN-00433,Remote,Operations,EMP-0217,Assigned,2022-04-09,2023-04-09,,false,,,,2026-07-04
+AST-0434,Phone,HP,Corporate Phone,SYN-00434,Remote,IT,,Disposed,2022-03-09,2025-03-09,,false,,,DSP-00434,2026-09-28
+AST-0435,Laptop,Samsung,Business Laptop,SYN-00435,Brisbane,IT,,Ready for Disposal,2026-01-27,2027-01-27,,false,,,,2026-09-05
+AST-0436,Phone,Dell,Corporate Phone,SYN-00436,Brisbane,IT,EMP-0173,Assigned,2026-03-31,2027-03-31,,true,Pending,,,2026-07-09
+AST-0437,Desktop,Lenovo,Business Desktop,SYN-00437,Sydney,Sales,EMP-0171,Assigned,2021-06-27,2022-06-27,,true,,,,2026-09-17
+AST-0438,Desktop,Samsung,Business Desktop,SYN-00438,Remote,Operations,,In Stock,2021-02-12,2024-02-13,,true,,,,2026-08-01
+AST-0439,Phone,Dell,Corporate Phone,SYN-00439,Sydney,Operations,,Ready for Disposal,2020-08-31,2021-08-31,,false,,,,2026-07-07
+AST-0440,Phone,Samsung,Corporate Phone,SYN-00440,Remote,Sales,,In Stock,2021-03-06,2023-03-06,,true,Failed,,,2026-08-04
+AST-0441,Laptop,Dell,Business Laptop,SYN-00441,Melbourne,Operations,,Ready for Disposal,2023-12-29,2025-12-28,,false,,,,2026-10-02
+AST-0442,Phone,Samsung,Corporate Phone,SYN-00442,Melbourne,Sales,,Sanitisation Pending,2024-09-10,2026-09-10,,true,Pending,,,2026-08-25
+AST-0443,Tablet,Samsung,Business Tablet,SYN-00443,Melbourne,IT,,Disposed,2023-06-24,2024-06-23,,true,Passed,EVD-00443,DSP-00443,2026-07-21
+AST-0444,Monitor,Samsung,Office Monitor,SYN-00444,Remote,Sales,EMP-0297,Assigned,2020-12-05,2023-12-06,,false,,,,2026-10-15
+AST-0445,Desktop,Apple,Business Desktop,SYN-00445,Brisbane,Operations,,Ready for Disposal,2023-11-25,2024-11-24,,true,,,,2026-07-31
+AST-0446,Desktop,Apple,Business Desktop,SYN-00446,Remote,Finance,EMP-0091,Return Pending,2024-12-08,2027-12-09,2026-10-01,false,,,,2026-09-01
+AST-0447,Phone,Dell,Corporate Phone,SYN-00447,Sydney,HR,,Disposed,2020-09-09,2022-09-09,,false,,,,2026-09-19
+AST-0448,Laptop,Dell,Business Laptop,SYN-00448,Melbourne,HR,,In Stock,2020-12-16,2021-12-16,,false,,,,2026-07-24
+AST-0449,Laptop,Lenovo,Business Laptop,SYN-00449,Brisbane,Sales,EMP-0220,Assigned,2021-03-12,2022-03-12,,true,,,,2026-07-23
+AST-0450,Desktop,Samsung,Business Desktop,SYN-00450,Brisbane,Sales,EMP-0147,Assigned,2023-08-12,2026-08-12,,true,Pending,,,2026-07-07
+AST-0451,Desktop,Lenovo,Business Desktop,SYN-00451,Remote,Sales,EMP-0294,Assigned,2020-03-20,2021-03-20,,false,,,,2026-08-30
+AST-0452,Phone,Dell,Corporate Phone,SYN-00452,Brisbane,HR,EMP-0438,Assigned,2021-04-11,2023-04-11,,false,,,,2026-09-30
+AST-0453,Tablet,Lenovo,Business Tablet,SYN-00453,Melbourne,Sales,,In Stock,2022-06-25,2025-06-25,,false,,,,2026-09-06
+AST-0454,Monitor,HP,Office Monitor,SYN-00454,Melbourne,HR,EMP-0411,Assigned,2021-08-03,2022-08-03,,false,,,,2026-09-28
+AST-0455,Phone,Apple,Corporate Phone,SYN-00455,Sydney,IT,EMP-0343,Assigned,2020-10-01,2022-10-01,,false,,,,2026-09-15
+AST-0456,Phone,Dell,Corporate Phone,SYN-00456,Melbourne,IT,EMP-0167,Lost / Stolen,2023-07-01,2026-07-01,,false,,,,2026-09-11
+AST-0457,Laptop,Dell,Business Laptop,SYN-00457,Brisbane,IT,,Disposed,2026-06-21,2028-06-20,,false,,,DSP-00457,2026-09-30
+AST-0458,Monitor,Samsung,Office Monitor,SYN-00458,Brisbane,Operations,,Disposed,2025-11-06,2027-11-06,,false,,,DSP-00458,2026-07-02
+AST-0459,Tablet,Dell,Business Tablet,SYN-00459,Melbourne,Operations,,In Stock,2023-05-17,2026-05-17,,false,,,,2026-08-26
+AST-0460,Laptop,Dell,Business Laptop,SYN-00460,Sydney,Finance,,In Stock,2025-07-17,2027-07-17,,false,,,,2026-09-29
+AST-0461,Laptop,Samsung,Business Laptop,SYN-00461,Sydney,Sales,,Sanitisation Pending,2025-10-07,2028-10-07,,true,Pending,,,2026-08-16
+AST-0462,Monitor,HP,Office Monitor,SYN-00462,Remote,HR,,Return Pending,2025-04-13,2027-04-13,2026-10-02,true,,,,2026-08-29
+AST-0463,Monitor,Dell,Office Monitor,SYN-00463,Melbourne,HR,,In Stock,2023-02-15,2026-02-15,,false,,,,2026-09-16
+AST-0464,Desktop,HP,Business Desktop,SYN-00464,Brisbane,Finance,EMP-0474,Return Pending,2022-08-03,2025-08-03,2026-11-09,false,,,,2026-10-03
+AST-0465,Monitor,Dell,Office Monitor,SYN-00465,Sydney,Sales,,In Stock,2024-10-17,2027-10-18,,false,,,,2026-08-21
+AST-0466,Monitor,Apple,Office Monitor,SYN-00466,Remote,Sales,EMP-0288,Assigned,2026-03-24,2028-03-23,,true,,,,2026-09-15
+AST-0467,Laptop,HP,Business Laptop,SYN-00467,Sydney,HR,EMP-0047,Assigned,2024-03-29,2026-03-29,,false,,,,2026-09-25
+AST-0468,Phone,Apple,Corporate Phone,SYN-00468,Brisbane,IT,,In Stock,2020-02-10,2022-02-09,,false,,,,2026-08-04
+AST-0469,Tablet,Apple,Business Tablet,SYN-00469,Brisbane,IT,,In Stock,2024-09-02,2026-09-02,,false,,,,2026-08-23
+AST-0470,Desktop,Dell,Business Desktop,SYN-00470,Remote,IT,EMP-0352,Assigned,2024-03-09,2026-03-09,,false,,,,2026-07-10
+AST-0471,Monitor,Apple,Office Monitor,SYN-00471,Sydney,Operations,,In Stock,2022-09-24,2023-09-24,,false,,,,2026-09-11
+AST-0472,Desktop,HP,Business Desktop,SYN-00472,Brisbane,IT,EMP-0235,Lost / Stolen,2026-05-05,2029-05-05,,true,,,,2026-08-09
+AST-0473,Desktop,Lenovo,Business Desktop,SYN-00473,Remote,Sales,,In Stock,2024-09-28,2025-09-28,,false,,,,2026-10-10
+AST-0474,Laptop,HP,Business Laptop,SYN-00474,Remote,Sales,,Disposed,2024-10-18,2027-10-19,,false,,,DSP-00474,2026-10-10
+AST-0475,Monitor,HP,Office Monitor,SYN-00475,Remote,HR,,Disposed,2023-11-09,2025-11-08,,false,,,DSP-00475,2026-09-13
+AST-0476,Desktop,Samsung,Business Desktop,SYN-00476,Brisbane,Sales,EMP-0444,Assigned,2023-12-22,2024-12-21,,false,,,,2026-09-04
+AST-0477,Tablet,Apple,Business Tablet,SYN-00477,Remote,IT,EMP-0296,Assigned,2022-03-30,2025-03-30,,false,,,,2026-08-05
+AST-0478,Desktop,Apple,Business Desktop,SYN-00478,Brisbane,Operations,,Disposed,2022-10-12,2023-10-12,,false,,,DSP-00478,2026-07-04
+AST-0479,Phone,Apple,Corporate Phone,SYN-00479,Melbourne,Operations,EMP-0483,Lost / Stolen,2020-03-11,2021-03-11,,false,,,,2026-08-17
+AST-0480,Desktop,Apple,Business Desktop,SYN-00480,Remote,Finance,,Disposed,2021-11-21,2024-11-21,,false,,,DSP-00480,2026-08-13
+AST-0481,Laptop,Lenovo,Business Laptop,SYN-00481,Remote,HR,,Disposed,2023-01-16,2024-01-16,,false,,,DSP-00481,2026-10-15
+AST-0482,Phone,Dell,Corporate Phone,SYN-00482,Brisbane,Sales,,In Repair,2025-11-07,2027-11-07,,true,Failed,,,2026-07-26
+AST-0483,Desktop,HP,Business Desktop,SYN-00483,Brisbane,Operations,EMP-0464,Assigned,2021-12-09,2023-12-09,,false,,,,2026-08-14
+AST-0484,Phone,Samsung,Corporate Phone,SYN-00484,Melbourne,Sales,,In Stock,2026-08-09,2028-08-08,,false,,,,2026-09-21
+AST-0485,Tablet,Lenovo,Business Tablet,SYN-00485,Melbourne,HR,EMP-0408,Assigned,2025-09-29,2028-09-29,,false,,,,2026-08-08
+AST-0486,Desktop,HP,Business Desktop,SYN-00486,Brisbane,Finance,EMP-0292,In Repair,2023-10-03,2024-10-02,,true,,,,2026-09-14
+AST-0487,Laptop,Dell,Business Laptop,SYN-00487,Melbourne,Sales,EMP-0165,Assigned,2021-07-05,2024-07-05,,false,,,,2026-10-11
+AST-0488,Tablet,Apple,Business Tablet,SYN-00488,Sydney,HR,,In Stock,2022-03-26,2023-03-26,,false,,,,2026-10-15
+AST-0489,Desktop,Apple,Business Desktop,SYN-00489,Sydney,IT,,In Stock,2022-03-30,2023-03-30,,false,,,,2026-08-06
+AST-0490,Tablet,HP,Business Tablet,SYN-00490,Remote,Finance,,Disposed,2026-04-02,2027-04-02,,false,,,DSP-00490,2026-07-05
+AST-0491,Desktop,HP,Business Desktop,SYN-00491,Melbourne,HR,EMP-0271,Assigned,2026-08-15,2028-08-14,,true,,,,2026-07-12
+AST-0492,Laptop,Apple,Business Laptop,SYN-00492,Remote,Operations,,Sanitisation Pending,2025-05-30,2026-05-30,,true,Pending,,,2026-09-14
+AST-0493,Desktop,Lenovo,Business Desktop,SYN-00493,Brisbane,HR,EMP-0176,Assigned,2023-11-23,2024-11-22,,true,,,,2026-08-02
+AST-0494,Monitor,Apple,Office Monitor,SYN-00494,Melbourne,IT,EMP-0439,Lost / Stolen,2025-06-28,2027-06-28,,false,,,,2026-07-30
+AST-0495,Monitor,HP,Office Monitor,SYN-00495,Remote,Operations,EMP-0395,Assigned,2023-12-06,2025-12-05,,true,,,,2026-07-29
+AST-0496,Monitor,Samsung,Office Monitor,SYN-00496,Remote,Finance,EMP-0116,Assigned,2025-01-02,2027-01-02,,false,,,,2026-07-01
+AST-0497,Monitor,Samsung,Office Monitor,SYN-00497,Melbourne,Operations,EMP-0287,Assigned,2023-05-25,2025-05-24,,false,,,,2026-10-16
+AST-0498,Monitor,Dell,Office Monitor,SYN-00498,Sydney,HR,EMP-0028,In Repair,2021-10-25,2023-10-25,,true,,,,2026-07-30
+AST-0499,Desktop,Dell,Business Desktop,SYN-00499,Sydney,Sales,EMP-0058,Assigned,2025-01-24,2027-01-24,,false,,,,2026-08-17
+AST-0500,Phone,Apple,Corporate Phone,SYN-00500,Remote,IT,,Disposed,2021-04-16,2023-04-16,,false,,,DSP-00500,2026-07-26
+AST-0501,Phone,Lenovo,Corporate Phone,SYN-00501,Sydney,Finance,EMP-0397,Assigned,2023-04-26,2025-04-25,,false,,,,2026-09-09
+AST-0502,Tablet,Apple,Business Tablet,SYN-00502,Sydney,Operations,EMP-0082,Assigned,2026-07-26,2027-07-26,,false,,,,2026-09-19
+AST-0503,Tablet,Apple,Business Tablet,SYN-00503,Remote,HR,,In Stock,2021-11-26,2024-11-26,,true,,,,2026-10-09
+AST-0504,Desktop,Apple,Business Desktop,SYN-00504,Sydney,HR,,Disposed,2026-08-14,2029-08-14,,false,,,DSP-00504,2026-10-10
+AST-0505,Phone,Lenovo,Corporate Phone,SYN-00505,Remote,HR,,In Stock,2023-02-18,2025-02-17,,false,,,,2026-10-12
+AST-0506,Tablet,HP,Business Tablet,SYN-00506,Brisbane,Sales,EMP-0016,Lost / Stolen,2023-10-08,2026-10-08,,false,,,,2026-08-23
+AST-0507,Phone,Lenovo,Corporate Phone,SYN-00507,Brisbane,Operations,EMP-0284,Assigned,2023-08-13,2024-08-12,,false,,,,2026-07-19
+AST-0508,Tablet,HP,Business Tablet,SYN-00508,Brisbane,HR,,In Stock,2020-02-25,2022-02-24,,false,,,,2026-10-17
+AST-0509,Monitor,Dell,Office Monitor,SYN-00509,Brisbane,Operations,,In Stock,2020-09-03,2023-09-04,,false,,,,2026-09-01
+AST-0510,Desktop,Dell,Business Desktop,SYN-00510,Brisbane,Operations,EMP-0324,Assigned,2023-09-22,2025-09-21,,true,,,,2026-07-26
+AST-0511,Laptop,Lenovo,Business Laptop,SYN-00511,Brisbane,HR,EMP-0244,Return Pending,2024-09-26,2025-09-26,2026-11-05,false,,,,2026-07-13
+AST-0512,Monitor,Dell,Office Monitor,SYN-00512,Remote,HR,EMP-0236,Assigned,2020-10-21,2021-10-21,,false,,,,2026-09-01
+AST-0513,Tablet,Dell,Business Tablet,SYN-00513,Brisbane,HR,EMP-0100,Return Pending,2025-11-28,2027-11-28,2026-10-31,true,,,,2026-09-21
+AST-0514,Monitor,Samsung,Office Monitor,SYN-00514,Remote,Sales,EMP-0442,Assigned,2025-01-30,2027-01-30,,false,,,,2026-08-19
+AST-0515,Phone,Samsung,Corporate Phone,SYN-00515,Melbourne,IT,EMP-0022,Assigned,2026-07-26,2029-07-26,,false,,,,2026-08-04
+AST-0516,Tablet,Apple,Business Tablet,SYN-00516,Brisbane,IT,EMP-0046,Assigned,2025-09-25,2026-09-25,,false,,,,2026-09-27
+AST-0517,Desktop,HP,Business Desktop,SYN-00517,Remote,Sales,,Lost / Stolen,2025-03-29,2028-03-29,,false,,,,2026-10-16
+AST-0518,Monitor,Samsung,Office Monitor,SYN-00518,Remote,Sales,,In Stock,2025-12-11,2026-12-11,,true,Pending,,,2026-08-14
+AST-0519,Laptop,HP,Business Laptop,SYN-00519,Remote,HR,,In Stock,2020-03-16,2022-03-16,,false,,,,2026-07-30
+AST-0520,Phone,Apple,Corporate Phone,SYN-00520,Remote,Finance,,In Stock,2026-03-29,2028-03-28,,false,,,,2026-09-29
+AST-0521,Phone,Apple,Corporate Phone,SYN-00521,Remote,Finance,,In Stock,2023-10-18,2026-10-18,,false,,,,2026-09-22
+AST-0522,Phone,Samsung,Corporate Phone,SYN-00522,Melbourne,HR,,Disposed,2026-06-09,2027-06-09,,false,,,DSP-00522,2026-09-28
+AST-0523,Monitor,Dell,Office Monitor,SYN-00523,Remote,Finance,,Disposed,2023-03-05,2025-03-04,,true,Failed,,DSP-00523,2026-10-18
+AST-0524,Laptop,Lenovo,Business Laptop,SYN-00524,Remote,Finance,EMP-0029,Assigned,2026-01-11,2029-01-11,,false,,,,2026-10-02
+AST-0525,Laptop,Apple,Business Laptop,SYN-00525,Remote,IT,,In Stock,2021-03-14,2022-03-14,,false,,,,2026-07-07
+AST-0526,Laptop,Dell,Business Laptop,SYN-00526,Sydney,IT,EMP-0401,Assigned,2026-04-03,2029-04-03,,true,,,,2026-10-13
+AST-0527,Tablet,Dell,Business Tablet,SYN-00527,Melbourne,IT,EMP-0218,Assigned,2026-01-27,2027-01-27,,false,,,,2026-09-24
+AST-0528,Tablet,HP,Business Tablet,SYN-00528,Sydney,Operations,EMP-0319,Assigned,2023-03-01,2025-02-28,,false,,,,2026-09-12
+AST-0529,Desktop,Apple,Business Desktop,SYN-00529,Sydney,Operations,,Ready for Disposal,2023-10-11,2025-10-10,,false,,,,2026-10-03
+AST-0530,Phone,Dell,Corporate Phone,SYN-00530,Sydney,HR,EMP-0272,In Repair,2022-06-28,2023-06-28,,false,,,,2026-08-11
+AST-0531,Monitor,HP,Office Monitor,SYN-00531,Remote,Operations,,Disposed,2024-08-05,2025-08-05,,true,Passed,EVD-00531,DSP-00531,2026-09-22
+AST-0532,Monitor,Samsung,Office Monitor,SYN-00532,Melbourne,Operations,EMP-0134,Return Pending,2020-09-18,2023-09-19,2026-10-24,false,,,,2026-07-24
+AST-0533,Monitor,HP,Office Monitor,SYN-00533,Brisbane,HR,EMP-0486,Assigned,2020-04-18,2022-04-18,,false,,,,2026-09-28
+AST-0534,Desktop,Dell,Business Desktop,SYN-00534,Brisbane,Finance,,In Stock,2026-05-20,2029-05-20,,false,,,,2026-07-30
+AST-0535,Laptop,Apple,Business Laptop,SYN-00535,Sydney,Sales,EMP-0410,Return Pending,2021-10-13,2024-10-13,2026-10-27,false,,,,2026-08-24
+AST-0536,Phone,Apple,Corporate Phone,SYN-00536,Sydney,Operations,,In Stock,2026-05-16,2027-05-16,,true,,,,2026-07-03
+AST-0537,Tablet,HP,Business Tablet,SYN-00537,Sydney,IT,,In Stock,2025-05-26,2026-05-26,,false,,,,2026-08-05
+AST-0538,Laptop,HP,Business Laptop,SYN-00538,Remote,HR,,Ready for Disposal,2022-08-29,2024-08-28,,false,,,,2026-07-12
+AST-0539,Tablet,HP,Business Tablet,SYN-00539,Sydney,Finance,EMP-0203,Assigned,2024-06-22,2025-06-22,,false,,,,2026-07-06
+AST-0540,Phone,Samsung,Corporate Phone,SYN-00540,Melbourne,Finance,EMP-0146,Assigned,2026-01-06,2027-01-06,,false,,,,2026-09-02
+AST-0541,Desktop,Apple,Business Desktop,SYN-00541,Melbourne,Operations,,In Stock,2020-04-02,2021-04-02,,false,,,,2026-10-13
+AST-0542,Phone,HP,Corporate Phone,SYN-00542,Remote,IT,EMP-0022,Assigned,2023-09-24,2026-09-24,,false,,,,2026-08-11
+AST-0543,Monitor,HP,Office Monitor,SYN-00543,Sydney,HR,EMP-0209,Assigned,2026-07-09,2029-07-09,,false,,,,2026-07-06
+AST-0544,Laptop,Lenovo,Business Laptop,SYN-00544,Brisbane,IT,,In Stock,2024-05-16,2027-05-17,,false,,,,2026-08-31
+AST-0545,Desktop,Samsung,Business Desktop,SYN-00545,Sydney,IT,,Disposed,2021-01-19,2022-01-19,,false,,,DSP-00545,2026-07-09
+AST-0546,Desktop,Lenovo,Business Desktop,SYN-00546,Brisbane,HR,,Disposed,2023-10-04,2025-10-03,,true,Pending,,,2026-08-26
+AST-0547,Desktop,Apple,Business Desktop,SYN-00547,Remote,Sales,EMP-0352,Assigned,2020-03-04,2021-03-04,,true,Failed,,,2026-07-11
+AST-0548,Desktop,Lenovo,Business Desktop,SYN-00548,Remote,Operations,EMP-0485,Assigned,2026-03-15,2028-03-14,,false,,,,2026-09-05
+AST-0549,Laptop,Dell,Business Laptop,SYN-00549,Sydney,HR,EMP-0049,Assigned,2021-08-08,2024-08-08,,true,,,,2026-10-07
+AST-0550,Monitor,Samsung,Office Monitor,SYN-00550,Remote,IT,,In Stock,2020-03-23,2022-03-23,,true,,,,2026-08-14
+AST-0551,Monitor,Dell,Office Monitor,SYN-00551,Melbourne,Sales,,In Stock,2020-05-05,2022-05-05,,true,,,,2026-09-06
+AST-0552,Monitor,Apple,Office Monitor,SYN-00552,Sydney,HR,,Disposed,2024-01-04,2026-01-03,,false,,,DSP-00552,2026-09-29
+AST-0553,Laptop,Lenovo,Business Laptop,SYN-00553,Melbourne,IT,EMP-0060,Assigned,2022-03-08,2024-03-07,,false,,,,2026-07-28
+AST-0554,Monitor,Apple,Office Monitor,SYN-00554,Brisbane,HR,EMP-0172,Assigned,2025-09-04,2028-09-04,,false,,,,2026-10-03
+AST-0555,Monitor,HP,Office Monitor,SYN-00555,Sydney,IT,EMP-0494,Assigned,2025-06-14,2028-06-14,,false,,,,2026-09-02
+AST-0556,Phone,Dell,Corporate Phone,SYN-00556,Melbourne,Operations,,In Stock,2023-08-26,2026-08-26,,false,,,,2026-09-25
+AST-0557,Monitor,Apple,Office Monitor,SYN-00557,Melbourne,Finance,EMP-0234,Lost / Stolen,2025-10-07,2028-10-07,,true,,,,2026-09-14
+AST-0558,Phone,HP,Corporate Phone,SYN-00558,Brisbane,Operations,,In Stock,2021-02-28,2022-02-28,,false,,,,2026-09-15
+AST-0559,Phone,Apple,Corporate Phone,SYN-00559,Remote,Operations,,Disposed,2021-03-25,2023-03-25,,true,,,DSP-00559,2026-10-12
+AST-0560,Monitor,Lenovo,Office Monitor,SYN-00560,Remote,HR,EMP-0348,Assigned,2026-07-06,2028-07-05,,false,,,,2026-09-16
+AST-0561,Desktop,HP,Business Desktop,SYN-00561,Sydney,IT,,Ready for Disposal,2022-01-12,2024-01-12,,true,Passed,EVD-00561,,2026-10-05
+AST-0562,Tablet,Lenovo,Business Tablet,SYN-00562,Brisbane,IT,,Disposed,2021-09-07,2024-09-07,,false,,,DSP-00562,2026-09-27
+AST-0563,Phone,Samsung,Corporate Phone,SYN-00563,Brisbane,Sales,,Disposed,2025-11-15,2027-11-15,,true,Passed,EVD-00563,DSP-00563,2026-10-01
+AST-0564,Phone,Samsung,Corporate Phone,SYN-00564,Sydney,HR,EMP-0299,Assigned,2023-07-29,2024-07-28,,true,,,,2026-08-19
+AST-0565,Phone,Dell,Corporate Phone,SYN-00565,Brisbane,Sales,EMP-0342,Lost / Stolen,2020-09-15,2022-09-15,,false,,,,2026-07-29
+AST-0566,Tablet,Lenovo,Business Tablet,SYN-00566,Sydney,HR,EMP-0011,Assigned,2021-06-27,2023-06-27,,false,,,,2026-10-11
+AST-0567,Laptop,Apple,Business Laptop,SYN-00567,Sydney,IT,,Ready for Disposal,2022-03-02,2025-03-02,,false,,,,2026-10-12
+AST-0568,Laptop,Lenovo,Business Laptop,SYN-00568,Brisbane,IT,,Assigned,2024-09-27,2027-09-28,,false,,,,2026-09-23
+AST-0569,Desktop,Apple,Business Desktop,SYN-00569,Melbourne,Finance,EMP-0122,Assigned,2025-09-21,2027-09-21,,false,,,,2026-07-16
+AST-0570,Desktop,Apple,Business Desktop,SYN-00570,Brisbane,HR,,Disposed,2020-08-01,2022-08-01,,true,Pending,,DSP-00570,2026-07-14
+AST-0571,Laptop,Lenovo,Business Laptop,SYN-00571,Remote,IT,EMP-0496,Return Pending,2025-05-15,2027-05-15,2026-09-19,false,,,,2026-09-22
+AST-0572,Laptop,Lenovo,Business Laptop,SYN-00572,Sydney,IT,,Ready for Disposal,2025-01-29,2027-01-29,,true,,,,2026-08-31
+AST-0573,Tablet,Lenovo,Business Tablet,SYN-00573,Brisbane,HR,,In Stock,2020-10-11,2022-10-11,,false,,,,2026-10-12
+AST-0574,Desktop,Samsung,Business Desktop,SYN-00574,Sydney,HR,EMP-0409,Return Pending,2024-04-12,2027-04-13,2026-09-27,false,,,,2026-09-20
+AST-0575,Phone,Lenovo,Corporate Phone,SYN-00575,Brisbane,Operations,EMP-0375,Assigned,2025-10-15,2026-10-15,,false,,,,2026-07-07
+AST-0576,Tablet,HP,Business Tablet,SYN-00576,Sydney,Operations,,In Stock,2023-10-01,2024-09-30,,false,,,,2026-10-19
+AST-0577,Laptop,HP,Business Laptop,SYN-00577,Remote,IT,EMP-0104,Return Pending,2025-12-11,2028-12-11,2026-11-04,false,,,,2026-07-14
+AST-0578,Tablet,Samsung,Business Tablet,SYN-00578,Remote,IT,EMP-0451,Assigned,2020-06-17,2021-06-17,,false,,,,2026-10-04
+AST-0579,Tablet,Apple,Business Tablet,SYN-00579,Remote,HR,EMP-0244,Assigned,2021-07-12,2022-07-12,,true,,,,2026-07-15
+AST-0580,Phone,Samsung,Corporate Phone,SYN-00580,Melbourne,HR,,Disposed,2021-01-17,2022-01-17,,true,Passed,EVD-00580,DSP-00580,2026-09-04
+AST-0581,Laptop,Lenovo,Business Laptop,SYN-00581,Brisbane,HR,,In Stock,2026-07-08,2029-07-08,,false,,,,2026-07-05
+AST-0582,Desktop,Apple,Business Desktop,SYN-00582,Melbourne,Finance,,In Stock,2023-06-11,2025-06-10,,false,,,,2026-07-25
+AST-0583,Phone,Apple,Corporate Phone,SYN-00583,Melbourne,IT,,Ready for Disposal,2020-03-29,2021-03-29,,false,,,,2026-07-06
+AST-0584,Laptop,Samsung,Business Laptop,SYN-00584,Brisbane,IT,EMP-0321,Assigned,2023-06-03,2026-06-03,,false,,,,2026-09-17
+AST-0585,Tablet,Samsung,Business Tablet,SYN-00585,Melbourne,Finance,,In Stock,2020-04-26,2021-04-26,,true,,,,2026-07-20
+AST-0586,Desktop,HP,Business Desktop,SYN-00586,Melbourne,Finance,EMP-0313,In Repair,2021-04-01,2023-04-01,,false,,,,2026-10-03
+AST-0587,Laptop,Samsung,Business Laptop,SYN-00587,Brisbane,Operations,EMP-0361,Return Pending,2024-05-31,2025-05-31,2026-09-27,false,,,,2026-09-26
+AST-0588,Monitor,Samsung,Office Monitor,SYN-00588,Melbourne,Operations,EMP-0419,Return Pending,2020-04-26,2021-04-26,2026-09-12,true,,,,2026-09-16
+AST-0589,Monitor,Apple,Office Monitor,SYN-00589,Remote,Sales,EMP-0044,Assigned,2023-10-24,2025-10-23,,false,,,,2026-07-15
+AST-0590,Tablet,Lenovo,Business Tablet,SYN-00590,Brisbane,IT,,In Stock,2025-10-29,2028-10-29,,false,,,,2026-09-05
+AST-0591,Monitor,Samsung,Office Monitor,SYN-00591,Melbourne,IT,,Lost / Stolen,2024-08-27,2027-08-28,,false,,,,2026-10-10
+AST-0592,Laptop,Apple,Business Laptop,SYN-00592,Sydney,IT,,In Stock,2025-11-26,2026-11-26,,false,,,,2026-08-14
+AST-0593,Tablet,Apple,Business Tablet,SYN-00593,Brisbane,Finance,,Disposed,2023-08-28,2025-08-27,,false,,,,2026-08-03
+AST-0594,Phone,Samsung,Corporate Phone,SYN-00594,Sydney,Operations,EMP-0474,Assigned,2022-09-06,2025-09-06,,false,,,,2026-07-19
+AST-0595,Phone,Dell,Corporate Phone,SYN-00595,Melbourne,Sales,EMP-0489,Assigned,2024-06-03,2025-06-03,,false,,,,2026-08-21
+AST-0596,Laptop,Samsung,Business Laptop,SYN-00596,Brisbane,Sales,,Disposed,2023-08-19,2026-08-19,,false,,,,2026-08-23
+AST-0597,Monitor,Apple,Office Monitor,SYN-00597,Brisbane,HR,EMP-0447,Assigned,2024-08-22,2025-08-22,,false,,,,2026-07-16
+AST-0598,Tablet,Dell,Business Tablet,SYN-00598,Brisbane,Sales,EMP-0403,Assigned,2024-12-06,2025-12-06,,false,,,,2026-08-10
+AST-0599,Phone,Apple,Corporate Phone,SYN-00599,Melbourne,Operations,,Disposed,2020-10-02,2021-10-02,,true,Pending,,DSP-00599,2026-10-19
+AST-0600,Phone,Samsung,Corporate Phone,SYN-00600,Brisbane,Finance,,In Stock,2022-03-12,2023-03-12,,false,,,,2026-07-03
+AST-0601,Monitor,Apple,Office Monitor,SYN-00601,Brisbane,Finance,EMP-0468,Assigned,2024-07-09,2027-07-10,,false,,,,2026-08-30
+AST-0602,Laptop,Lenovo,Business Laptop,SYN-00602,Melbourne,Finance,,In Stock,2023-08-22,2025-08-21,,false,,,,2026-07-15
+AST-0603,Desktop,Apple,Business Desktop,SYN-00603,Brisbane,Operations,EMP-0367,Assigned,2020-06-12,2023-06-13,,true,Failed,,,2026-07-15
+AST-0604,Desktop,HP,Business Desktop,SYN-00604,Remote,Finance,,In Stock,2021-04-26,2024-04-26,,false,,,,2026-07-31
+AST-0605,Desktop,Samsung,Business Desktop,SYN-00605,Brisbane,IT,,In Stock,2026-05-27,2028-05-26,,false,,,,2026-07-14
+AST-0606,Laptop,HP,Business Laptop,SYN-00606,Melbourne,Sales,EMP-0192,Assigned,2022-12-17,2024-12-16,,false,,,,2026-09-28
+AST-0607,Phone,Dell,Corporate Phone,SYN-00607,Brisbane,IT,EMP-0320,Assigned,2026-05-04,2029-05-04,,false,,,,2026-09-28
+AST-0608,Desktop,Lenovo,Business Desktop,SYN-00608,Brisbane,HR,,Disposed,2024-04-25,2026-04-25,,false,,,DSP-00608,2026-09-22
+AST-0609,Phone,Lenovo,Corporate Phone,SYN-00609,Sydney,Sales,,Ready for Disposal,2024-07-25,2026-07-25,,false,,,,2026-09-07
+AST-0610,Phone,HP,Corporate Phone,SYN-00610,Melbourne,HR,EMP-0051,Assigned,2023-05-24,2024-05-23,,true,,,,2026-07-07
+AST-0611,Laptop,Lenovo,Business Laptop,SYN-00611,Melbourne,Operations,EMP-0375,Assigned,2024-11-03,2025-11-03,,false,,,,2026-10-04
+AST-0612,Tablet,Lenovo,Business Tablet,SYN-00612,Sydney,HR,EMP-0016,Assigned,2020-11-25,2022-11-25,,false,,,,2026-09-05
+AST-0613,Monitor,Samsung,Office Monitor,SYN-00613,Remote,Operations,EMP-0095,Assigned,2022-07-16,2025-07-16,,false,,,,2026-07-06
+AST-0614,Monitor,Apple,Office Monitor,SYN-00614,Remote,Operations,EMP-0226,Assigned,2021-11-09,2024-11-09,,false,,,,2026-10-07
+AST-0615,Monitor,Dell,Office Monitor,SYN-00615,Remote,IT,,Disposed,2022-12-18,2024-12-17,,false,,,,2026-10-03
+AST-0616,Tablet,Lenovo,Business Tablet,SYN-00616,Melbourne,IT,EMP-0228,Assigned,2021-02-08,2024-02-09,,false,,,,2026-10-18
+AST-0617,Desktop,Dell,Business Desktop,SYN-00617,Melbourne,IT,EMP-0126,In Repair,2025-07-04,2028-07-04,,false,,,,2026-09-19
+AST-0618,Phone,Apple,Corporate Phone,SYN-00618,Sydney,HR,,Disposed,2025-05-14,2028-05-14,,true,Failed,,DSP-00618,2026-09-24
+AST-0619,Monitor,Apple,Office Monitor,SYN-00619,Remote,Sales,EMP-0296,In Repair,2024-07-03,2026-07-03,,false,,,,2026-07-03
+AST-0620,Tablet,HP,Business Tablet,SYN-00620,Melbourne,Operations,,Disposed,2020-04-23,2021-04-23,,true,Passed,EVD-00620,DSP-00620,2026-09-08
+AST-0621,Laptop,HP,Business Laptop,SYN-00621,Melbourne,Finance,EMP-0061,Assigned,2020-09-08,2023-09-09,,false,,,,2026-09-25
+AST-0622,Tablet,Lenovo,Business Tablet,SYN-00622,Melbourne,Finance,EMP-0320,Assigned,2024-01-14,2026-01-13,,false,,,,2026-08-08
+AST-0623,Tablet,Samsung,Business Tablet,SYN-00623,Remote,IT,,In Stock,2025-06-01,2028-06-01,,true,,,,2026-09-11
+AST-0624,Desktop,Apple,Business Desktop,SYN-00624,Remote,Sales,,Disposed,2025-05-11,2028-05-11,,false,,,,2026-09-03
+AST-0625,Tablet,HP,Business Tablet,SYN-00625,Remote,IT,EMP-0240,Assigned,2026-08-16,2029-08-16,,false,,,,2026-07-18
+AST-0626,Phone,Dell,Corporate Phone,SYN-00626,Remote,HR,EMP-0359,Assigned,2021-11-03,2023-11-03,,false,,,,2026-08-20
+AST-0627,Tablet,Apple,Business Tablet,SYN-00627,Melbourne,Sales,EMP-0147,Assigned,2025-11-27,2028-11-27,,false,,,,2026-10-08
+AST-0628,Monitor,Dell,Office Monitor,SYN-00628,Remote,Sales,EMP-0014,Assigned,2022-09-20,2024-09-19,,false,,,,2026-09-10
+AST-0629,Tablet,HP,Business Tablet,SYN-00629,Remote,Sales,,Disposed,2024-09-30,2026-09-30,,false,,,DSP-00629,2026-10-17
+AST-0630,Phone,Lenovo,Corporate Phone,SYN-00630,Brisbane,Operations,,Sanitisation Pending,2025-06-19,2028-06-19,,true,Pending,,,2026-08-11
+AST-0631,Tablet,Dell,Business Tablet,SYN-00631,Melbourne,Operations,,Disposed,2024-06-15,2026-06-15,,true,Passed,EVD-00631,DSP-00631,2026-08-19
+AST-0632,Phone,Samsung,Corporate Phone,SYN-00632,Sydney,Operations,EMP-0032,Assigned,2024-07-02,2025-07-02,,false,,,,2026-08-27
+AST-0633,Laptop,HP,Business Laptop,SYN-00633,Remote,Finance,,Sanitisation Pending,2022-11-09,2025-11-09,,true,Pending,,,2026-08-18
+AST-0634,Tablet,Samsung,Business Tablet,SYN-00634,Sydney,Operations,,In Stock,2021-09-17,2024-09-17,,false,,,,2026-09-11
+AST-0635,Monitor,HP,Office Monitor,SYN-00635,Sydney,Operations,EMP-0285,Assigned,2022-07-30,2023-07-30,,false,,,,2026-10-13
+AST-0636,Tablet,HP,Business Tablet,SYN-00636,Sydney,Sales,,In Stock,2020-09-10,2023-09-11,,false,,,,2026-09-07
+AST-0637,Desktop,Lenovo,Business Desktop,SYN-00637,Sydney,Operations,,In Stock,2024-07-16,2025-07-16,,false,,,,2026-09-29
+AST-0638,Monitor,Samsung,Office Monitor,SYN-00638,Remote,Operations,EMP-0212,Assigned,2025-06-21,2027-06-21,,false,,,,2026-10-15
+AST-0639,Monitor,Samsung,Office Monitor,SYN-00639,Melbourne,IT,EMP-0108,Assigned,2022-04-15,2025-04-15,,false,,,,2026-09-15
+AST-0640,Laptop,HP,Business Laptop,SYN-00640,Sydney,IT,EMP-0035,Lost / Stolen,2026-05-28,2029-05-28,,false,,,,2026-09-29
+AST-0641,Laptop,HP,Business Laptop,SYN-00641,Melbourne,HR,EMP-0188,Assigned,2026-06-28,2028-06-27,,false,,,,2026-10-19
+AST-0642,Laptop,Lenovo,Business Laptop,SYN-00642,Remote,Operations,EMP-0340,Assigned,2024-02-04,2026-02-03,,false,,,,2026-07-24
+AST-0643,Phone,HP,Corporate Phone,SYN-00643,Remote,IT,EMP-0229,Assigned,2021-06-28,2024-06-28,,true,,,,2026-08-05
+AST-0644,Phone,Apple,Corporate Phone,SYN-00644,Brisbane,HR,,Sanitisation Pending,2024-09-19,2027-09-20,,true,Pending,,,2026-08-20
+AST-0645,Monitor,Samsung,Office Monitor,SYN-00645,Remote,HR,EMP-0364,Lost / Stolen,2023-02-10,2025-02-09,,false,,,,2026-07-19
+AST-0646,Phone,HP,Corporate Phone,SYN-00646,Melbourne,Finance,,Disposed,2022-01-21,2024-01-21,,false,,,DSP-00646,2026-09-30
+AST-0647,Laptop,Samsung,Business Laptop,SYN-00647,Remote,Sales,EMP-0168,Return Pending,2020-10-10,2021-10-10,2026-10-17,false,,,,2026-07-04
+AST-0648,Laptop,Apple,Business Laptop,SYN-00648,Melbourne,Operations,,In Stock,2022-11-06,2024-11-05,,false,,,,2026-07-25
+AST-0649,Tablet,Samsung,Business Tablet,SYN-00649,Sydney,Sales,,In Stock,2020-02-25,2023-02-25,,false,,,,2026-08-08
+AST-0650,Monitor,Samsung,Office Monitor,SYN-00650,Sydney,Finance,EMP-0316,Assigned,2026-04-16,2028-04-15,,false,,,,2026-07-01
+AST-0651,Laptop,Dell,Business Laptop,SYN-00651,Sydney,IT,,Disposed,2023-12-24,2026-12-24,,false,,,DSP-00651,2026-08-21
+AST-0652,Tablet,Apple,Business Tablet,SYN-00652,Melbourne,Operations,,In Stock,2020-10-28,2022-10-28,,false,,,,2026-09-14
+AST-0653,Tablet,Samsung,Business Tablet,SYN-00653,Sydney,Finance,,Assigned,2022-11-01,2024-10-31,,false,,,,2026-09-02
+AST-0654,Desktop,HP,Business Desktop,SYN-00654,Sydney,IT,EMP-0361,Return Pending,2025-01-05,2027-01-05,2026-09-14,false,,,,2026-09-20
+AST-0655,Desktop,Dell,Business Desktop,SYN-00655,Brisbane,Sales,EMP-0015,Return Pending,2024-11-13,2026-11-13,2026-11-13,false,,,,2026-10-13
+AST-0656,Monitor,Dell,Office Monitor,SYN-00656,Remote,HR,EMP-0375,Return Pending,2020-08-11,2021-08-11,2026-09-09,true,,,,2026-08-20
+AST-0657,Desktop,Dell,Business Desktop,SYN-00657,Brisbane,IT,,Ready for Disposal,2023-08-07,2024-08-06,,true,Passed,EVD-00657,,2026-08-18
+AST-0658,Phone,HP,Corporate Phone,SYN-00658,Sydney,Sales,,Sanitisation Pending,2025-03-17,2026-03-17,,true,Pending,,,2026-08-01
+AST-0659,Tablet,Samsung,Business Tablet,SYN-00659,Remote,Operations,,In Stock,2021-09-09,2024-09-09,,true,,,,2026-07-08
+AST-0660,Desktop,Apple,Business Desktop,SYN-00660,Melbourne,Operations,EMP-0481,Assigned,2025-03-11,2028-03-11,,false,,,,2026-08-17
+AST-0661,Phone,Samsung,Corporate Phone,SYN-00661,Sydney,Operations,EMP-0125,In Repair,2026-06-23,2028-06-22,,false,,,,2026-08-31
+AST-0662,Phone,Apple,Corporate Phone,SYN-00662,Melbourne,Finance,,Ready for Disposal,2022-11-01,2025-11-01,,false,,,,2026-10-08
+AST-0663,Desktop,Dell,Business Desktop,SYN-00663,Melbourne,Operations,EMP-0059,In Repair,2023-01-16,2024-01-16,,false,,,,2026-10-01
+AST-0664,Desktop,Samsung,Business Desktop,SYN-00664,Melbourne,HR,EMP-0092,Assigned,2025-10-01,2026-10-01,,false,,,,2026-07-11
+AST-0665,Monitor,HP,Office Monitor,SYN-00665,Remote,Sales,,In Stock,2026-02-08,2028-02-08,,true,,,,2026-07-29
+AST-0666,Laptop,HP,Business Laptop,SYN-00666,Melbourne,IT,EMP-0217,Assigned,2022-10-30,2025-10-30,,false,,,,2026-07-29
+AST-0667,Phone,Apple,Corporate Phone,SYN-00667,Melbourne,HR,EMP-0246,Assigned,2022-11-24,2025-11-24,,false,,,,2026-09-18
+AST-0668,Desktop,Lenovo,Business Desktop,SYN-00668,Brisbane,HR,EMP-0423,Assigned,2026-06-23,2029-06-23,,true,,,,2026-07-07
+AST-0669,Laptop,Apple,Business Laptop,SYN-00669,Brisbane,IT,,Ready for Disposal,2024-09-02,2025-09-02,,true,Passed,EVD-00669,,2026-10-01
+AST-0670,Desktop,HP,Business Desktop,SYN-00670,Remote,Sales,EMP-0303,Assigned,2022-03-06,2023-03-06,,false,,,,2026-10-19
+AST-0671,Laptop,Apple,Business Laptop,SYN-00671,Remote,HR,EMP-0080,Assigned,2023-02-28,2026-02-28,,false,,,,2026-10-09
+AST-0672,Tablet,HP,Business Tablet,SYN-00672,Sydney,Sales,EMP-0422,Assigned,2025-03-27,2026-03-27,,true,,,,2026-07-10
+AST-0673,Laptop,Dell,Business Laptop,SYN-00673,Melbourne,Finance,,In Stock,2025-04-28,2026-04-28,,true,,,,2026-08-21
+AST-0674,Desktop,Dell,Business Desktop,SYN-00674,Brisbane,Finance,EMP-0082,Assigned,2024-07-04,2027-07-05,,true,,,,2026-08-14
+AST-0675,Desktop,HP,Business Desktop,SYN-00675,Brisbane,Sales,,In Stock,2023-08-25,2026-08-25,,false,,,,2026-07-29
+AST-0676,Tablet,Apple,Business Tablet,SYN-00676,Sydney,Sales,EMP-0020,Assigned,2025-08-24,2028-08-24,,false,,,,2026-07-09
+AST-0677,Monitor,Samsung,Office Monitor,SYN-00677,Sydney,HR,,In Stock,2023-10-20,2026-10-20,,false,,,,2026-07-28
+AST-0678,Phone,Samsung,Corporate Phone,SYN-00678,Melbourne,Finance,EMP-0245,In Repair,2023-06-07,2026-06-07,,true,Pending,,,2026-08-29
+AST-0679,Phone,Samsung,Corporate Phone,SYN-00679,Remote,Finance,,Sanitisation Pending,2025-01-01,2026-01-01,,true,Pending,,,2026-08-16
+AST-0680,Monitor,Apple,Office Monitor,SYN-00680,Melbourne,Sales,EMP-0416,Assigned,2022-07-13,2024-07-12,,false,,,,2026-08-24
+AST-0681,Phone,Lenovo,Corporate Phone,SYN-00681,Sydney,Finance,,In Stock,2024-12-28,2025-12-28,,false,,,,2026-09-19
+AST-0682,Tablet,Dell,Business Tablet,SYN-00682,Remote,HR,,Disposed,2024-02-25,2027-02-25,,false,,,DSP-00682,2026-09-26
+AST-0683,Monitor,Samsung,Office Monitor,SYN-00683,Remote,IT,EMP-0095,Return Pending,2025-02-26,2028-02-27,2026-10-22,false,,,,2026-10-02
+AST-0684,Monitor,HP,Office Monitor,SYN-00684,Remote,Operations,,Sanitisation Pending,2021-05-10,2022-05-10,,true,Pending,,,2026-10-03
+AST-0685,Tablet,Apple,Business Tablet,SYN-00685,Remote,Sales,EMP-0398,Assigned,2020-03-17,2023-03-18,,false,,,,2026-08-11
+AST-0686,Phone,Lenovo,Corporate Phone,SYN-00686,Sydney,Sales,EMP-0254,Assigned,2024-04-18,2025-04-18,,true,,,,2026-09-30
+AST-0687,Tablet,Dell,Business Tablet,SYN-00687,Brisbane,Operations,EMP-0019,Lost / Stolen,2023-09-02,2026-09-02,,true,,,,2026-07-15
+AST-0688,Tablet,Lenovo,Business Tablet,SYN-00688,Sydney,IT,EMP-0321,Return Pending,2025-11-19,2028-11-19,2026-11-12,false,,,,2026-10-11
+AST-0689,Monitor,Samsung,Office Monitor,SYN-00689,Brisbane,IT,,Disposed,2022-02-24,2023-02-24,,false,,,DSP-00689,2026-08-08
+AST-0690,Laptop,HP,Business Laptop,SYN-00690,Melbourne,Sales,EMP-0448,Assigned,2020-03-10,2023-03-11,,false,,,,2026-09-08
+AST-0691,Phone,HP,Corporate Phone,SYN-00691,Brisbane,Sales,,In Stock,2026-05-26,2027-05-26,,false,,,,2026-07-04
+AST-0692,Monitor,Samsung,Office Monitor,SYN-00692,Brisbane,Sales,EMP-0123,In Repair,2026-07-11,2029-07-11,,false,,,,2026-09-27
+AST-0693,Laptop,HP,Business Laptop,SYN-00693,Sydney,Sales,EMP-0234,Return Pending,2024-11-23,2027-11-24,2026-11-25,false,,,,2026-08-28
+AST-0694,Monitor,HP,Office Monitor,SYN-00694,Melbourne,Operations,EMP-0121,In Repair,2023-06-25,2024-06-24,,false,,,,2026-09-21
+AST-0695,Monitor,Lenovo,Office Monitor,SYN-00695,Melbourne,HR,EMP-0110,Assigned,2021-06-16,2023-06-16,,true,,,,2026-09-09
+AST-0696,Desktop,Apple,Business Desktop,SYN-00696,Remote,IT,EMP-0266,Return Pending,2024-02-25,2025-02-24,2026-11-27,false,,,,2026-09-29
+AST-0697,Laptop,Dell,Business Laptop,SYN-00697,Sydney,Operations,EMP-0115,In Repair,2024-07-21,2025-07-21,,true,,,,2026-08-08
+AST-0698,Desktop,Samsung,Business Desktop,SYN-00698,Remote,Finance,EMP-0181,Assigned,2025-12-10,2027-12-10,,true,,,,2026-07-08
+AST-0699,Tablet,Apple,Business Tablet,SYN-00699,Remote,Operations,EMP-0405,Assigned,2026-09-04,2027-09-04,,false,,,,2026-07-19
+AST-0700,Laptop,Samsung,Business Laptop,SYN-00700,Remote,HR,,In Stock,2021-08-10,2023-08-10,,false,,,,2026-08-22
+AST-0701,Monitor,Samsung,Office Monitor,SYN-00701,Remote,IT,,Disposed,2025-02-21,2026-02-21,,false,,,DSP-00701,2026-07-31
+AST-0702,Monitor,Apple,Office Monitor,SYN-00702,Brisbane,Operations,,Sanitisation Pending,2021-09-02,2023-09-02,,true,Pending,,,2026-07-18
+AST-0703,Monitor,Apple,Office Monitor,SYN-00703,Melbourne,Operations,EMP-0103,Return Pending,2023-03-11,2026-03-11,2026-10-06,false,,,,2026-07-14
+AST-0704,Phone,Apple,Corporate Phone,SYN-00704,Melbourne,Sales,,Assigned,2022-09-04,2024-09-03,,false,,,,2026-10-10
+AST-0705,Tablet,Dell,Business Tablet,SYN-00705,Remote,Finance,EMP-0027,In Repair,2024-12-20,2026-12-20,,true,,,,2026-08-29
+AST-0706,Monitor,Lenovo,Office Monitor,SYN-00706,Remote,Sales,,Disposed,2021-11-03,2022-11-03,,true,Passed,EVD-00706,DSP-00706,2026-07-01
+AST-0707,Phone,Dell,Corporate Phone,SYN-00707,Melbourne,Operations,,In Stock,2025-12-09,2027-12-09,,false,,,,2026-09-06
+AST-0708,Desktop,Samsung,Business Desktop,SYN-00708,Melbourne,Finance,EMP-0219,Return Pending,2024-03-17,2027-03-18,2026-09-23,false,,,,2026-08-17
+AST-0709,Laptop,Apple,Business Laptop,SYN-00709,Remote,HR,,In Stock,2025-01-15,2028-01-16,,false,,,,2026-08-30
+AST-0710,Laptop,Lenovo,Business Laptop,SYN-00710,Brisbane,IT,EMP-0175,Return Pending,2021-02-22,2022-02-22,2026-10-28,false,,,,2026-10-04
+AST-0711,Tablet,Samsung,Business Tablet,SYN-00711,Sydney,Operations,EMP-0327,Return Pending,2023-04-24,2025-04-23,2026-10-29,false,,,,2026-10-05
+AST-0712,Monitor,Apple,Office Monitor,SYN-00712,Remote,IT,EMP-0264,Assigned,2026-01-19,2029-01-19,,true,,,,2026-09-01
+AST-0713,Laptop,Samsung,Business Laptop,SYN-00713,Melbourne,IT,EMP-0368,Assigned,2023-06-27,2025-06-26,,false,,,,2026-07-13
+AST-0714,Desktop,Samsung,Business Desktop,SYN-00714,Brisbane,HR,,In Stock,2021-12-22,2024-12-22,,false,,,,2026-07-19
+AST-0715,Laptop,HP,Business Laptop,SYN-00715,Sydney,Operations,EMP-0367,Assigned,2022-09-07,2023-09-07,,true,,,,2026-07-22
+AST-0716,Desktop,Samsung,Business Desktop,SYN-00716,Sydney,HR,,In Stock,2023-04-24,2024-04-23,,true,,,,2026-07-16
+AST-0717,Laptop,Samsung,Business Laptop,SYN-00717,Sydney,Finance,,Ready for Disposal,2021-06-15,2024-06-15,,false,,,,2026-10-04
+AST-0718,Laptop,Lenovo,Business Laptop,SYN-00718,Brisbane,Finance,,Sanitisation Pending,2020-12-12,2023-12-13,,true,Pending,,,2026-09-26
+AST-0719,Laptop,Dell,Business Laptop,SYN-00719,Melbourne,Finance,EMP-0066,Assigned,2020-05-20,2023-05-21,,true,,,,2026-09-02
+AST-0720,Tablet,HP,Business Tablet,SYN-00720,Remote,IT,,Sanitisation Pending,2026-03-20,2028-03-19,,true,Pending,,,2026-08-30
+AST-0721,Desktop,HP,Business Desktop,SYN-00721,Remote,IT,EMP-0212,Assigned,2020-02-25,2022-02-24,,false,,,,2026-09-16
+AST-0722,Desktop,Dell,Business Desktop,SYN-00722,Remote,Operations,EMP-0245,Assigned,2023-12-27,2024-12-26,,true,Pending,,,2026-07-23
+AST-0723,Monitor,Samsung,Office Monitor,SYN-00723,Remote,IT,EMP-0442,Assigned,2023-04-16,2025-04-15,,false,,,,2026-10-06
+AST-0724,Desktop,Apple,Business Desktop,SYN-00724,Brisbane,Sales,EMP-0272,Assigned,2020-10-09,2023-10-10,,true,,,,2026-08-14
+AST-0725,Phone,Samsung,Corporate Phone,SYN-00725,Brisbane,Finance,,In Stock,2022-02-11,2023-02-11,,false,,,,2026-07-28
+AST-0726,Monitor,HP,Office Monitor,SYN-00726,Brisbane,Finance,,Assigned,2023-01-17,2025-01-16,,false,,,,2026-08-10
+AST-0727,Monitor,Dell,Office Monitor,SYN-00727,Brisbane,Operations,,Disposed,2025-11-01,2027-11-01,,false,,,DSP-00727,2026-10-11
+AST-0728,Phone,Apple,Corporate Phone,SYN-00728,Remote,Sales,EMP-0414,Assigned,2021-10-21,2023-10-21,,false,,,,2026-07-10
+AST-0729,Desktop,Samsung,Business Desktop,SYN-00729,Sydney,HR,EMP-0109,Assigned,2020-03-30,2022-03-30,,false,,,,2026-10-15
+AST-0730,Phone,Dell,Corporate Phone,SYN-00730,Melbourne,Sales,EMP-0180,Return Pending,2026-06-27,2029-06-27,2026-10-07,false,,,,2026-07-03
+AST-0731,Phone,HP,Corporate Phone,SYN-00731,Brisbane,HR,EMP-0294,Return Pending,2022-05-08,2023-05-08,2026-11-09,false,,,,2026-07-21
+AST-0732,Desktop,Dell,Business Desktop,SYN-00732,Sydney,IT,EMP-0276,Return Pending,2021-08-24,2024-08-24,2026-10-26,false,,,,2026-09-03
+AST-0733,Tablet,HP,Business Tablet,SYN-00733,Melbourne,IT,EMP-0248,Lost / Stolen,2026-01-02,2028-01-02,,true,,,,2026-08-08
+AST-0734,Tablet,HP,Business Tablet,SYN-00734,Remote,HR,EMP-0220,Assigned,2026-01-25,2027-01-25,,true,,,,2026-09-09
+AST-0735,Tablet,Apple,Business Tablet,SYN-00735,Brisbane,HR,,Disposed,2020-11-30,2021-11-30,,true,Failed,,DSP-00735,2026-07-13
+AST-0736,Laptop,Dell,Business Laptop,SYN-00736,Melbourne,HR,EMP-0078,Assigned,2023-11-02,2024-11-01,,false,,,,2026-10-11
+AST-0737,Monitor,Samsung,Office Monitor,SYN-00737,Sydney,Sales,,Disposed,2025-02-12,2027-02-12,,false,,,DSP-00737,2026-09-08
+AST-0738,Phone,Apple,Corporate Phone,SYN-00738,Melbourne,HR,,Sanitisation Pending,2022-07-04,2025-07-04,,true,Pending,,,2026-08-17
+AST-0739,Tablet,Samsung,Business Tablet,SYN-00739,Melbourne,HR,EMP-0195,Assigned,2026-07-06,2028-07-05,,false,,,,2026-09-01
+AST-0740,Desktop,Apple,Business Desktop,SYN-00740,Sydney,IT,EMP-0079,Return Pending,2023-11-14,2026-11-14,2026-09-15,true,,,,2026-10-18
+AST-0741,Monitor,Dell,Office Monitor,SYN-00741,Brisbane,Finance,EMP-0290,Assigned,2026-07-25,2028-07-24,,true,,,,2026-10-13
+AST-0742,Laptop,Lenovo,Business Laptop,SYN-00742,Remote,HR,EMP-0264,Return Pending,2021-01-22,2024-01-23,2026-09-14,false,,,,2026-09-12
+AST-0743,Phone,HP,Corporate Phone,SYN-00743,Melbourne,HR,EMP-0025,In Repair,2025-03-06,2028-03-06,,false,,,,2026-09-30
+AST-0744,Tablet,Apple,Business Tablet,SYN-00744,Remote,HR,EMP-0072,In Repair,2024-11-25,2027-11-26,,false,,,,2026-08-04
+AST-0745,Phone,Samsung,Corporate Phone,SYN-00745,Remote,HR,,In Stock,2021-07-19,2022-07-19,,false,,,,2026-08-19
+AST-0746,Monitor,HP,Office Monitor,SYN-00746,Brisbane,HR,EMP-0315,In Repair,2021-10-09,2024-10-09,,false,,,,2026-10-03
+AST-0747,Monitor,HP,Office Monitor,SYN-00747,Remote,IT,,Disposed,2020-02-10,2023-02-10,,false,,,DSP-00747,2026-07-31
+AST-0748,Phone,Apple,Corporate Phone,SYN-00748,Brisbane,HR,,In Stock,2021-07-26,2024-07-26,,false,,,,2026-08-10
+AST-0749,Phone,HP,Corporate Phone,SYN-00749,Sydney,Finance,,Ready for Disposal,2024-06-05,2025-06-05,,true,Passed,EVD-00749,,2026-08-28
+AST-0750,Monitor,HP,Office Monitor,SYN-00750,Brisbane,Operations,EMP-0416,Assigned,2022-05-07,2025-05-07,,false,,,,2026-07-15
+AST-0751,Desktop,Samsung,Business Desktop,SYN-00751,Sydney,Sales,EMP-0251,Assigned,2026-05-29,2028-05-28,,true,,,,2026-10-05
+AST-0752,Tablet,Apple,Business Tablet,SYN-00752,Sydney,HR,EMP-0392,Assigned,2026-01-27,2027-01-27,,false,,,,2026-09-14
+AST-0753,Desktop,Dell,Business Desktop,SYN-00753,Brisbane,HR,EMP-0255,Return Pending,2021-05-15,2024-05-15,2026-09-10,true,,,,2026-09-23
+AST-0754,Desktop,Samsung,Business Desktop,SYN-00754,Brisbane,Sales,EMP-0478,Assigned,2020-04-20,2021-04-20,,true,,,,2026-08-20
+AST-0755,Desktop,Lenovo,Business Desktop,SYN-00755,Brisbane,Finance,EMP-0223,Assigned,2020-04-13,2023-04-14,,false,,,,2026-09-10
+AST-0756,Desktop,HP,Business Desktop,SYN-00756,Brisbane,Operations,,In Stock,2023-10-17,2025-10-16,,false,,,,2026-08-04
+AST-0757,Desktop,Apple,Business Desktop,SYN-00757,Melbourne,Sales,EMP-0310,Return Pending,2026-05-23,2029-05-23,2026-11-16,true,,,,2026-07-13
+AST-0758,Monitor,Lenovo,Office Monitor,SYN-00758,Brisbane,Operations,EMP-0044,Return Pending,2020-03-28,2022-03-28,2026-11-20,true,,,,2026-08-28
+AST-0759,Tablet,Lenovo,Business Tablet,SYN-00759,Brisbane,HR,EMP-0339,Assigned,2024-10-21,2025-10-21,,false,,,,2026-07-21
+AST-0760,Phone,Apple,Corporate Phone,SYN-00760,Sydney,Operations,EMP-0216,Assigned,2026-04-08,2029-04-08,,false,,,,2026-07-05
+AST-0761,Laptop,HP,Business Laptop,SYN-00761,Brisbane,HR,EMP-0251,Assigned,2022-07-08,2023-07-08,,false,,,,2026-07-12
+AST-0762,Phone,Apple,Corporate Phone,SYN-00762,Remote,IT,,In Stock,2021-07-27,2024-07-27,,false,,,,2026-09-18
+AST-0763,Phone,HP,Corporate Phone,SYN-00763,Brisbane,Sales,,Disposed,2023-06-06,2024-06-05,,true,Passed,EVD-00763,DSP-00763,2026-09-22
+AST-0764,Tablet,Apple,Business Tablet,SYN-00764,Melbourne,Sales,EMP-0018,Return Pending,2022-03-03,2023-03-03,2026-09-10,true,,,,2026-09-07
+AST-0765,Tablet,Dell,Business Tablet,SYN-00765,Sydney,IT,,In Stock,2023-12-20,2026-12-20,,true,,,,2026-09-23
+AST-0766,Phone,Lenovo,Corporate Phone,SYN-00766,Sydney,Sales,EMP-0346,Assigned,2021-12-15,2024-12-15,,false,,,,2026-09-20
+AST-0767,Monitor,Apple,Office Monitor,SYN-00767,Sydney,Sales,EMP-0020,Assigned,2026-03-06,2028-03-05,,true,,,,2026-10-09
+AST-0768,Laptop,Dell,Business Laptop,SYN-00768,Melbourne,Finance,,Ready for Disposal,2024-06-07,2026-06-07,,false,,,,2026-07-27
+AST-0769,Desktop,HP,Business Desktop,SYN-00769,Sydney,HR,,In Stock,2020-02-04,2022-02-03,,false,,,,2026-09-25
+AST-0770,Phone,Samsung,Corporate Phone,SYN-00770,Brisbane,IT,,Disposed,2024-02-04,2027-02-04,,true,Passed,EVD-00770,DSP-00770,2026-09-13
+AST-0771,Phone,Dell,Corporate Phone,SYN-00771,Sydney,HR,,Ready for Disposal,2020-10-31,2022-10-31,,false,,,,2026-07-19
+AST-0772,Phone,Dell,Corporate Phone,SYN-00772,Sydney,Finance,EMP-0159,Assigned,2024-05-09,2025-05-09,,false,,,,2026-08-04
+AST-0773,Laptop,Dell,Business Laptop,SYN-00773,Brisbane,Operations,EMP-0214,Assigned,2025-11-02,2026-11-02,,false,,,,2026-08-19
+AST-0774,Laptop,Lenovo,Business Laptop,SYN-00774,Remote,Finance,EMP-0345,Assigned,2024-08-11,2025-08-11,,true,,,,2026-10-06
+AST-0775,Desktop,Lenovo,Business Desktop,SYN-00775,Sydney,Operations,EMP-0175,Assigned,2023-07-27,2024-07-26,,false,,,,2026-09-05
+AST-0776,Phone,Samsung,Corporate Phone,SYN-00776,Brisbane,HR,EMP-0118,Return Pending,2023-10-23,2025-10-22,2026-09-23,false,,,,2026-09-03
+AST-0777,Desktop,Samsung,Business Desktop,SYN-00777,Remote,HR,EMP-0066,Assigned,2022-07-02,2025-07-02,,false,,,,2026-10-16
+AST-0778,Phone,Apple,Corporate Phone,SYN-00778,Sydney,IT,EMP-0384,Lost / Stolen,2022-08-13,2023-08-13,,true,,,,2026-09-15
+AST-0779,Tablet,Apple,Business Tablet,SYN-00779,Remote,Operations,EMP-0215,In Repair,2022-02-14,2025-02-14,,false,,,,2026-10-19
+AST-0780,Desktop,Dell,Business Desktop,SYN-00780,Remote,IT,,In Stock,2024-11-01,2027-11-02,,true,,,,2026-07-26
+AST-0781,Desktop,Dell,Business Desktop,SYN-00781,Brisbane,Operations,EMP-0217,Assigned,2022-08-20,2024-08-19,,false,,,,2026-07-08
+AST-0782,Tablet,Lenovo,Business Tablet,SYN-00782,Remote,Sales,EMP-0178,Return Pending,2022-03-07,2024-03-06,2026-11-24,false,,,,2026-10-14
+AST-0783,Laptop,HP,Business Laptop,SYN-00783,Brisbane,Finance,EMP-0443,Assigned,2021-07-13,2022-07-13,,true,Failed,,,2026-09-30
+AST-0784,Monitor,Lenovo,Office Monitor,SYN-00784,Remote,HR,,In Stock,2022-11-05,2025-11-05,,false,,,,2026-09-16
+AST-0785,Phone,Apple,Corporate Phone,SYN-00785,Sydney,Operations,EMP-0084,Lost / Stolen,2025-12-03,2026-12-03,,true,,,,2026-09-18
+AST-0786,Tablet,Lenovo,Business Tablet,SYN-00786,Sydney,Finance,EMP-0241,Return Pending,2024-03-17,2026-03-17,2026-09-29,false,,,,2026-08-16
+AST-0787,Desktop,HP,Business Desktop,SYN-00787,Brisbane,Finance,,In Stock,2023-06-27,2025-06-26,,true,,,,2026-07-04
+AST-0788,Laptop,Dell,Business Laptop,SYN-00788,Melbourne,Finance,,Ready for Disposal,2023-10-02,2026-10-02,,false,,,,2026-08-01
+AST-0789,Tablet,Apple,Business Tablet,SYN-00789,Remote,Operations,,Ready for Disposal,2025-09-05,2026-09-05,,true,Passed,EVD-00789,,2026-07-24
+AST-0790,Tablet,Samsung,Business Tablet,SYN-00790,Sydney,IT,EMP-0396,Return Pending,2023-01-17,2026-01-17,2026-11-05,false,,,,2026-10-06
+AST-0791,Monitor,Samsung,Office Monitor,SYN-00791,Remote,Finance,EMP-0048,Assigned,2025-02-06,2027-02-06,,true,,,,2026-08-28
+AST-0792,Tablet,Dell,Business Tablet,SYN-00792,Melbourne,Finance,EMP-0187,Assigned,2020-03-31,2022-03-31,,true,,,,2026-09-02
+AST-0793,Phone,Apple,Corporate Phone,SYN-00793,Melbourne,IT,,In Stock,2021-05-08,2024-05-08,,false,,,,2026-08-11
+AST-0794,Monitor,Lenovo,Office Monitor,SYN-00794,Brisbane,Finance,EMP-0057,Assigned,2021-02-06,2023-02-06,,true,,,,2026-08-13
+AST-0795,Tablet,Apple,Business Tablet,SYN-00795,Melbourne,Operations,EMP-0429,Return Pending,2023-11-14,2026-11-14,2026-11-21,false,,,,2026-07-29
+AST-0796,Monitor,Lenovo,Office Monitor,SYN-00796,Melbourne,Operations,EMP-0314,Assigned,2025-09-02,2028-09-02,,false,,,,2026-09-24
+AST-0797,Laptop,Samsung,Business Laptop,SYN-00797,Melbourne,Sales,,Ready for Disposal,2021-05-25,2022-05-25,,false,,,,2026-07-29
+AST-0798,Laptop,Samsung,Business Laptop,SYN-00798,Brisbane,Finance,,In Stock,2024-02-17,2026-02-16,,false,,,,2026-07-16
+AST-0799,Phone,Dell,Corporate Phone,SYN-00799,Sydney,HR,EMP-0213,Assigned,2025-02-04,2028-02-05,,false,,,,2026-08-02
+AST-0800,Desktop,HP,Business Desktop,SYN-00800,Brisbane,IT,,Sanitisation Pending,2021-02-08,2024-02-09,,true,Pending,,,2026-07-21
+AST-0801,Laptop,Lenovo,Business Laptop,SYN-00801,Melbourne,IT,EMP-0192,Assigned,2026-08-25,2029-08-25,,true,Failed,,,2026-08-24
+AST-0802,Phone,Dell,Corporate Phone,SYN-00802,Brisbane,Finance,EMP-0052,Assigned,2026-07-12,2028-07-11,,true,Pending,,,2026-10-16
+AST-0803,Laptop,Samsung,Business Laptop,SYN-00803,Sydney,HR,EMP-0092,Return Pending,2023-02-03,2026-02-03,2026-11-05,false,,,,2026-08-20
+AST-0804,Tablet,Lenovo,Business Tablet,SYN-00804,Remote,IT,EMP-0328,Assigned,2020-05-16,2023-05-17,,false,,,,2026-07-13
+AST-0805,Desktop,Lenovo,Business Desktop,SYN-00805,Sydney,Finance,EMP-0374,Assigned,2024-12-05,2025-12-05,,true,,,,2026-09-14
+AST-0806,Desktop,Apple,Business Desktop,SYN-00806,Remote,Operations,EMP-0013,Return Pending,2024-04-21,2025-04-21,2026-10-26,false,,,,2026-08-03
+AST-0807,Laptop,Dell,Business Laptop,SYN-00807,Brisbane,Sales,,In Stock,2020-08-02,2021-08-02,,false,,,,2026-07-02
+AST-0808,Laptop,HP,Business Laptop,SYN-00808,Brisbane,Sales,EMP-0045,In Repair,2021-07-13,2023-07-13,,true,,,,2026-10-12
+AST-0809,Tablet,Samsung,Business Tablet,SYN-00809,Melbourne,Sales,,Ready for Disposal,2023-09-19,2026-09-19,,false,,,,2026-08-22
+AST-0810,Laptop,Lenovo,Business Laptop,SYN-00810,Melbourne,Finance,EMP-0136,Return Pending,2025-04-04,2028-04-04,2026-10-07,false,,,,2026-07-18
+AST-0811,Tablet,Lenovo,Business Tablet,SYN-00811,Melbourne,Finance,EMP-0061,Assigned,2024-11-08,2025-11-08,,false,,,,2026-08-12
+AST-0812,Phone,HP,Corporate Phone,SYN-00812,Brisbane,Sales,,Disposed,2022-05-06,2025-05-06,,false,,,DSP-00812,2026-10-09
+AST-0813,Laptop,Dell,Business Laptop,SYN-00813,Brisbane,IT,EMP-0096,Assigned,2023-10-19,2024-10-18,,true,,,,2026-10-09
+AST-0814,Phone,Lenovo,Corporate Phone,SYN-00814,Sydney,IT,,Sanitisation Pending,2026-02-07,2029-02-07,,true,Pending,,,2026-10-04
+AST-0815,Tablet,Lenovo,Business Tablet,SYN-00815,Remote,IT,EMP-0014,Assigned,2022-07-16,2025-07-16,,true,,,,2026-08-31
+AST-0816,Monitor,Lenovo,Office Monitor,SYN-00816,Sydney,HR,EMP-0127,Return Pending,2021-07-05,2023-07-05,2026-11-04,false,,,,2026-10-12
+AST-0817,Tablet,HP,Business Tablet,SYN-00817,Sydney,IT,EMP-0295,Assigned,2025-02-08,2026-02-08,,false,,,,2026-07-01
+AST-0818,Laptop,Samsung,Business Laptop,SYN-00818,Remote,HR,,Ready for Disposal,2022-10-30,2025-10-30,,false,,,,2026-07-03
+AST-0819,Monitor,Lenovo,Office Monitor,SYN-00819,Sydney,Sales,EMP-0290,Assigned,2023-08-26,2024-08-25,,false,,,,2026-07-02
+AST-0820,Tablet,Dell,Business Tablet,SYN-00820,Sydney,IT,EMP-0426,Assigned,2022-02-22,2024-02-22,,false,,,,2026-09-10
+AST-0821,Tablet,HP,Business Tablet,SYN-00821,Remote,HR,EMP-0373,Assigned,2021-10-22,2023-10-22,,false,,,,2026-09-14
+AST-0822,Phone,HP,Corporate Phone,SYN-00822,Melbourne,Sales,EMP-0268,Return Pending,2020-08-11,2022-08-11,2026-09-15,false,,,,2026-09-26
+AST-0823,Desktop,Lenovo,Business Desktop,SYN-00823,Sydney,IT,EMP-0345,Assigned,2025-09-22,2026-09-22,,false,,,,2026-09-18
+AST-0824,Monitor,Apple,Office Monitor,SYN-00824,Melbourne,Sales,,Ready for Disposal,2026-09-01,2028-08-31,,false,,,,2026-07-18
+AST-0825,Laptop,Dell,Business Laptop,SYN-00825,Melbourne,Finance,EMP-0066,Return Pending,2025-08-12,2026-08-12,2026-10-26,false,,,,2026-08-08
+AST-0826,Monitor,HP,Office Monitor,SYN-00826,Sydney,Finance,,Disposed,2023-08-06,2024-08-05,,false,,,DSP-00826,2026-08-08
+AST-0827,Desktop,Apple,Business Desktop,SYN-00827,Sydney,IT,,Disposed,2021-11-05,2022-11-05,,false,,,DSP-00827,2026-09-16
+AST-0828,Desktop,HP,Business Desktop,SYN-00828,Melbourne,Operations,EMP-0107,Return Pending,2024-02-20,2026-02-19,2026-11-21,false,,,,2026-09-13
+AST-0829,Desktop,HP,Business Desktop,SYN-00829,Melbourne,Operations,EMP-0013,Lost / Stolen,2025-08-29,2026-08-29,,false,,,,2026-08-30
+AST-0830,Desktop,Dell,Business Desktop,SYN-00830,Sydney,Operations,,In Stock,2021-02-10,2022-02-10,,true,Failed,,,2026-07-24
+AST-0831,Monitor,Dell,Office Monitor,SYN-00831,Melbourne,HR,,In Stock,2022-09-22,2025-09-22,,false,,,,2026-07-12
+AST-0832,Monitor,Samsung,Office Monitor,SYN-00832,Sydney,Finance,EMP-0381,Assigned,2023-08-09,2025-08-08,,true,,,,2026-10-10
+AST-0833,Phone,Apple,Corporate Phone,SYN-00833,Brisbane,Finance,EMP-0451,Lost / Stolen,2025-09-08,2028-09-08,,false,,,,2026-08-16
+AST-0834,Desktop,HP,Business Desktop,SYN-00834,Melbourne,IT,,Disposed,2025-07-02,2026-07-02,,false,,,DSP-00834,2026-07-27
+AST-0835,Phone,HP,Corporate Phone,SYN-00835,Remote,IT,EMP-0194,Assigned,2026-08-20,2029-08-20,,false,,,,2026-07-26
+AST-0836,Phone,Samsung,Corporate Phone,SYN-00836,Melbourne,Operations,,Sanitisation Pending,2021-11-09,2024-11-09,,true,Pending,,,2026-10-08
+AST-0837,Tablet,Dell,Business Tablet,SYN-00837,Remote,IT,,In Stock,2024-01-10,2025-01-09,,false,,,,2026-08-02
+AST-0838,Phone,HP,Corporate Phone,SYN-00838,Brisbane,Operations,,Disposed,2023-12-21,2026-12-21,,false,,,DSP-00838,2026-09-02
+AST-0839,Laptop,HP,Business Laptop,SYN-00839,Remote,Finance,,In Stock,2021-05-05,2024-05-05,,false,,,,2026-08-24
+AST-0840,Laptop,Lenovo,Business Laptop,SYN-00840,Remote,HR,EMP-0250,Assigned,2020-02-03,2023-02-03,,false,,,,2026-08-31
+AST-0841,Desktop,HP,Business Desktop,SYN-00841,Sydney,HR,,In Stock,2020-12-06,2023-12-07,,false,,,,2026-08-30
+AST-0842,Monitor,Samsung,Office Monitor,SYN-00842,Sydney,Sales,,In Stock,2023-02-24,2025-02-23,,false,,,,2026-07-24
+AST-0843,Tablet,Samsung,Business Tablet,SYN-00843,Remote,Sales,,In Stock,2025-11-05,2028-11-05,,true,,,,2026-09-28
+AST-0844,Laptop,Samsung,Business Laptop,SYN-00844,Melbourne,Sales,EMP-0222,Return Pending,2020-11-14,2023-11-15,2026-09-30,false,,,,2026-08-25
+AST-0845,Desktop,HP,Business Desktop,SYN-00845,Sydney,Operations,,Disposed,2025-06-02,2026-06-02,,false,,,DSP-00845,2026-08-16
+AST-0846,Tablet,Apple,Business Tablet,SYN-00846,Melbourne,HR,EMP-0137,Return Pending,2026-07-27,2029-07-27,2026-09-29,false,,,,2026-08-11
+AST-0847,Tablet,Dell,Business Tablet,SYN-00847,Remote,Sales,,In Stock,2020-10-18,2021-10-18,,false,,,,2026-10-08
+AST-0848,Laptop,Samsung,Business Laptop,SYN-00848,Sydney,HR,,In Stock,2020-02-22,2021-02-21,,false,,,,2026-08-30
+AST-0849,Monitor,HP,Office Monitor,SYN-00849,Melbourne,IT,EMP-0346,Assigned,2021-07-13,2023-07-13,,true,,,,2026-10-17
+AST-0850,Laptop,Dell,Business Laptop,SYN-00850,Sydney,Sales,EMP-0467,Lost / Stolen,2020-07-11,2021-07-11,,true,Failed,,,2026-10-06
+AST-0851,Monitor,Lenovo,Office Monitor,SYN-00851,Remote,Operations,,In Stock,2023-09-19,2026-09-19,,false,,,,2026-09-03
+AST-0852,Laptop,Lenovo,Business Laptop,SYN-00852,Melbourne,Sales,,Return Pending,2023-08-17,2026-08-17,2026-10-06,false,,,,2026-08-05
+AST-0853,Desktop,Apple,Business Desktop,SYN-00853,Brisbane,Sales,,Lost / Stolen,2021-03-15,2022-03-15,,false,,,,2026-09-08
+AST-0854,Laptop,HP,Business Laptop,SYN-00854,Sydney,Finance,EMP-0442,Lost / Stolen,2026-06-14,2027-06-14,,true,,,,2026-08-30
+AST-0855,Phone,Apple,Corporate Phone,SYN-00855,Remote,IT,EMP-0405,Assigned,2025-06-25,2028-06-25,,true,Failed,,,2026-10-11
+AST-0856,Laptop,Apple,Business Laptop,SYN-00856,Remote,IT,EMP-0316,Assigned,2023-10-15,2024-10-14,,false,,,,2026-08-11
+AST-0857,Monitor,Dell,Office Monitor,SYN-00857,Sydney,Sales,EMP-0272,Assigned,2021-05-16,2023-05-16,,false,,,,2026-09-10
+AST-0858,Monitor,Lenovo,Office Monitor,SYN-00858,Melbourne,Sales,EMP-0445,Assigned,2023-10-14,2026-10-14,,false,,,,2026-09-28
+AST-0859,Monitor,Lenovo,Office Monitor,SYN-00859,Remote,Operations,,In Stock,2024-11-12,2025-11-12,,false,,,,2026-08-05
+AST-0860,Phone,HP,Corporate Phone,SYN-00860,Melbourne,Operations,,Ready for Disposal,2021-04-19,2023-04-19,,false,,,,2026-08-07
+AST-0861,Phone,HP,Corporate Phone,SYN-00861,Sydney,Operations,,In Stock,2025-03-28,2026-03-28,,false,,,,2026-08-20
+AST-0862,Desktop,Samsung,Business Desktop,SYN-00862,Brisbane,Operations,EMP-0454,Return Pending,2021-01-02,2023-01-02,2026-09-18,false,,,,2026-10-18
+AST-0863,Laptop,Apple,Business Laptop,SYN-00863,Sydney,Finance,,Disposed,2022-06-13,2025-06-13,,false,,,,2026-09-21
+AST-0864,Tablet,Apple,Business Tablet,SYN-00864,Remote,Finance,,Assigned,2024-04-24,2025-04-24,,false,,,,2026-09-10
+AST-0865,Monitor,Apple,Office Monitor,SYN-00865,Brisbane,IT,,In Stock,2024-11-10,2025-11-10,,false,,,,2026-08-15
+AST-0866,Monitor,Apple,Office Monitor,SYN-00866,Sydney,Finance,,In Repair,2021-06-06,2023-06-06,,false,,,,2026-07-08
+AST-0867,Laptop,Lenovo,Business Laptop,SYN-00867,Brisbane,HR,EMP-0407,Assigned,2024-06-29,2025-06-29,,true,,,,2026-08-15
+AST-0868,Phone,Apple,Corporate Phone,SYN-00868,Melbourne,Operations,EMP-0200,Assigned,2023-02-23,2026-02-23,,false,,,,2026-08-21
+AST-0869,Monitor,Samsung,Office Monitor,SYN-00869,Remote,HR,EMP-0150,Assigned,2022-10-04,2025-10-04,,false,,,,2026-09-17
+AST-0870,Monitor,Dell,Office Monitor,SYN-00870,Sydney,IT,EMP-0408,Assigned,2021-09-29,2023-09-29,,true,,,,2026-07-12
+AST-0871,Tablet,Apple,Business Tablet,SYN-00871,Remote,Finance,,Return Pending,2025-06-13,2028-06-13,2026-09-14,false,,,,2026-07-02
+AST-0872,Monitor,Dell,Office Monitor,SYN-00872,Remote,HR,EMP-0401,Assigned,2025-08-15,2026-08-15,,false,,,,2026-08-20
+AST-0873,Laptop,Samsung,Business Laptop,SYN-00873,Remote,Finance,EMP-0297,Assigned,2022-11-26,2025-11-26,,false,,,,2026-08-14
+AST-0874,Monitor,HP,Office Monitor,SYN-00874,Sydney,Operations,,Disposed,2022-02-08,2024-02-08,,false,,,DSP-00874,2026-07-27
+AST-0875,Phone,HP,Corporate Phone,SYN-00875,Remote,IT,EMP-0220,Assigned,2023-03-31,2026-03-31,,true,,,,2026-08-15
+AST-0876,Desktop,HP,Business Desktop,SYN-00876,Brisbane,Finance,,In Stock,2022-05-11,2025-05-11,,true,Failed,,,2026-10-01
+AST-0877,Tablet,Lenovo,Business Tablet,SYN-00877,Sydney,IT,EMP-0232,Return Pending,2022-07-16,2025-07-16,2026-10-10,true,,,,2026-09-21
+AST-0878,Laptop,HP,Business Laptop,SYN-00878,Remote,IT,EMP-0461,In Repair,2024-10-10,2026-10-10,,false,,,,2026-10-01
+AST-0879,Monitor,Apple,Office Monitor,SYN-00879,Sydney,HR,,Disposed,2022-02-18,2023-02-18,,false,,,DSP-00879,2026-07-07
+AST-0880,Desktop,Lenovo,Business Desktop,SYN-00880,Sydney,Operations,EMP-0157,Assigned,2023-07-18,2024-07-17,,false,,,,2026-10-14
+AST-0881,Tablet,Samsung,Business Tablet,SYN-00881,Brisbane,HR,EMP-0206,Assigned,2025-08-15,2026-08-15,,false,,,,2026-09-21
+AST-0882,Monitor,Samsung,Office Monitor,SYN-00882,Sydney,Operations,EMP-0070,Assigned,2024-12-21,2025-12-21,,false,,,,2026-07-27
+AST-0883,Laptop,Dell,Business Laptop,SYN-00883,Melbourne,Sales,,Disposed,2023-06-11,2024-06-10,,false,,,DSP-00883,2026-08-11
+AST-0884,Laptop,HP,Business Laptop,SYN-00884,Remote,HR,,Disposed,2021-11-06,2022-11-06,,true,Passed,EVD-00884,DSP-00884,2026-10-01
+AST-0885,Tablet,Lenovo,Business Tablet,SYN-00885,Remote,Sales,,In Stock,2025-06-17,2027-06-17,,false,,,,2026-10-09
+AST-0886,Desktop,Samsung,Business Desktop,SYN-00886,Sydney,Finance,,Disposed,2020-05-15,2021-05-15,,false,,,DSP-00886,2026-07-31
+AST-0887,Phone,Dell,Corporate Phone,SYN-00887,Sydney,Sales,,In Stock,2026-06-16,2029-06-16,,false,,,,2026-07-24
+AST-0888,Laptop,Dell,Business Laptop,SYN-00888,Sydney,HR,,Ready for Disposal,2021-12-26,2023-12-26,,true,Passed,EVD-00888,,2026-07-26
+AST-0889,Monitor,Lenovo,Office Monitor,SYN-00889,Brisbane,Sales,EMP-0446,Assigned,2020-08-06,2022-08-06,,true,,,,2026-09-26
+AST-0890,Desktop,Apple,Business Desktop,SYN-00890,Brisbane,Operations,EMP-0322,Assigned,2026-06-09,2027-06-09,,false,,,,2026-07-08
+AST-0891,Desktop,Lenovo,Business Desktop,SYN-00891,Remote,IT,,Ready for Disposal,2021-08-21,2023-08-21,,false,,,,2026-08-09
+AST-0892,Monitor,HP,Office Monitor,SYN-00892,Brisbane,IT,,In Stock,2021-09-10,2024-09-10,,false,,,,2026-07-12
+AST-0893,Desktop,Apple,Business Desktop,SYN-00893,Remote,Sales,EMP-0453,Assigned,2020-12-14,2022-12-14,,false,,,,2026-10-08
+AST-0894,Laptop,HP,Business Laptop,SYN-00894,Melbourne,Finance,EMP-0306,Assigned,2020-09-24,2023-09-25,,false,,,,2026-08-20
+AST-0895,Tablet,Lenovo,Business Tablet,SYN-00895,Melbourne,IT,EMP-0466,Assigned,2026-03-04,2029-03-04,,true,,,,2026-10-14
+AST-0896,Monitor,Apple,Office Monitor,SYN-00896,Remote,Finance,EMP-0215,Assigned,2024-08-16,2027-08-17,,false,,,,2026-08-09
+AST-0897,Desktop,Lenovo,Business Desktop,SYN-00897,Melbourne,Operations,EMP-0165,Assigned,2020-12-04,2022-12-04,,false,,,,2026-10-18
+AST-0898,Laptop,HP,Business Laptop,SYN-00898,Melbourne,Operations,,Disposed,2021-12-27,2023-12-27,,false,,,DSP-00898,2026-09-18
+AST-0899,Phone,HP,Corporate Phone,SYN-00899,Sydney,Finance,EMP-0232,Assigned,2022-03-21,2024-03-20,,true,,,,2026-08-09
+AST-0900,Monitor,Apple,Office Monitor,SYN-00900,Melbourne,HR,,Sanitisation Pending,2026-08-21,2028-08-20,,true,Pending,,,2026-07-25
+AST-0901,Laptop,Samsung,Business Laptop,SYN-00901,Sydney,Finance,EMP-0168,Assigned,2025-06-21,2027-06-21,,false,,,,2026-09-23
+AST-0902,Monitor,HP,Office Monitor,SYN-00902,Brisbane,Operations,EMP-0201,Return Pending,2024-02-15,2026-02-14,2026-11-13,false,,,,2026-07-31
+AST-0903,Tablet,Apple,Business Tablet,SYN-00903,Melbourne,IT,EMP-0032,Assigned,2021-05-08,2024-05-08,,true,,,,2026-09-27
+AST-0904,Laptop,HP,Business Laptop,SYN-00904,Brisbane,Operations,,Disposed,2022-10-16,2023-10-16,,true,Pending,,DSP-00904,2026-08-16
+AST-0905,Desktop,HP,Business Desktop,SYN-00905,Sydney,Sales,,Disposed,2026-05-17,2029-05-17,,true,Passed,EVD-00905,DSP-00905,2026-08-15
+AST-0906,Desktop,Lenovo,Business Desktop,SYN-00906,Remote,Operations,,Disposed,2024-08-06,2027-08-07,,false,,,DSP-00906,2026-09-18
+AST-0907,Monitor,Lenovo,Office Monitor,SYN-00907,Brisbane,Sales,,Assigned,2023-08-29,2026-08-29,,false,,,,2026-10-05
+AST-0908,Laptop,Samsung,Business Laptop,SYN-00908,Melbourne,Operations,EMP-0349,Assigned,2020-11-30,2023-12-01,,false,,,,2026-08-05
+AST-0909,Desktop,HP,Business Desktop,SYN-00909,Melbourne,Operations,EMP-0424,Assigned,2025-01-24,2028-01-25,,true,,,,2026-07-17
+AST-0910,Tablet,Apple,Business Tablet,SYN-00910,Melbourne,Finance,EMP-0286,Assigned,2026-04-04,2029-04-04,,false,,,,2026-07-28
+AST-0911,Tablet,Dell,Business Tablet,SYN-00911,Brisbane,IT,EMP-0359,Assigned,2025-11-09,2027-11-09,,false,,,,2026-07-29
+AST-0912,Phone,Lenovo,Corporate Phone,SYN-00912,Sydney,Finance,,Return Pending,2020-08-25,2022-08-25,2026-10-10,true,Failed,,,2026-07-14
+AST-0913,Phone,HP,Corporate Phone,SYN-00913,Remote,Finance,,In Stock,2021-11-24,2023-11-24,,false,,,,2026-07-10
+AST-0914,Monitor,Apple,Office Monitor,SYN-00914,Melbourne,Finance,EMP-0376,Assigned,2026-08-02,2028-08-01,,false,,,,2026-07-04
+AST-0915,Desktop,Lenovo,Business Desktop,SYN-00915,Brisbane,Sales,,Disposed,2024-06-06,2027-06-07,,false,,,DSP-00915,2026-08-23
+AST-0916,Phone,Apple,Corporate Phone,SYN-00916,Sydney,HR,EMP-0034,Assigned,2021-08-31,2022-08-31,,true,,,,2026-10-18
+AST-0917,Monitor,Dell,Office Monitor,SYN-00917,Remote,HR,,In Stock,2022-12-05,2024-12-04,,false,,,,2026-08-08
+AST-0918,Tablet,HP,Business Tablet,SYN-00918,Brisbane,Operations,EMP-0223,Return Pending,2026-04-25,2028-04-24,2026-10-05,true,,,,2026-08-09
+AST-0919,Monitor,Apple,Office Monitor,SYN-00919,Remote,Finance,EMP-0229,Lost / Stolen,2022-07-11,2024-07-10,,true,,,,2026-09-14
+AST-0920,Laptop,Lenovo,Business Laptop,SYN-00920,Melbourne,Operations,EMP-0102,Return Pending,2021-09-15,2023-09-15,2026-11-24,true,,,,2026-09-09
+AST-0921,Laptop,Apple,Business Laptop,SYN-00921,Remote,Finance,EMP-0331,Assigned,2021-11-09,2022-11-09,,false,,,,2026-08-20
+AST-0922,Monitor,Lenovo,Office Monitor,SYN-00922,Melbourne,Sales,EMP-0304,Assigned,2022-04-06,2024-04-05,,false,,,,2026-07-15
+AST-0923,Laptop,Dell,Business Laptop,SYN-00923,Sydney,IT,,In Stock,2026-07-02,2029-07-02,,false,,,,2026-07-08
+AST-0924,Laptop,HP,Business Laptop,SYN-00924,Melbourne,HR,,Ready for Disposal,2021-12-12,2022-12-12,,false,,,,2026-09-04
+AST-0925,Phone,Dell,Corporate Phone,SYN-00925,Sydney,Sales,EMP-0135,Assigned,2022-06-04,2024-06-03,,false,,,,2026-07-30
+AST-0926,Laptop,Apple,Business Laptop,SYN-00926,Sydney,IT,,Disposed,2022-10-28,2024-10-27,,false,,,DSP-00926,2026-10-10
+AST-0927,Desktop,Lenovo,Business Desktop,SYN-00927,Brisbane,Operations,,In Stock,2024-08-17,2025-08-17,,true,Failed,,,2026-08-08
+AST-0928,Tablet,Lenovo,Business Tablet,SYN-00928,Melbourne,IT,,Disposed,2022-11-20,2025-11-20,,false,,,,2026-08-28
+AST-0929,Phone,Lenovo,Corporate Phone,SYN-00929,Melbourne,Sales,,In Repair,2025-11-23,2026-11-23,,false,,,,2026-09-03
+AST-0930,Phone,Samsung,Corporate Phone,SYN-00930,Melbourne,Sales,,In Stock,2021-10-23,2023-10-23,,true,,,,2026-09-22
+AST-0931,Laptop,HP,Business Laptop,SYN-00931,Brisbane,Sales,,Disposed,2022-04-04,2025-04-04,,false,,,DSP-00931,2026-07-27
+AST-0932,Desktop,Samsung,Business Desktop,SYN-00932,Brisbane,Operations,EMP-0126,Return Pending,2021-04-04,2023-04-04,2026-11-02,false,,,,2026-08-23
+AST-0933,Desktop,Samsung,Business Desktop,SYN-00933,Remote,Sales,EMP-0089,Assigned,2026-02-07,2027-02-07,,true,,,,2026-08-22
+AST-0934,Phone,Apple,Corporate Phone,SYN-00934,Remote,Sales,EMP-0483,Assigned,2024-08-12,2026-08-12,,false,,,,2026-07-05
+AST-0935,Phone,Lenovo,Corporate Phone,SYN-00935,Sydney,HR,,In Stock,2021-11-29,2024-11-29,,false,,,,2026-10-03
+AST-0936,Monitor,HP,Office Monitor,SYN-00936,Brisbane,HR,EMP-0197,Assigned,2020-02-23,2021-02-22,,false,,,,2026-10-10
+AST-0937,Phone,Samsung,Corporate Phone,SYN-00937,Brisbane,IT,,In Stock,2020-04-20,2022-04-20,,false,,,,2026-07-24
+AST-0938,Tablet,Samsung,Business Tablet,SYN-00938,Brisbane,IT,EMP-0374,Lost / Stolen,2022-12-31,2023-12-31,,true,,,,2026-08-15
+AST-0939,Tablet,HP,Business Tablet,SYN-00939,Sydney,IT,,Ready for Disposal,2024-02-11,2026-02-10,,false,,,,2026-07-30
+AST-0940,Phone,Apple,Corporate Phone,SYN-00940,Brisbane,Finance,EMP-0081,Lost / Stolen,2021-08-22,2023-08-22,,false,,,,2026-07-25
+AST-0941,Phone,Apple,Corporate Phone,SYN-00941,Melbourne,Operations,,In Stock,2023-01-13,2024-01-13,,false,,,,2026-08-08
+AST-0942,Phone,Apple,Corporate Phone,SYN-00942,Remote,HR,EMP-0080,Assigned,2024-08-09,2026-08-09,,true,,,,2026-09-22
+AST-0943,Tablet,HP,Business Tablet,SYN-00943,Remote,Sales,,Disposed,2026-04-12,2027-04-12,,false,,,DSP-00943,2026-07-28
+AST-0944,Tablet,Samsung,Business Tablet,SYN-00944,Brisbane,Finance,EMP-0454,Assigned,2025-03-21,2028-03-21,,true,,,,2026-09-20
+AST-0945,Desktop,Lenovo,Business Desktop,SYN-00945,Sydney,Finance,EMP-0371,In Repair,2025-11-07,2028-11-07,,false,,,,2026-08-13
+AST-0946,Laptop,Samsung,Business Laptop,SYN-00946,Melbourne,Operations,,In Stock,2023-12-09,2024-12-08,,false,,,,2026-09-10
+AST-0947,Phone,Lenovo,Corporate Phone,SYN-00947,Sydney,IT,EMP-0182,Assigned,2020-03-12,2021-03-12,,false,,,,2026-08-07
+AST-0948,Laptop,Lenovo,Business Laptop,SYN-00948,Melbourne,Operations,,In Stock,2024-12-25,2027-12-26,,false,,,,2026-10-14
+AST-0949,Laptop,Samsung,Business Laptop,SYN-00949,Brisbane,IT,,Ready for Disposal,2025-08-10,2028-08-10,,false,,,,2026-09-14
+AST-0950,Laptop,Samsung,Business Laptop,SYN-00950,Remote,Finance,,In Stock,2025-11-25,2026-11-25,,false,,,,2026-10-02
+AST-0951,Laptop,HP,Business Laptop,SYN-00951,Remote,Operations,,In Stock,2020-10-09,2022-10-09,,false,,,,2026-10-03
+AST-0952,Monitor,Lenovo,Office Monitor,SYN-00952,Melbourne,Sales,EMP-0118,In Repair,2022-06-21,2024-06-20,,false,,,,2026-09-29
+AST-0953,Desktop,Lenovo,Business Desktop,SYN-00953,Sydney,IT,,Disposed,2021-03-14,2024-03-14,,true,Pending,,DSP-00953,2026-07-23
+AST-0954,Laptop,Samsung,Business Laptop,SYN-00954,Melbourne,Finance,,Disposed,2020-02-09,2022-02-08,,false,,,DSP-00954,2026-07-29
+AST-0955,Phone,Lenovo,Corporate Phone,SYN-00955,Brisbane,Operations,EMP-0447,Assigned,2026-04-08,2028-04-07,,false,,,,2026-10-10
+AST-0956,Phone,Apple,Corporate Phone,SYN-00956,Brisbane,Operations,EMP-0283,Assigned,2022-10-27,2023-10-27,,false,,,,2026-08-07
+AST-0957,Tablet,Lenovo,Business Tablet,SYN-00957,Sydney,Finance,EMP-0311,Assigned,2020-05-26,2023-05-27,,false,,,,2026-10-14
+AST-0958,Tablet,Apple,Business Tablet,SYN-00958,Sydney,HR,,In Repair,2022-04-27,2025-04-27,,false,,,,2026-09-28
+AST-0959,Tablet,Apple,Business Tablet,SYN-00959,Sydney,Sales,EMP-0376,Assigned,2023-04-21,2024-04-20,,false,,,,2026-08-02
+AST-0960,Tablet,Samsung,Business Tablet,SYN-00960,Remote,Finance,EMP-0130,Assigned,2026-07-06,2027-07-06,,false,,,,2026-07-05
+AST-0961,Tablet,Apple,Business Tablet,SYN-00961,Melbourne,Operations,EMP-0157,Return Pending,2022-09-30,2023-09-30,2026-10-04,false,,,,2026-09-17
+AST-0962,Desktop,Samsung,Business Desktop,SYN-00962,Melbourne,Sales,EMP-0281,Assigned,2025-08-28,2027-08-28,,false,,,,2026-10-07
+AST-0963,Desktop,HP,Business Desktop,SYN-00963,Brisbane,IT,,In Repair,2023-04-08,2026-04-08,,false,,,,2026-10-17
+AST-0964,Tablet,Apple,Business Tablet,SYN-00964,Brisbane,IT,EMP-0060,Assigned,2024-04-24,2026-04-24,,false,,,,2026-09-05
+AST-0965,Monitor,Dell,Office Monitor,SYN-00965,Sydney,Operations,,Ready for Disposal,2023-03-07,2025-03-06,,false,,,,2026-09-10
+AST-0966,Phone,HP,Corporate Phone,SYN-00966,Sydney,Operations,EMP-0272,Assigned,2026-03-07,2027-03-07,,false,,,,2026-08-06
+AST-0967,Desktop,Dell,Business Desktop,SYN-00967,Melbourne,HR,EMP-0181,Assigned,2025-12-30,2026-12-30,,true,,,,2026-09-23
+AST-0968,Monitor,Dell,Office Monitor,SYN-00968,Melbourne,IT,,In Stock,2022-09-20,2023-09-20,,false,,,,2026-09-06
+AST-0969,Laptop,Samsung,Business Laptop,SYN-00969,Remote,IT,EMP-0013,Assigned,2023-02-14,2024-02-14,,false,,,,2026-07-23
+AST-0970,Tablet,Apple,Business Tablet,SYN-00970,Brisbane,HR,,In Stock,2023-07-22,2025-07-21,,false,,,,2026-10-09
+AST-0971,Laptop,Dell,Business Laptop,SYN-00971,Brisbane,IT,EMP-0455,Assigned,2023-03-08,2025-03-07,,true,,,,2026-07-23
+AST-0972,Phone,Dell,Corporate Phone,SYN-00972,Melbourne,HR,,In Stock,2025-08-27,2028-08-27,,false,,,,2026-09-08
+AST-0973,Phone,Samsung,Corporate Phone,SYN-00973,Sydney,HR,EMP-0489,Assigned,2024-03-23,2026-03-23,,false,,,,2026-10-13
+AST-0974,Phone,Apple,Corporate Phone,SYN-00974,Brisbane,Sales,EMP-0134,Assigned,2025-04-18,2028-04-18,,false,,,,2026-10-04
+AST-0975,Desktop,Apple,Business Desktop,SYN-00975,Brisbane,Operations,,In Stock,2023-02-20,2025-02-19,,false,,,,2026-10-19
+AST-0976,Laptop,Lenovo,Business Laptop,SYN-00976,Sydney,Sales,EMP-0384,Return Pending,2021-06-16,2023-06-16,2026-11-13,true,Failed,,,2026-08-14
+AST-0977,Phone,HP,Corporate Phone,SYN-00977,Melbourne,Operations,EMP-0491,Assigned,2024-08-27,2026-08-27,,false,,,,2026-08-16
+AST-0978,Phone,HP,Corporate Phone,SYN-00978,Remote,IT,EMP-0165,Return Pending,2023-12-28,2025-12-27,2026-10-08,false,,,,2026-08-17
+AST-0979,Phone,Samsung,Corporate Phone,SYN-00979,Sydney,IT,,Ready for Disposal,2021-04-15,2024-04-15,,true,Failed,,,2026-07-24
+AST-0980,Phone,Lenovo,Corporate Phone,SYN-00980,Remote,Operations,EMP-0275,Assigned,2024-10-30,2026-10-30,,false,,,,2026-08-04
+AST-0981,Monitor,Lenovo,Office Monitor,SYN-00981,Sydney,Finance,EMP-0125,Return Pending,2024-04-08,2025-04-08,2026-10-29,false,,,,2026-07-22
+AST-0982,Tablet,Apple,Business Tablet,SYN-00982,Brisbane,HR,,Ready for Disposal,2021-02-19,2023-02-19,,false,,,,2026-07-16
+AST-0983,Tablet,Samsung,Business Tablet,SYN-00983,Remote,HR,,Disposed,2021-04-18,2024-04-18,,true,,,,2026-09-20
+AST-0984,Desktop,Apple,Business Desktop,SYN-00984,Sydney,Sales,EMP-0462,Return Pending,2026-01-03,2027-01-03,2026-10-04,true,,,,2026-07-24
+AST-0985,Laptop,Apple,Business Laptop,SYN-00985,Remote,Sales,,Disposed,2020-12-22,2022-12-22,,true,Pending,,,2026-08-25
+AST-0986,Phone,Dell,Corporate Phone,SYN-00986,Melbourne,Finance,EMP-0405,Return Pending,2020-04-11,2021-04-11,2026-09-19,false,,,,2026-07-16
+AST-0987,Desktop,Lenovo,Business Desktop,SYN-00987,Remote,IT,,Disposed,2023-06-16,2026-06-16,,true,Passed,EVD-00987,DSP-00987,2026-08-31
+AST-0988,Desktop,Samsung,Business Desktop,SYN-00988,Sydney,Sales,EMP-0009,Assigned,2025-04-02,2028-04-02,,false,,,,2026-07-15
+AST-0989,Monitor,Apple,Office Monitor,SYN-00989,Remote,IT,EMP-0029,Assigned,2021-06-15,2023-06-15,,true,Pending,,,2026-10-09
+AST-0990,Tablet,HP,Business Tablet,SYN-00990,Brisbane,IT,EMP-0362,Assigned,2022-09-11,2024-09-10,,false,,,,2026-08-18
+AST-0991,Phone,HP,Corporate Phone,SYN-00991,Melbourne,Operations,EMP-0348,Assigned,2025-06-24,2028-06-24,,false,,,,2026-10-12
+AST-0992,Monitor,Dell,Office Monitor,SYN-00992,Melbourne,Operations,EMP-0253,Assigned,2021-01-09,2022-01-09,,false,,,,2026-10-17
+AST-0993,Laptop,HP,Business Laptop,SYN-00993,Sydney,IT,EMP-0473,Assigned,2022-09-01,2025-09-01,,false,,,,2026-09-03
+AST-0994,Phone,HP,Corporate Phone,SYN-00994,Melbourne,HR,EMP-0227,Assigned,2025-01-16,2026-01-16,,false,,,,2026-07-10
+AST-0995,Phone,Dell,Corporate Phone,SYN-00995,Melbourne,Finance,EMP-0419,Assigned,2023-10-13,2025-10-12,,false,,,,2026-09-24
+AST-0996,Monitor,Lenovo,Office Monitor,SYN-00996,Melbourne,Finance,,In Stock,2020-12-17,2023-12-18,,false,,,,2026-07-16
+AST-0997,Laptop,Apple,Business Laptop,SYN-00997,Remote,Sales,,In Stock,2020-07-05,2022-07-05,,false,,,,2026-10-06
+AST-0998,Monitor,HP,Office Monitor,SYN-00998,Remote,IT,EMP-0490,Assigned,2023-03-07,2026-03-07,,false,,,,2026-09-11
+AST-0999,Phone,Dell,Corporate Phone,SYN-00999,Melbourne,Sales,,Ready for Disposal,2022-04-05,2023-04-05,,false,,,,2026-08-07
+AST-1000,Phone,Samsung,Corporate Phone,SYN-01000,Brisbane,Sales,EMP-0073,Assigned,2021-09-04,2024-09-04,,false,,,,2026-07-11
+AST-1001,Phone,Dell,Corporate Phone,SYN-01001,Brisbane,Finance,,Disposed,2024-07-30,2027-07-31,,false,,,DSP-01001,2026-09-14
+AST-1002,Tablet,Dell,Business Tablet,SYN-01002,Sydney,Operations,EMP-0120,Return Pending,2025-05-11,2028-05-11,2026-09-06,false,,,,2026-08-15
+AST-1003,Monitor,Samsung,Office Monitor,SYN-01003,Remote,Finance,,Disposed,2024-09-16,2025-09-16,,false,,,DSP-01003,2026-08-22
+AST-1004,Tablet,Dell,Business Tablet,SYN-01004,Melbourne,HR,EMP-0183,Lost / Stolen,2024-10-28,2025-10-28,,false,,,,2026-07-21
+AST-1005,Monitor,Samsung,Office Monitor,SYN-01005,Melbourne,Sales,EMP-0494,Assigned,2025-02-15,2027-02-15,,true,,,,2026-08-07
+AST-1006,Monitor,Samsung,Office Monitor,SYN-01006,Remote,Sales,EMP-0069,In Repair,2020-11-22,2021-11-22,,false,,,,2026-07-04
+AST-1007,Phone,Dell,Corporate Phone,SYN-01007,Melbourne,IT,EMP-0464,Lost / Stolen,2025-10-03,2028-10-03,,false,,,,2026-10-15
+AST-1008,Phone,Samsung,Corporate Phone,SYN-01008,Melbourne,Finance,EMP-0231,Assigned,2025-02-02,2026-02-02,,true,,,,2026-10-15
+AST-1009,Tablet,HP,Business Tablet,SYN-01009,Brisbane,Sales,,In Stock,2022-12-15,2023-12-15,,false,,,,2026-07-08
+AST-1010,Phone,Dell,Corporate Phone,SYN-01010,Brisbane,Sales,,Ready for Disposal,2026-01-25,2027-01-25,,false,,,,2026-07-21
+AST-1011,Phone,Lenovo,Corporate Phone,SYN-01011,Sydney,Sales,,In Stock,2021-08-12,2024-08-12,,true,,,,2026-09-05
+AST-1012,Monitor,Apple,Office Monitor,SYN-01012,Brisbane,HR,EMP-0023,Assigned,2021-11-19,2024-11-19,,false,,,,2026-09-08
+AST-1013,Phone,Lenovo,Corporate Phone,SYN-01013,Melbourne,Operations,,In Stock,2025-07-07,2026-07-07,,false,,,,2026-09-03
+AST-1014,Laptop,Dell,Business Laptop,SYN-01014,Brisbane,IT,EMP-0287,Assigned,2025-02-01,2027-02-01,,true,Pending,,,2026-08-08
+AST-1015,Desktop,Lenovo,Business Desktop,SYN-01015,Brisbane,IT,EMP-0350,Assigned,2025-02-20,2028-02-21,,false,,,,2026-07-05
+AST-1016,Monitor,Dell,Office Monitor,SYN-01016,Melbourne,Operations,EMP-0060,Assigned,2022-09-28,2025-09-28,,false,,,,2026-09-19
+AST-1017,Desktop,Samsung,Business Desktop,SYN-01017,Sydney,IT,EMP-0381,Assigned,2026-04-19,2029-04-19,,false,,,,2026-08-14
+AST-1018,Desktop,Samsung,Business Desktop,SYN-01018,Brisbane,Operations,EMP-0089,In Repair,2023-01-21,2026-01-21,,true,,,,2026-08-18
+AST-1019,Phone,Lenovo,Corporate Phone,SYN-01019,Melbourne,Sales,,Disposed,2026-02-22,2028-02-22,,true,Failed,,DSP-01019,2026-08-13
+AST-1020,Monitor,Samsung,Office Monitor,SYN-01020,Brisbane,Operations,,In Stock,2026-08-11,2028-08-10,,false,,,,2026-07-23
+AST-1021,Laptop,Dell,Business Laptop,SYN-01021,Remote,Finance,EMP-0056,Assigned,2026-02-20,2029-02-20,,true,,,,2026-10-11
+AST-1022,Desktop,Lenovo,Business Desktop,SYN-01022,Brisbane,IT,EMP-0030,Assigned,2021-10-17,2023-10-17,,false,,,,2026-09-10
+AST-1023,Monitor,Dell,Office Monitor,SYN-01023,Melbourne,Finance,EMP-0439,Lost / Stolen,2021-01-19,2022-01-19,,false,,,,2026-07-27
+AST-1024,Phone,Dell,Corporate Phone,SYN-01024,Brisbane,Operations,,Assigned,2025-04-27,2028-04-27,,false,,,,2026-09-18
+AST-1025,Desktop,Dell,Business Desktop,SYN-01025,Remote,Sales,EMP-0200,Assigned,2020-02-08,2021-02-07,,false,,,,2026-07-13
+AST-1026,Monitor,Apple,Office Monitor,SYN-01026,Remote,HR,,In Stock,2021-03-18,2024-03-18,,false,,,,2026-07-16
+AST-1027,Monitor,Lenovo,Office Monitor,SYN-01027,Brisbane,Sales,EMP-0178,Return Pending,2023-07-29,2024-07-28,2026-10-30,false,,,,2026-07-15
+AST-1028,Monitor,HP,Office Monitor,SYN-01028,Melbourne,Operations,,In Stock,2024-08-01,2026-08-01,,true,,,,2026-09-27
+AST-1029,Laptop,Samsung,Business Laptop,SYN-01029,Remote,Sales,EMP-0338,Assigned,2021-10-16,2022-10-16,,false,,,,2026-08-26
+AST-1030,Phone,Apple,Corporate Phone,SYN-01030,Sydney,HR,EMP-0121,Assigned,2024-10-24,2025-10-24,,true,Failed,,,2026-09-16
+AST-1031,Tablet,HP,Business Tablet,SYN-01031,Brisbane,Finance,EMP-0405,Return Pending,2022-08-01,2025-08-01,2026-11-23,false,,,,2026-08-14
+AST-1032,Laptop,Dell,Business Laptop,SYN-01032,Remote,IT,EMP-0085,Return Pending,2020-10-31,2022-10-31,2026-11-04,true,,,,2026-09-18
+AST-1033,Laptop,HP,Business Laptop,SYN-01033,Sydney,Operations,,In Stock,2024-08-11,2027-08-12,,true,,,,2026-07-30
+AST-1034,Monitor,Samsung,Office Monitor,SYN-01034,Melbourne,IT,,In Stock,2023-06-17,2024-06-16,,false,,,,2026-09-16
+AST-1035,Desktop,HP,Business Desktop,SYN-01035,Remote,Sales,EMP-0455,Assigned,2025-08-04,2027-08-04,,false,,,,2026-10-18
+AST-1036,Tablet,HP,Business Tablet,SYN-01036,Remote,Operations,EMP-0489,Assigned,2021-07-02,2023-07-02,,false,,,,2026-09-16
+AST-1037,Tablet,Samsung,Business Tablet,SYN-01037,Brisbane,Sales,,Disposed,2025-01-19,2028-01-20,,false,,,DSP-01037,2026-07-11
+AST-1038,Tablet,Lenovo,Business Tablet,SYN-01038,Remote,HR,EMP-0420,Assigned,2023-04-28,2025-04-27,,false,,,,2026-08-03
+AST-1039,Desktop,HP,Business Desktop,SYN-01039,Sydney,IT,,Disposed,2024-03-16,2026-03-16,,false,,,DSP-01039,2026-08-03
+AST-1040,Laptop,Apple,Business Laptop,SYN-01040,Sydney,HR,EMP-0015,Assigned,2025-12-31,2027-12-31,,false,,,,2026-08-26
+AST-1041,Monitor,Apple,Office Monitor,SYN-01041,Melbourne,Sales,EMP-0246,Assigned,2021-07-02,2024-07-02,,true,,,,2026-09-27
+AST-1042,Laptop,Samsung,Business Laptop,SYN-01042,Sydney,HR,EMP-0255,In Repair,2024-09-09,2027-09-10,,false,,,,2026-08-22
+AST-1043,Phone,Lenovo,Corporate Phone,SYN-01043,Brisbane,Sales,,Sanitisation Pending,2026-01-13,2029-01-13,,true,Pending,,,2026-08-12
+AST-1044,Desktop,HP,Business Desktop,SYN-01044,Remote,IT,,In Stock,2026-05-29,2027-05-29,,false,,,,2026-07-18
+AST-1045,Desktop,Samsung,Business Desktop,SYN-01045,Melbourne,Operations,,Disposed,2021-07-15,2022-07-15,,true,,,DSP-01045,2026-08-24
+AST-1046,Tablet,Lenovo,Business Tablet,SYN-01046,Sydney,IT,EMP-0093,Assigned,2022-10-17,2025-10-17,,true,,,,2026-10-15
+AST-1047,Phone,Dell,Corporate Phone,SYN-01047,Sydney,IT,EMP-0373,Assigned,2020-02-16,2021-02-15,,false,,,,2026-09-13
+AST-1048,Desktop,Lenovo,Business Desktop,SYN-01048,Remote,Finance,,Assigned,2025-09-07,2027-09-07,,true,,,,2026-10-07
+AST-1049,Tablet,Dell,Business Tablet,SYN-01049,Brisbane,Sales,EMP-0257,Assigned,2021-09-26,2022-09-26,,false,,,,2026-07-13
+AST-1050,Tablet,Dell,Business Tablet,SYN-01050,Sydney,IT,EMP-0202,Return Pending,2025-06-07,2026-06-07,2026-11-23,false,,,,2026-07-20
+AST-1051,Monitor,Dell,Office Monitor,SYN-01051,Remote,Finance,,In Stock,2026-07-02,2027-07-02,,false,,,,2026-08-15
+AST-1052,Laptop,Lenovo,Business Laptop,SYN-01052,Remote,Finance,,In Stock,2026-08-07,2029-08-07,,true,Pending,,,2026-08-21
+AST-1053,Laptop,HP,Business Laptop,SYN-01053,Remote,Operations,EMP-0410,Assigned,2026-04-01,2028-03-31,,false,,,,2026-08-13
+AST-1054,Laptop,Samsung,Business Laptop,SYN-01054,Brisbane,Finance,EMP-0331,Assigned,2022-10-03,2025-10-03,,true,,,,2026-08-29
+AST-1055,Phone,Lenovo,Corporate Phone,SYN-01055,Brisbane,Finance,,In Stock,2020-09-14,2023-09-15,,false,,,,2026-08-06
+AST-1056,Laptop,HP,Business Laptop,SYN-01056,Remote,HR,,In Stock,2021-08-23,2023-08-23,,false,,,,2026-09-14
+AST-1057,Desktop,Dell,Business Desktop,SYN-01057,Sydney,HR,,Disposed,2022-04-09,2024-04-08,,false,,,,2026-07-07
+AST-1058,Monitor,Dell,Office Monitor,SYN-01058,Melbourne,Sales,,Ready for Disposal,2021-10-08,2023-10-08,,true,Pending,,,2026-07-10
+AST-1059,Phone,Lenovo,Corporate Phone,SYN-01059,Sydney,Sales,EMP-0005,Assigned,2023-07-24,2025-07-23,,true,,,,2026-09-21
+AST-1060,Desktop,HP,Business Desktop,SYN-01060,Remote,HR,EMP-0489,Return Pending,2026-02-28,2027-02-28,2026-11-23,false,,,,2026-09-03
+AST-1061,Tablet,HP,Business Tablet,SYN-01061,Brisbane,Finance,,Disposed,2024-09-16,2027-09-17,,false,,,DSP-01061,2026-07-27
+AST-1062,Phone,Apple,Corporate Phone,SYN-01062,Brisbane,Sales,EMP-0254,Assigned,2024-01-10,2027-01-10,,true,,,,2026-07-01
+AST-1063,Monitor,HP,Office Monitor,SYN-01063,Brisbane,HR,,Disposed,2021-06-03,2024-06-03,,true,Passed,EVD-01063,DSP-01063,2026-09-27
+AST-1064,Laptop,HP,Business Laptop,SYN-01064,Remote,Sales,EMP-0347,Assigned,2024-05-20,2027-05-21,,false,,,,2026-07-19
+AST-1065,Desktop,Apple,Business Desktop,SYN-01065,Remote,Sales,,In Stock,2020-09-04,2021-09-04,,false,,,,2026-10-05
+AST-1066,Tablet,Apple,Business Tablet,SYN-01066,Sydney,IT,,Disposed,2020-04-17,2023-04-18,,false,,,DSP-01066,2026-10-09
+AST-1067,Desktop,Apple,Business Desktop,SYN-01067,Sydney,Finance,EMP-0357,Assigned,2021-06-15,2023-06-15,,false,,,,2026-10-12
+AST-1068,Monitor,Samsung,Office Monitor,SYN-01068,Brisbane,Finance,EMP-0185,Assigned,2023-01-19,2024-01-19,,false,,,,2026-09-15
+AST-1069,Laptop,Lenovo,Business Laptop,SYN-01069,Brisbane,Operations,,In Stock,2022-05-05,2023-05-05,,false,,,,2026-09-06
+AST-1070,Laptop,Samsung,Business Laptop,SYN-01070,Brisbane,Operations,,Disposed,2025-04-25,2028-04-25,,true,Passed,EVD-01070,DSP-01070,2026-09-14
+AST-1071,Laptop,Lenovo,Business Laptop,SYN-01071,Melbourne,Operations,EMP-0127,Assigned,2023-10-20,2024-10-19,,true,,,,2026-10-08
+AST-1072,Desktop,HP,Business Desktop,SYN-01072,Sydney,HR,EMP-0392,Assigned,2021-02-24,2023-02-24,,false,,,,2026-07-22
+AST-1073,Laptop,Samsung,Business Laptop,SYN-01073,Brisbane,Operations,,Disposed,2025-09-09,2028-09-09,,false,,,DSP-01073,2026-10-14
+AST-1074,Tablet,Dell,Business Tablet,SYN-01074,Remote,HR,EMP-0052,Assigned,2024-05-04,2027-05-05,,true,,,,2026-07-21
+AST-1075,Monitor,Apple,Office Monitor,SYN-01075,Brisbane,Operations,,In Stock,2020-06-20,2021-06-20,,false,,,,2026-08-18
+AST-1076,Desktop,Samsung,Business Desktop,SYN-01076,Sydney,IT,EMP-0028,Assigned,2024-06-22,2026-06-22,,true,Pending,,,2026-09-27
+AST-1077,Phone,Dell,Corporate Phone,SYN-01077,Remote,Sales,EMP-0440,Assigned,2023-04-16,2026-04-16,,false,,,,2026-10-08
+AST-1078,Monitor,HP,Office Monitor,SYN-01078,Brisbane,Finance,EMP-0452,Assigned,2024-02-23,2027-02-23,,true,Failed,,,2026-10-08
+AST-1079,Phone,Apple,Corporate Phone,SYN-01079,Remote,Sales,EMP-0359,In Repair,2024-11-18,2025-11-18,,false,,,,2026-07-13
+AST-1080,Monitor,Dell,Office Monitor,SYN-01080,Melbourne,Sales,,In Stock,2024-02-27,2025-02-26,,true,,,,2026-09-03
+AST-1081,Phone,Lenovo,Corporate Phone,SYN-01081,Remote,Finance,,In Stock,2021-11-05,2023-11-05,,false,,,,2026-08-15
+AST-1082,Tablet,Samsung,Business Tablet,SYN-01082,Remote,HR,,Ready for Disposal,2020-05-05,2022-05-05,,true,Passed,EVD-01082,,2026-07-04
+AST-1083,Phone,Apple,Corporate Phone,SYN-01083,Sydney,HR,EMP-0260,Assigned,2025-12-30,2027-12-30,,false,,,,2026-07-25
+AST-1084,Tablet,Lenovo,Business Tablet,SYN-01084,Remote,HR,EMP-0197,Assigned,2020-03-25,2022-03-25,,false,,,,2026-09-28
+AST-1085,Desktop,Lenovo,Business Desktop,SYN-01085,Brisbane,Finance,EMP-0236,Return Pending,2024-06-09,2025-06-09,2026-11-27,false,,,,2026-08-04
+AST-1086,Phone,Apple,Corporate Phone,SYN-01086,Sydney,IT,,In Repair,2022-09-23,2023-09-23,,false,,,,2026-07-14
+AST-1087,Tablet,Dell,Business Tablet,SYN-01087,Remote,HR,EMP-0359,Assigned,2020-03-18,2022-03-18,,false,,,,2026-07-28
+AST-1088,Desktop,Lenovo,Business Desktop,SYN-01088,Brisbane,IT,,Sanitisation Pending,2020-03-28,2021-03-28,,true,Pending,,,2026-09-26
+AST-1089,Phone,Samsung,Corporate Phone,SYN-01089,Brisbane,IT,EMP-0168,Assigned,2025-11-30,2026-11-30,,true,,,,2026-09-12
+AST-1090,Phone,Lenovo,Corporate Phone,SYN-01090,Remote,Finance,EMP-0313,Lost / Stolen,2023-02-05,2025-02-04,,true,,,,2026-09-02
+AST-1091,Desktop,Lenovo,Business Desktop,SYN-01091,Brisbane,Sales,EMP-0190,Assigned,2026-02-04,2029-02-04,,true,,,,2026-09-30
+AST-1092,Phone,HP,Corporate Phone,SYN-01092,Sydney,Finance,,In Stock,2026-04-30,2029-04-30,,true,,,,2026-07-04
+AST-1093,Tablet,Dell,Business Tablet,SYN-01093,Brisbane,Finance,,In Stock,2023-10-24,2025-10-23,,false,,,,2026-07-01
+AST-1094,Phone,Dell,Corporate Phone,SYN-01094,Remote,Sales,,In Stock,2022-08-16,2025-08-16,,true,Pending,,,2026-09-06
+AST-1095,Tablet,Apple,Business Tablet,SYN-01095,Brisbane,Operations,,In Stock,2021-05-02,2024-05-02,,true,,,,2026-09-01
+AST-1096,Laptop,Samsung,Business Laptop,SYN-01096,Sydney,Finance,,Disposed,2022-11-03,2023-11-03,,false,,,DSP-01096,2026-09-28
+AST-1097,Tablet,Dell,Business Tablet,SYN-01097,Sydney,IT,EMP-0108,Assigned,2026-07-17,2028-07-16,,false,,,,2026-09-20
+AST-1098,Monitor,Apple,Office Monitor,SYN-01098,Melbourne,Finance,,Disposed,2021-06-29,2023-06-29,,false,,,DSP-01098,2026-08-17
+AST-1099,Phone,Dell,Corporate Phone,SYN-01099,Brisbane,HR,,In Stock,2021-11-14,2024-11-14,,false,,,,2026-10-10
+AST-1100,Laptop,Apple,Business Laptop,SYN-01100,Remote,Operations,EMP-0392,Return Pending,2022-02-16,2024-02-16,2026-09-21,false,,,,2026-09-23
+AST-1101,Monitor,Dell,Office Monitor,SYN-01101,Melbourne,Operations,,In Stock,2020-09-09,2023-09-10,,true,,,,2026-09-17
+AST-1102,Laptop,Lenovo,Business Laptop,SYN-01102,Sydney,HR,EMP-0045,Assigned,2024-12-07,2025-12-07,,true,,,,2026-09-05
+AST-1103,Tablet,Lenovo,Business Tablet,SYN-01103,Brisbane,Operations,,In Stock,2021-12-07,2024-12-07,,false,,,,2026-10-02
+AST-1104,Tablet,Samsung,Business Tablet,SYN-01104,Melbourne,Finance,,In Stock,2020-10-29,2023-10-30,,false,,,,2026-08-01
+AST-1105,Tablet,Samsung,Business Tablet,SYN-01105,Brisbane,HR,EMP-0034,Assigned,2020-11-29,2022-11-29,,false,,,,2026-08-16
+AST-1106,Desktop,Lenovo,Business Desktop,SYN-01106,Sydney,Operations,,In Stock,2026-04-05,2029-04-05,,false,,,,2026-07-29
+AST-1107,Tablet,Apple,Business Tablet,SYN-01107,Sydney,Sales,,In Stock,2026-05-04,2027-05-04,,false,,,,2026-08-30
+AST-1108,Tablet,HP,Business Tablet,SYN-01108,Melbourne,Operations,EMP-0464,In Repair,2020-05-31,2023-06-01,,false,,,,2026-07-19
+AST-1109,Laptop,HP,Business Laptop,SYN-01109,Remote,IT,,Disposed,2026-08-05,2029-08-05,,false,,,,2026-07-29
+AST-1110,Phone,Samsung,Corporate Phone,SYN-01110,Remote,Operations,EMP-0160,Assigned,2020-11-30,2023-12-01,,false,,,,2026-09-12
+AST-1111,Tablet,Apple,Business Tablet,SYN-01111,Melbourne,Finance,EMP-0332,In Repair,2022-09-07,2023-09-07,,false,,,,2026-10-05
+AST-1112,Laptop,Samsung,Business Laptop,SYN-01112,Sydney,Finance,,Ready for Disposal,2022-12-13,2023-12-13,,true,Pending,,,2026-09-26
+AST-1113,Tablet,HP,Business Tablet,SYN-01113,Brisbane,IT,EMP-0057,Assigned,2026-03-13,2029-03-13,,false,,,,2026-08-08
+AST-1114,Laptop,Samsung,Business Laptop,SYN-01114,Remote,IT,,In Stock,2024-09-24,2026-09-24,,true,,,,2026-09-12
+AST-1115,Phone,Lenovo,Corporate Phone,SYN-01115,Melbourne,HR,,Ready for Disposal,2021-11-26,2024-11-26,,false,,,,2026-07-15
+AST-1116,Laptop,Lenovo,Business Laptop,SYN-01116,Remote,Finance,,Disposed,2026-07-26,2027-07-26,,false,,,,2026-08-29
+AST-1117,Monitor,HP,Office Monitor,SYN-01117,Brisbane,Operations,EMP-0344,Assigned,2021-10-24,2024-10-24,,false,,,,2026-08-12
+AST-1118,Monitor,HP,Office Monitor,SYN-01118,Melbourne,HR,,In Stock,2020-11-10,2022-11-10,,false,,,,2026-07-18
+AST-1119,Phone,Samsung,Corporate Phone,SYN-01119,Melbourne,Operations,,Sanitisation Pending,2020-05-11,2023-05-12,,true,Pending,,,2026-09-10
+AST-1120,Monitor,HP,Office Monitor,SYN-01120,Sydney,Operations,EMP-0481,In Repair,2022-12-12,2024-12-11,,false,,,,2026-09-08
+AST-1121,Monitor,Apple,Office Monitor,SYN-01121,Melbourne,Sales,,Disposed,2026-04-10,2027-04-10,,false,,,DSP-01121,2026-07-01
+AST-1122,Laptop,Apple,Business Laptop,SYN-01122,Melbourne,HR,EMP-0296,Assigned,2020-02-17,2022-02-16,,false,,,,2026-08-03
+AST-1123,Monitor,Apple,Office Monitor,SYN-01123,Sydney,Finance,EMP-0249,Assigned,2022-05-28,2025-05-28,,false,,,,2026-10-05
+AST-1124,Laptop,Dell,Business Laptop,SYN-01124,Sydney,Sales,,Disposed,2021-04-08,2022-04-08,,true,Pending,,DSP-01124,2026-09-01
+AST-1125,Laptop,Samsung,Business Laptop,SYN-01125,Melbourne,Sales,,In Stock,2022-10-25,2025-10-25,,false,,,,2026-07-08
+AST-1126,Laptop,Samsung,Business Laptop,SYN-01126,Brisbane,HR,,Disposed,2022-10-02,2023-10-02,,false,,,DSP-01126,2026-07-27
+AST-1127,Phone,Lenovo,Corporate Phone,SYN-01127,Sydney,HR,EMP-0330,Assigned,2022-12-19,2023-12-19,,false,,,,2026-10-02
+AST-1128,Laptop,HP,Business Laptop,SYN-01128,Sydney,Operations,,Ready for Disposal,2025-01-08,2028-01-09,,false,,,,2026-09-12
+AST-1129,Monitor,Dell,Office Monitor,SYN-01129,Sydney,HR,,In Stock,2024-01-20,2027-01-20,,false,,,,2026-08-28
+AST-1130,Tablet,Dell,Business Tablet,SYN-01130,Melbourne,IT,EMP-0231,Assigned,2020-06-18,2021-06-18,,false,,,,2026-09-21
+AST-1131,Tablet,Lenovo,Business Tablet,SYN-01131,Remote,Sales,,In Stock,2024-04-21,2027-04-22,,false,,,,2026-09-14
+AST-1132,Phone,Samsung,Corporate Phone,SYN-01132,Melbourne,Finance,EMP-0331,Assigned,2021-08-12,2022-08-12,,false,,,,2026-07-06
+AST-1133,Tablet,Apple,Business Tablet,SYN-01133,Melbourne,Sales,EMP-0125,In Repair,2022-09-12,2024-09-11,,false,,,,2026-09-12
+AST-1134,Phone,Dell,Corporate Phone,SYN-01134,Brisbane,Operations,EMP-0143,Assigned,2024-01-05,2027-01-05,,true,,,,2026-10-10
+AST-1135,Desktop,Dell,Business Desktop,SYN-01135,Sydney,IT,,In Stock,2021-04-23,2024-04-23,,true,,,,2026-09-12
+AST-1136,Tablet,Lenovo,Business Tablet,SYN-01136,Sydney,HR,EMP-0315,Assigned,2023-01-02,2025-01-01,,false,,,,2026-09-29
+AST-1137,Monitor,Samsung,Office Monitor,SYN-01137,Remote,Finance,EMP-0115,Assigned,2026-03-21,2029-03-21,,false,,,,2026-08-10
+AST-1138,Tablet,Apple,Business Tablet,SYN-01138,Remote,Sales,EMP-0349,Return Pending,2021-08-27,2023-08-27,2026-09-05,false,,,,2026-07-05
+AST-1139,Desktop,HP,Business Desktop,SYN-01139,Sydney,HR,,In Stock,2021-05-26,2022-05-26,,false,,,,2026-08-28
+AST-1140,Monitor,Apple,Office Monitor,SYN-01140,Sydney,HR,,Disposed,2026-07-23,2029-07-23,,false,,,DSP-01140,2026-10-03
+AST-1141,Desktop,Dell,Business Desktop,SYN-01141,Brisbane,HR,,Disposed,2022-02-15,2023-02-15,,false,,,DSP-01141,2026-09-12
+AST-1142,Phone,HP,Corporate Phone,SYN-01142,Sydney,HR,,Disposed,2020-07-05,2022-07-05,,false,,,DSP-01142,2026-10-18
+AST-1143,Laptop,Apple,Business Laptop,SYN-01143,Brisbane,Sales,,Sanitisation Pending,2025-09-18,2028-09-18,,true,Pending,,,2026-09-22
+AST-1144,Monitor,HP,Office Monitor,SYN-01144,Melbourne,HR,,Ready for Disposal,2023-06-21,2026-06-21,,false,,,,2026-10-15
+AST-1145,Tablet,Samsung,Business Tablet,SYN-01145,Remote,Sales,,Disposed,2025-06-19,2026-06-19,,false,,,DSP-01145,2026-09-19
+AST-1146,Phone,HP,Corporate Phone,SYN-01146,Melbourne,Finance,,Ready for Disposal,2025-05-27,2028-05-27,,false,,,,2026-08-11
+AST-1147,Desktop,Dell,Business Desktop,SYN-01147,Sydney,Finance,EMP-0457,Return Pending,2020-02-13,2022-02-12,2026-11-13,false,,,,2026-10-16
+AST-1148,Desktop,Samsung,Business Desktop,SYN-01148,Brisbane,Finance,EMP-0033,Assigned,2024-04-10,2026-04-10,,true,,,,2026-08-06
+AST-1149,Phone,HP,Corporate Phone,SYN-01149,Sydney,Sales,EMP-0423,In Repair,2023-04-15,2025-04-14,,false,,,,2026-09-01
+AST-1150,Laptop,Samsung,Business Laptop,SYN-01150,Sydney,Finance,,In Stock,2022-10-06,2023-10-06,,true,Pending,,,2026-09-29
+AST-1151,Phone,Apple,Corporate Phone,SYN-01151,Melbourne,Sales,EMP-0108,Lost / Stolen,2021-01-31,2022-01-31,,false,,,,2026-07-20
+AST-1152,Desktop,Apple,Business Desktop,SYN-01152,Sydney,IT,EMP-0285,In Repair,2021-11-30,2023-11-30,,true,,,,2026-10-02
+AST-1153,Monitor,HP,Office Monitor,SYN-01153,Melbourne,Operations,,Sanitisation Pending,2025-08-11,2026-08-11,,true,Pending,,,2026-07-15
+AST-1154,Phone,HP,Corporate Phone,SYN-01154,Remote,HR,EMP-0364,Assigned,2024-06-11,2025-06-11,,false,,,,2026-07-04
+AST-1155,Phone,Dell,Corporate Phone,SYN-01155,Melbourne,Finance,,In Stock,2022-11-24,2025-11-24,,false,,,,2026-07-17
+AST-1156,Phone,Dell,Corporate Phone,SYN-01156,Melbourne,Sales,,In Repair,2021-03-24,2024-03-24,,false,,,,2026-09-04
+AST-1157,Desktop,HP,Business Desktop,SYN-01157,Brisbane,Operations,EMP-0276,Assigned,2023-05-24,2024-05-23,,false,,,,2026-08-10
+AST-1158,Monitor,Samsung,Office Monitor,SYN-01158,Sydney,HR,EMP-0393,Assigned,2020-12-15,2023-12-16,,false,,,,2026-07-28
+AST-1159,Desktop,Samsung,Business Desktop,SYN-01159,Melbourne,Sales,EMP-0470,Assigned,2026-04-04,2027-04-04,,false,,,,2026-08-15
+AST-1160,Phone,Apple,Corporate Phone,SYN-01160,Melbourne,IT,,Ready for Disposal,2021-09-29,2023-09-29,,false,,,,2026-09-14
+AST-1161,Monitor,HP,Office Monitor,SYN-01161,Brisbane,Sales,EMP-0303,Assigned,2022-12-28,2025-12-28,,true,,,,2026-09-05
+AST-1162,Monitor,Samsung,Office Monitor,SYN-01162,Brisbane,Operations,,Sanitisation Pending,2022-02-12,2024-02-12,,true,Pending,,,2026-10-11
+AST-1163,Laptop,HP,Business Laptop,SYN-01163,Brisbane,Sales,EMP-0402,Assigned,2022-10-03,2025-10-03,,false,,,,2026-10-17
+AST-1164,Phone,Samsung,Corporate Phone,SYN-01164,Melbourne,HR,,Disposed,2022-10-30,2023-10-30,,false,,,DSP-01164,2026-09-14
+AST-1165,Desktop,Lenovo,Business Desktop,SYN-01165,Brisbane,IT,EMP-0053,Assigned,2021-07-05,2022-07-05,,false,,,,2026-10-15
+AST-1166,Phone,Apple,Corporate Phone,SYN-01166,Melbourne,Operations,,In Stock,2020-09-15,2021-09-15,,false,,,,2026-08-27
+AST-1167,Laptop,Apple,Business Laptop,SYN-01167,Brisbane,IT,EMP-0304,In Repair,2025-05-27,2027-05-27,,false,,,,2026-10-05
+AST-1168,Desktop,HP,Business Desktop,SYN-01168,Brisbane,IT,EMP-0303,Return Pending,2023-04-04,2026-04-04,2026-10-27,true,,,,2026-09-13
+AST-1169,Phone,Dell,Corporate Phone,SYN-01169,Sydney,HR,EMP-0174,Assigned,2026-04-03,2028-04-02,,false,,,,2026-08-20
+AST-1170,Desktop,Samsung,Business Desktop,SYN-01170,Melbourne,IT,EMP-0058,Assigned,2024-08-27,2025-08-27,,false,,,,2026-09-28
+AST-1171,Monitor,Apple,Office Monitor,SYN-01171,Remote,Sales,EMP-0367,Assigned,2025-05-28,2027-05-28,,false,,,,2026-07-21
+AST-1172,Laptop,Dell,Business Laptop,SYN-01172,Remote,IT,,In Stock,2024-02-01,2027-02-01,,false,,,,2026-07-25
+AST-1173,Tablet,Apple,Business Tablet,SYN-01173,Sydney,HR,EMP-0020,Assigned,2024-12-08,2026-12-08,,false,,,,2026-09-02
+AST-1174,Desktop,Samsung,Business Desktop,SYN-01174,Brisbane,IT,EMP-0317,Assigned,2020-03-22,2021-03-22,,false,,,,2026-09-24
+AST-1175,Laptop,Dell,Business Laptop,SYN-01175,Melbourne,Finance,,In Stock,2023-01-09,2025-01-08,,false,,,,2026-07-02
+AST-1176,Laptop,HP,Business Laptop,SYN-01176,Brisbane,Finance,EMP-0038,Assigned,2025-03-09,2027-03-09,,true,Pending,,,2026-07-31
+AST-1177,Tablet,Apple,Business Tablet,SYN-01177,Sydney,IT,,Disposed,2023-12-27,2024-12-26,,false,,,DSP-01177,2026-10-08
+AST-1178,Laptop,Lenovo,Business Laptop,SYN-01178,Sydney,Operations,EMP-0042,Assigned,2022-05-13,2023-05-13,,false,,,,2026-09-13
+AST-1179,Laptop,Samsung,Business Laptop,SYN-01179,Sydney,IT,EMP-0304,Assigned,2025-11-03,2028-11-03,,false,,,,2026-09-12
+AST-1180,Phone,Samsung,Corporate Phone,SYN-01180,Melbourne,Finance,EMP-0049,Return Pending,2026-01-07,2027-01-07,2026-10-06,false,,,,2026-09-23
+AST-1181,Monitor,Samsung,Office Monitor,SYN-01181,Brisbane,HR,,Disposed,2025-06-10,2026-06-10,,false,,,DSP-01181,2026-07-22
+AST-1182,Laptop,HP,Business Laptop,SYN-01182,Remote,Operations,EMP-0410,Assigned,2023-01-20,2025-01-19,,false,,,,2026-10-04
+AST-1183,Phone,Samsung,Corporate Phone,SYN-01183,Sydney,Sales,,In Stock,2025-01-06,2026-01-06,,true,,,,2026-07-12
+AST-1184,Laptop,Lenovo,Business Laptop,SYN-01184,Brisbane,Operations,,Ready for Disposal,2023-03-12,2025-03-11,,false,,,,2026-07-03
+AST-1185,Tablet,Samsung,Business Tablet,SYN-01185,Sydney,Operations,EMP-0407,In Repair,2020-10-19,2022-10-19,,false,,,,2026-10-09
+AST-1186,Phone,Dell,Corporate Phone,SYN-01186,Remote,Finance,,In Stock,2021-06-23,2022-06-23,,false,,,,2026-07-11
+AST-1187,Phone,Lenovo,Corporate Phone,SYN-01187,Remote,IT,EMP-0427,Assigned,2022-10-16,2024-10-15,,false,,,,2026-07-03
+AST-1188,Laptop,Samsung,Business Laptop,SYN-01188,Brisbane,Finance,,In Repair,2023-09-27,2024-09-26,,false,,,,2026-08-09
+AST-1189,Desktop,HP,Business Desktop,SYN-01189,Melbourne,Operations,EMP-0327,Assigned,2024-12-07,2027-12-08,,false,,,,2026-08-25
+AST-1190,Desktop,Lenovo,Business Desktop,SYN-01190,Remote,Operations,EMP-0236,Assigned,2025-10-05,2027-10-05,,true,,,,2026-08-30
+AST-1191,Desktop,Apple,Business Desktop,SYN-01191,Brisbane,Finance,,In Stock,2026-06-14,2029-06-14,,false,,,,2026-09-09
+AST-1192,Monitor,Lenovo,Office Monitor,SYN-01192,Sydney,IT,EMP-0038,Assigned,2023-04-02,2025-04-01,,false,,,,2026-10-13
+AST-1193,Tablet,Samsung,Business Tablet,SYN-01193,Remote,Finance,EMP-0048,Lost / Stolen,2023-06-23,2025-06-22,,true,,,,2026-09-04
+AST-1194,Tablet,Samsung,Business Tablet,SYN-01194,Remote,IT,,Ready for Disposal,2021-06-20,2022-06-20,,false,,,,2026-10-15
+AST-1195,Phone,HP,Corporate Phone,SYN-01195,Brisbane,IT,,Disposed,2024-08-08,2025-08-08,,false,,,DSP-01195,2026-09-21
+AST-1196,Tablet,Lenovo,Business Tablet,SYN-01196,Brisbane,Sales,EMP-0258,Assigned,2023-08-02,2026-08-02,,false,,,,2026-09-02
+AST-1197,Monitor,Samsung,Office Monitor,SYN-01197,Melbourne,HR,EMP-0101,Assigned,2026-05-22,2029-05-22,,false,,,,2026-07-19
+AST-1198,Tablet,Apple,Business Tablet,SYN-01198,Remote,Finance,EMP-0246,Assigned,2023-12-07,2026-12-07,,true,,,,2026-09-03
+AST-1199,Phone,HP,Corporate Phone,SYN-01199,Melbourne,Sales,EMP-0120,Assigned,2021-10-22,2022-10-22,,false,,,,2026-09-13
+AST-1200,Tablet,Lenovo,Business Tablet,SYN-01200,Remote,Operations,,Assigned,2025-01-28,2027-01-28,,true,,,,2026-08-20
