@@ -1,11 +1,26 @@
 {% extends "inventory/base.html" %}
+{% load static %}
 {% block title %}{{ page_title }} | Asset Lifecycle{% endblock %}
 {% block content %}
 <section class="page-heading"><div><p class="eyebrow">INVENTORY</p><h1>{{ page_title }}</h1>
 <p class="muted">{% if asset %}Lifecycle status is changed separately so each transition is validated and audited.{% else %}New assets start in In Stock; use the transition action to assign them.{% endif %}</p></div></section>
 <section class="panel form-panel">
+  {% if purchase_request %}
+  <div class="notice">Registering a received item from purchase request PR-{{ purchase_request.pk }}. Barcode/serial duplicates are allowed by policy; check the scan results before saving.</div>
+  {% endif %}
+  {% if not asset %}
+  <section class="barcode-tools" data-lookup-url="{% url 'inventory:asset-barcode-lookup' %}">
+    <h2>Scan or enter a barcode</h2>
+    <p class="muted">Use a camera where supported, or scan with a USB barcode reader. The scanned value is placed in Serial reference.</p>
+    <div class="actions"><button class="secondary-button" id="start-barcode-scan" type="button">Use camera</button><button class="secondary-button" id="stop-barcode-scan" type="button" hidden>Stop camera</button></div>
+    <video id="barcode-video" playsinline muted hidden></video>
+    <p id="barcode-scan-status" class="muted" aria-live="polite"></p>
+    <div id="barcode-lookup-results" aria-live="polite"></div>
+  </section>
+  {% endif %}
   <form method="post" class="stack-form">
     {% csrf_token %}
+    {% if purchase_request %}<input type="hidden" name="procurement_id" value="{{ purchase_request.pk }}">{% endif %}
     {% if form.non_field_errors %}<div class="error-message" role="alert">{{ form.non_field_errors }}</div>{% endif %}
     <div class="form-grid">
       {% for field in form %}
@@ -19,4 +34,5 @@
     <div class="actions"><button class="primary-button" type="submit">Save asset</button><a class="secondary-button" href="{% if asset %}{% url 'inventory:asset-detail' asset.pk %}{% else %}{% url 'inventory:asset-list' %}{% endif %}">Cancel</a></div>
   </form>
 </section>
+{% if not asset %}<script src="{% static 'inventory/asset_register.js' %}" defer></script>{% endif %}
 {% endblock %}
