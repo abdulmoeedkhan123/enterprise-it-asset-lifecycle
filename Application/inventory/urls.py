@@ -91,4 +91,31 @@ urlpatterns = [
     ),
     path("returns/", views.return_work_queue, name="return-work-queue"),
     path("integrations/", views.integration_catalog, name="integration-catalog"),
+    path("software/", views.software_catalog, name="software-catalog"),
+    path("software/new/", views.software_product_create, name="software-create"),
+    path(
+        "software/renewals/",
+        views.software_renewals,
+        name="software-renewals",
+    ),
+    path(
+        "software/<int:pk>/",
+        views.software_product_detail,
+        name="software-detail",
+    ),
+    path(
+        "software/<int:product_pk>/contracts/new/",
+        views.software_contract_create,
+        name="software-contract-create",
+    ),
+    path(
+        "software/contracts/<int:contract_pk>/assign/",
+        views.software_license_assign,
+        name="software-license-assign",
+    ),
+    path(
+        "software/contracts/<int:contract_pk>/assignments/<int:assignment_pk>/release/",
+        views.software_license_release,
+        name="software-license-release",
+    ),
 ]
