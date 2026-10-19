@@ -10,7 +10,7 @@
       "django": true,
       "justMyCode": true,
       "cwd": "${workspaceFolder}/Application",
-      "envFile": "${workspaceFolder}/.env",
+      "envFile": "${workspaceFolder}/.env.local",
       "env": {
         "DJANGO_DEBUG": "1",
         "DJANGO_CSRF_TRUSTED_ORIGINS": "https://localhost:8001"

@@ -93,7 +93,7 @@ export COPILOT_LLM_API_URL="https://api.groq.com/openai/v1/chat/completions"
 export COPILOT_LLM_MODEL="openai/gpt-oss-20b"
 ```
 
-For VS Code, put `GROQ_API_KEY` in the ignored repository-root `.env` file; the Django launch profile loads it automatically. For Docker Compose, copy `.env.example` to `.env`, add the key there, and start/recreate the web container so Compose passes the value into Django. For a shell-launched development server, export the variable in that shell before starting Django.
+For VS Code, put `GROQ_API_KEY` in the ignored repository-root `.env.local` file; the Django launch profile loads it automatically. For Docker Compose, copy `.env.example` to `.env`, add the key there, and start/recreate the web container so Compose passes the value into Django. For a shell-launched development server, export the variable in that shell before starting Django.
 
 Groq offers free access subject to account eligibility and current rate/usage limits; review the provider's current [rate limits](https://console.groq.com/docs/rate-limits) before relying on availability. Only the user's question text is sent to this endpoint. Obtain organizational approval before enabling the provider; users should not include secrets or sensitive personal details in questions. All results remain subject to Django's `inventory.view_asset` permission. The copilot cannot reassign assets, approve requests, initiate disposal, certify sanitisation, or execute remote device actions. Any future write capability must require a server-side policy check and explicit approval from an authorized human.
 
