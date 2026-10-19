@@ -46,7 +46,7 @@ class ApplicationSettingsTests(TestCase):
     @patch.dict(
         "os.environ",
         {
-            "COPILOT_LLM_API_KEY": "copilot-test-secret",
+            "GROQ_API_KEY": "copilot-test-secret",
             "COPILOT_LLM_MODEL": "test-model",
             "COPILOT_LLM_API_URL": "https://llm.example.test/v1/chat/completions",
             "INTUNE_TENANT_ID": "tenant-test-id",

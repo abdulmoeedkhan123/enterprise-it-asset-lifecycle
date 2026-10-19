@@ -77,7 +77,7 @@ class CopilotIntentValidationTests(SimpleTestCase):
         mocked_urlopen.return_value = response
         with patch.dict(
             "os.environ",
-            {"COPILOT_LLM_API_KEY": "test-api-key"},
+            {"GROQ_API_KEY": "test-api-key"},
         ):
             intent = propose_asset_intent("Find laptops in inventory")
 
@@ -92,6 +92,11 @@ class CopilotIntentValidationTests(SimpleTestCase):
             sent_payload["messages"][1]["content"],
             "Find laptops in inventory",
         )
+        self.assertEqual(
+            request.full_url,
+            "https://api.groq.com/openai/v1/chat/completions",
+        )
+        self.assertEqual(sent_payload["model"], "openai/gpt-oss-20b")
         self.assertEqual(intent["intent"], "asset_search")
         self.assertNotIn("assets", sent_payload)
 
@@ -108,7 +113,7 @@ class CopilotIntentValidationTests(SimpleTestCase):
         )
         with patch.dict(
             "os.environ",
-            {"COPILOT_LLM_API_KEY": "top-secret-test-token"},
+            {"GROQ_API_KEY": "top-secret-test-token"},
         ):
             with self.assertRaises(CopilotLLMError) as raised:
                 propose_asset_intent("Find laptops")
@@ -125,7 +130,7 @@ class CopilotIntentValidationTests(SimpleTestCase):
         mocked_urlopen.return_value = response
         with patch.dict(
             "os.environ",
-            {"COPILOT_LLM_API_KEY": "test-api-key"},
+            {"GROQ_API_KEY": "test-api-key"},
         ):
             with self.assertRaisesMessage(CopilotLLMError, "invalid intent document"):
                 propose_asset_intent("Find laptops")

@@ -23,11 +23,12 @@
   </dl>
   <details>
     <summary>Configure Copilot provider</summary>
-    <p>Add the following values to the application environment or deployment secret manager, then restart the web application. Never paste a real key into chat or commit it to source control.</p>
-    <pre><code>COPILOT_LLM_API_KEY=&lt;approved-provider-key&gt;
-COPILOT_LLM_API_URL=https://api.openai.com/v1/chat/completions
-COPILOT_LLM_MODEL=gpt-4o-mini</code></pre>
-    <p>Obtain organizational approval before sending users' questions to an external provider.</p>
+    <p>Create a Groq API key in the <a href="https://console.groq.com/keys" rel="noopener noreferrer" target="_blank">Groq console</a>, add it to the application environment or deployment secret manager, then restart the web application. Free access is subject to Groq account eligibility and current usage/rate limits. Never paste a real key into chat or commit it to source control.</p>
+    <pre><code>GROQ_API_KEY=&lt;your-groq-api-key&gt;
+# Optional overrides:
+COPILOT_LLM_API_URL=https://api.groq.com/openai/v1/chat/completions
+COPILOT_LLM_MODEL=openai/gpt-oss-20b</code></pre>
+    <p>Only the user's question is sent to Groq; no asset data is included. Obtain organizational approval before sending users' questions to an external provider.</p>
   </details>
 </section>
 

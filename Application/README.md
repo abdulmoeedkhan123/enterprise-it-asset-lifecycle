@@ -82,18 +82,18 @@ The **AI Copilot** page is available to signed-in users with the existing `inven
 - List assets in a supported lifecycle status, such as assigned or in repair.
 - Find an asset by its exact asset ID, serial reference, or custodian reference.
 
-When deterministic matching cannot handle a question, an optional OpenAI-compatible LLM can propose one bounded JSON intent for a search, overdue-return query, warranty window, or lifecycle status. The application validates the exact intent shape and its values, then executes a read-only Django ORM query; the LLM never receives asset records and cannot run SQL, access tools, or perform mutations. Results are limited to the first 10 matching assets and link to the existing asset detail page. Without an LLM configuration the deterministic questions remain available. Provider failures are surfaced without changing records.
+When deterministic matching cannot handle a question, the optional Groq API integration can propose one bounded JSON intent for a search, overdue-return query, warranty window, or lifecycle status. It uses Groq's OpenAI-compatible Chat Completions endpoint and the `openai/gpt-oss-20b` model by default. The application validates the exact intent shape and its values, then executes a read-only Django ORM query; the LLM never receives asset records and cannot run SQL, access tools, or perform mutations. Results are limited to the first 10 matching assets and link to the existing asset detail page. Without an LLM configuration the deterministic questions remain available. Provider failures are surfaced without changing records.
 
-Configure the optional provider using environment variables (never commit credentials):
+Create a Groq API key and configure it using environment variables (never commit credentials):
 
 ```bash
-export COPILOT_LLM_API_KEY="<approved-provider-key>"
-# Optional; defaults to the OpenAI-compatible Chat Completions endpoint/model.
-export COPILOT_LLM_API_URL="https://api.openai.com/v1/chat/completions"
-export COPILOT_LLM_MODEL="gpt-4o-mini"
+export GROQ_API_KEY="<your-groq-api-key>"
+# Optional overrides; these are the defaults.
+export COPILOT_LLM_API_URL="https://api.groq.com/openai/v1/chat/completions"
+export COPILOT_LLM_MODEL="openai/gpt-oss-20b"
 ```
 
-Only the user's question text is sent to this endpoint. Obtain organizational approval before enabling the provider; users should not include secrets or sensitive personal details in questions. All results remain subject to Django's `inventory.view_asset` permission. The copilot cannot reassign assets, approve requests, initiate disposal, certify sanitisation, or execute remote device actions. Any future write capability must require a server-side policy check and explicit approval from an authorized human.
+Groq offers free access subject to account eligibility and current rate/usage limits; review the provider's current [rate limits](https://console.groq.com/docs/rate-limits) before relying on availability. Only the user's question text is sent to this endpoint. Obtain organizational approval before enabling the provider; users should not include secrets or sensitive personal details in questions. All results remain subject to Django's `inventory.view_asset` permission. The copilot cannot reassign assets, approve requests, initiate disposal, certify sanitisation, or execute remote device actions. Any future write capability must require a server-side policy check and explicit approval from an authorized human.
 
 ## Read-only Microsoft Intune sync
 
