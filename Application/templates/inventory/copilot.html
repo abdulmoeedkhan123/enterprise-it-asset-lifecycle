@@ -67,7 +67,7 @@
   {% endif %}
   {% if result.llm_status == "failed" %}<p class="error-message" role="alert">AI interpretation failed: {{ result.llm_error }} No data changes were made.</p>{% elif result.llm_status == "not_configured" %}<p class="muted">AI interpretation is not configured; deterministic examples remain available.</p>{% endif %}
   {% if result.assets %}
-    <p class="muted">{% if result.truncated %}Showing the first 10 records; there are more matches.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
+    <p class="muted">{% if result.truncated %}Showing the first 10 of {{ result.total }} matching records.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Asset</th><th>Type / model</th><th>Site</th><th>Status</th><th>Warranty</th><th>Return due</th><th>Source updated</th></tr></thead>
