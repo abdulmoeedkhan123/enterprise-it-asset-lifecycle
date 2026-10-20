@@ -150,6 +150,8 @@ class ReturnWorkItemAdmin(admin.ModelAdmin):
         "source_provider",
         "source_event_id",
         "custodian_ref",
+        "status",
+        "resolution_note",
         "created_at",
         "updated_at",
         "closed_at",
@@ -168,6 +170,9 @@ class ReturnWorkItemAdmin(admin.ModelAdmin):
     actions = None
 
     def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):

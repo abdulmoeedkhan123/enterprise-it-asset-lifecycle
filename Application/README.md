@@ -162,7 +162,7 @@ Assets must first be moved through the lifecycle workflow to **Ready for Disposa
 
 ### Software assets, licences, subscriptions and renewals
 
-The software catalog records product name, publisher, version, category and end-of-support date. Software contracts capture subscription/perpetual/maintenance terms, supplier and contract/document references, licence metric, purchased seats, term dates, renewal notice period, auto-renew flag and annual cost/currency. Renewal records can be linked to the prior contract; recording a renewal marks the previous contract as renewed. The renewal queue shows active contracts within their own notice period or already past their end date.
+The software catalog records product name, publisher, version, category and end-of-support date. Software contracts capture subscription/perpetual/maintenance terms, supplier and contract/document references, licence metric, purchased seats, term dates, renewal notice period, auto-renew flag and annual cost/currency. Renewal records can be linked to the prior contract; recording a renewal marks the previous contract as renewed. The renewal queue filters, orders, and paginates active contracts in the database, showing contracts within their own notice period or already past their end date.
 
 Seat assignments use an operator-entered assignee reference and department. The application blocks assignments above the purchased seat count and blocks duplicate active assignments to the same assignee on a contract. Releasing a seat preserves the assignment history and records who released it; a released seat can be assigned again. Contract references are metadata only: do not enter passwords, full licence keys, payment details or other secrets. The prototype does not ingest device discovery/software usage, calculate publisher-specific compliance rules, upload contract documents, contact vendors, renew or pay subscriptions automatically, or integrate with a vendor marketplace. Licence measurement rules and true-up/overage terms must be validated against each supplier agreement.
 
@@ -172,7 +172,9 @@ Return-work reviewers can move SCIM-generated items through Open, In progress,
 Closed, and Dismissed using the return queue. Each action requires a note and
 records the actor, prior/new status, and timestamp; closed or dismissed items can
 be reopened with a new review note. These actions create local review records
-only and do not change identity-provider or asset lifecycle status.
+only and do not change identity-provider or asset lifecycle status. Existing
+items are not given fabricated historical events; audit history begins with
+events recorded after this feature is deployed.
 
 ## Integrations
 

@@ -946,6 +946,8 @@ class AssetLifecycleTests(TestCase):
         self.assertFalse(item.events.exists())
 
         self.user.user_permissions.add(view_permission, change_permission)
+        queue_response = self.client.get(reverse("inventory:return-work-queue"))
+        self.assertContains(queue_response, "Save review")
         response = self.client.post(
             reverse("inventory:return-work-item-update", args=[item.pk]),
             {"status": ReturnWorkItem.Status.IN_PROGRESS, "note": "Review started."},
@@ -1235,8 +1237,8 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(first_page.context["renewal_page"].paginator.count, 52)
         self.assertEqual(len(first_page.context["contracts"]), 50)
         self.assertEqual(len(second_page.context["contracts"]), 2)
-        self.assertIn(due_contract, second_page.context["contracts"])
-        self.assertIn(exact_notice_contract, first_page.context["contracts"])
+        self.assertIn(due_contract, first_page.context["contracts"])
+        self.assertIn(exact_notice_contract, second_page.context["contracts"])
 
 
 class SCIMClientTests(TestCase):
@@ -1376,6 +1378,11 @@ class SCIMSyncCommandTests(TestCase):
         self.assertEqual(first_run.identities_unmatched, 1)
         self.assertEqual(second_run.work_items_created, 0)
         self.assertEqual(second_run.work_items_existing, 1)
+        self.assertEqual(ReturnWorkItemEvent.objects.count(), 1)
+        self.assertEqual(
+            ReturnWorkItemEvent.objects.get().to_status,
+            ReturnWorkItem.Status.OPEN,
+        )
 
     def test_sync_requires_explicit_authorization(self):
         with self.assertRaises(CommandError):
