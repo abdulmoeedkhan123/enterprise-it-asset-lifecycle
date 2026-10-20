@@ -128,8 +128,8 @@
 <section class="panel">
   <p class="eyebrow">SAFETY BOUNDARIES</p>
   <ul>
-    <li>All results use the application's existing <code>inventory.view_asset</code> permission.</li>
-    <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, or certify sanitisation.</li>
+    <li>Asset-register results require <code>inventory.view_asset</code>; Intune snapshot questions also require <code>inventory.view_intunedevice</code>.</li>
+    <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, certify sanitisation, or trigger an Intune sync.</li>
     <li>LLM output is limited to validated search intents. It cannot access SQL, tools, application credentials, or remote device actions.</li>
     <li>Only enable an LLM endpoint after organizational data-sharing approval. Do not include secrets or sensitive personal details in questions.</li>
     <li>Any future write action must go through a server-side policy check and an authorised human approval workflow.</li>
