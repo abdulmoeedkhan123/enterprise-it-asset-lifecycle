@@ -288,3 +288,17 @@ class IntuneSyncTests(TestCase):
         with self.assertRaisesMessage(CommandError, "--confirm-read-only-authorized"):
             call_command("sync_intune_devices")
         self.assertFalse(IntuneSyncRun.objects.exists())
+
+
+    def test_unexpected_sync_failure_is_recorded_without_exposing_exception_details(self):
+        client = MagicMock()
+        client.list_managed_devices.side_effect = RuntimeError("private infrastructure detail")
+
+        with self.assertRaisesMessage(RuntimeError, "private infrastructure detail"):
+            run_intune_sync(client=client)
+
+        failed_run = IntuneSyncRun.objects.get()
+        self.assertEqual(failed_run.status, IntuneSyncRun.Status.FAILED)
+        self.assertIn("Unexpected sync failure", failed_run.error_summary)
+        self.assertNotIn("private infrastructure detail", failed_run.error_summary)
+        self.assertIsNotNone(failed_run.completed_at)
