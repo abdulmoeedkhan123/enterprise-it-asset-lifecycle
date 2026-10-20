@@ -1433,6 +1433,7 @@ def return_work_queue(request):
     elif selected_status != "all":
         selected_status = "open"
         work_items = work_items.filter(status=ReturnWorkItem.Status.OPEN)
+    work_items = work_items.order_by("-created_at", "-pk")
     page_items = list(work_items[:100])
     if request.user.has_perm("inventory.change_returnworkitem"):
         for item in page_items:
