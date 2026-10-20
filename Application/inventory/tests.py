@@ -34,6 +34,7 @@ from .models import (
     DisposalCase,
     DisposalEvent,
     ReturnWorkItem,
+    ReturnWorkItemEvent,
     SoftwareContract,
     SoftwareLicenseAssignment,
     SoftwareProduct,
@@ -920,6 +921,101 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, asset.asset_id)
         self.assertContains(response, "Pending review")
 
+    def test_return_work_item_review_is_permissioned_audited_and_reopenable(self):
+        view_permission = Permission.objects.get(
+            content_type__app_label="inventory",
+            codename="view_returnworkitem",
+        )
+        change_permission = Permission.objects.get(
+            content_type__app_label="inventory",
+            codename="change_returnworkitem",
+        )
+        asset = self.create_asset()
+        item = ReturnWorkItem.objects.create(
+            asset=asset,
+            source_provider="scim",
+            source_event_id="scim-inactive:review-action",
+            custodian_ref=asset.custodian_ref,
+        )
+
+        denied = self.client.post(
+            reverse("inventory:return-work-item-update", args=[item.pk]),
+            {"status": ReturnWorkItem.Status.IN_PROGRESS, "note": "Reviewed."},
+        )
+        self.assertEqual(denied.status_code, 403)
+        self.assertFalse(item.events.exists())
+
+        self.user.user_permissions.add(view_permission, change_permission)
+        response = self.client.post(
+            reverse("inventory:return-work-item-update", args=[item.pk]),
+            {"status": ReturnWorkItem.Status.IN_PROGRESS, "note": "Review started."},
+        )
+        self.assertEqual(response.status_code, 302)
+        item.refresh_from_db()
+        self.assertEqual(item.status, ReturnWorkItem.Status.IN_PROGRESS)
+        self.assertEqual(item.resolution_note, "")
+        event = item.events.get()
+        self.assertEqual(event.from_status, ReturnWorkItem.Status.OPEN)
+        self.assertEqual(event.to_status, ReturnWorkItem.Status.IN_PROGRESS)
+        self.assertEqual(event.note, "Review started.")
+        self.assertEqual(event.actor, self.user)
+
+        self.client.post(
+            reverse("inventory:return-work-item-update", args=[item.pk]),
+            {"status": ReturnWorkItem.Status.CLOSED, "note": "Asset returned."},
+        )
+        item.refresh_from_db()
+        self.assertEqual(item.status, ReturnWorkItem.Status.CLOSED)
+        self.assertEqual(item.resolution_note, "Asset returned.")
+        self.assertIsNotNone(item.closed_at)
+
+        self.client.post(
+            reverse("inventory:return-work-item-update", args=[item.pk]),
+            {"status": ReturnWorkItem.Status.OPEN, "note": "Reopened for follow-up."},
+        )
+        item.refresh_from_db()
+        self.assertEqual(item.status, ReturnWorkItem.Status.OPEN)
+        self.assertEqual(item.resolution_note, "")
+        self.assertIsNone(item.closed_at)
+        self.assertEqual(item.events.count(), 3)
+        self.assertContains(
+            self.client.get(reverse("inventory:return-work-queue")),
+            "Asset returned.",
+        )
+
+    def test_return_work_item_review_requires_a_note_and_post(self):
+        self.user.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_returnworkitem",
+            ),
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="change_returnworkitem",
+            ),
+        )
+        asset = self.create_asset()
+        item = ReturnWorkItem.objects.create(
+            asset=asset,
+            source_provider="scim",
+            source_event_id="scim-inactive:review-note",
+            custodian_ref=asset.custodian_ref,
+        )
+
+        response = self.client.post(
+            reverse("inventory:return-work-item-update", args=[item.pk]),
+            {"status": ReturnWorkItem.Status.IN_PROGRESS, "note": "   "},
+        )
+        self.assertEqual(response.status_code, 302)
+        item.refresh_from_db()
+        self.assertEqual(item.status, ReturnWorkItem.Status.OPEN)
+        self.assertFalse(item.events.exists())
+
+        response = self.client.get(
+            reverse("inventory:return-work-item-update", args=[item.pk])
+        )
+        self.assertEqual(response.status_code, 405)
+
     def test_integration_catalog_distinguishes_available_from_unimplemented(self):
         self.user.user_permissions.add(self.view_permission)
 
@@ -1081,6 +1177,66 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, str(due_contract.pk))
         self.assertEqual(len(response.context["contracts"]), 1)
+
+    def test_software_renewal_queue_filters_and_paginates_in_database(self):
+        self.user.user_permissions.add(
+            *[
+                Permission.objects.get(
+                    content_type__app_label="inventory",
+                    codename=codename,
+                )
+                for codename in (
+                    "view_softwarecontract",
+                    "view_softwareproduct",
+                )
+            ]
+        )
+        product = SoftwareProduct.objects.create(
+            name="Renewal Queue Product",
+            publisher="Example Publisher",
+        )
+        today = timezone.localdate()
+        due_contract = SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=5,
+            end_date=today - timedelta(days=500),
+            renewal_notice_days=60,
+        )
+        exact_notice_contract = SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=5,
+            end_date=today + timedelta(days=60),
+            renewal_notice_days=60,
+        )
+        SoftwareContract.objects.create(
+            product=product,
+            supplier="Example Vendor",
+            purchased_quantity=5,
+            end_date=today + timedelta(days=61),
+            renewal_notice_days=60,
+        )
+        for index in range(50):
+            SoftwareContract.objects.create(
+                product=product,
+                supplier=f"Vendor {index}",
+                purchased_quantity=5,
+                end_date=today + timedelta(days=20),
+                renewal_notice_days=60,
+            )
+
+        first_page = self.client.get(reverse("inventory:software-renewals"))
+        second_page = self.client.get(
+            reverse("inventory:software-renewals"),
+            {"page": 2},
+        )
+
+        self.assertEqual(first_page.context["renewal_page"].paginator.count, 52)
+        self.assertEqual(len(first_page.context["contracts"]), 50)
+        self.assertEqual(len(second_page.context["contracts"]), 2)
+        self.assertIn(due_contract, second_page.context["contracts"])
+        self.assertIn(exact_notice_contract, first_page.context["contracts"])
 
 
 class SCIMClientTests(TestCase):

@@ -17,6 +17,7 @@ from inventory.models import (
     IntegrationRun,
     LifecycleStatus,
     ReturnWorkItem,
+    ReturnWorkItemEvent,
 )
 
 
@@ -69,7 +70,7 @@ class Command(BaseCommand):
                         item_key = hashlib.sha256(
                             f"scim\0{identity.subject_id}\0{asset.pk}".encode("utf-8")
                         ).hexdigest()
-                        _item, created = ReturnWorkItem.objects.get_or_create(
+                        item, created = ReturnWorkItem.objects.get_or_create(
                             source_event_id=f"scim-inactive:{item_key}",
                             defaults={
                                 "asset": asset,
@@ -79,6 +80,11 @@ class Command(BaseCommand):
                         )
                         if created:
                             created_count += 1
+                            ReturnWorkItemEvent.objects.create(
+                                work_item=item,
+                                to_status=item.status,
+                                note="Created by SCIM inactive-identity sync.",
+                            )
                         else:
                             existing_count += 1
 

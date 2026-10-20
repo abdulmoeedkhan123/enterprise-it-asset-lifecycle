@@ -9,12 +9,48 @@ from .models import (
     MaintenanceWorkOrder,
     ProcurementQuote,
     ProcurementRequest,
+    ReturnWorkItem,
     SanitisationResult,
     SoftwareContract,
     SoftwareLicenseAssignment,
     SoftwareProduct,
 )
 from .services import ALLOWED_TRANSITIONS
+
+
+ALLOWED_RETURN_WORK_ITEM_TRANSITIONS = {
+    ReturnWorkItem.Status.OPEN: {ReturnWorkItem.Status.IN_PROGRESS},
+    ReturnWorkItem.Status.IN_PROGRESS: {
+        ReturnWorkItem.Status.OPEN,
+        ReturnWorkItem.Status.CLOSED,
+        ReturnWorkItem.Status.DISMISSED,
+    },
+    ReturnWorkItem.Status.CLOSED: {ReturnWorkItem.Status.OPEN},
+    ReturnWorkItem.Status.DISMISSED: {ReturnWorkItem.Status.OPEN},
+}
+
+
+class ReturnWorkItemReviewForm(forms.Form):
+    status = forms.ChoiceField(label="Update status")
+    note = forms.CharField(
+        max_length=255,
+        label="Review note",
+        widget=forms.TextInput(attrs={"placeholder": "Record the review outcome"}),
+    )
+
+    def __init__(self, *args, work_item, **kwargs):
+        super().__init__(*args, **kwargs)
+        choices = ALLOWED_RETURN_WORK_ITEM_TRANSITIONS.get(work_item.status, set())
+        self.fields["status"].choices = [
+            (status, status.replace("_", " ").title())
+            for status in sorted(choices)
+        ]
+
+    def clean_note(self):
+        note = self.cleaned_data["note"].strip()
+        if not note:
+            raise forms.ValidationError("Provide a note for this review action.")
+        return note
 
 
 class AssetForm(forms.ModelForm):

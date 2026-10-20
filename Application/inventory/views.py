@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db import DatabaseError, IntegrityError, connection, transaction
-from django.db.models import Count, Q
+from django.db.models import Count, DateField, F, Func, Q, Value
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -35,6 +35,7 @@ from .forms import (
     ProcurementQuoteForm,
     ProcurementReceiptForm,
     ProcurementRequestForm,
+    ReturnWorkItemReviewForm,
     PurchaseOrderForm,
     SoftwareContractForm,
     SoftwareLicenseAssignmentForm,
@@ -65,7 +66,7 @@ from .models import (
 )
 from .notifications import asset_notification_queryset, build_asset_notification
 from .reporting import build_asset_quality_report
-from .services import transition_asset
+from .services import transition_asset, transition_return_work_item
 
 
 class IntegrationCatalogEntry(TypedDict):
@@ -76,6 +77,26 @@ class IntegrationCatalogEntry(TypedDict):
     workflow: str
     data_direction: str
     notes: str
+
+
+class DateMinusDays(Func):
+    output_field = DateField()
+
+    def as_sqlite(self, compiler, connection, **extra_context):
+        end_date, end_date_params = compiler.compile(self.source_expressions[0])
+        days, days_params = compiler.compile(self.source_expressions[1])
+        return (
+            f"DATE({end_date}, '-' || {days} || ' days')",
+            (*end_date_params, *days_params),
+        )
+
+    def as_postgresql(self, compiler, connection, **extra_context):
+        end_date, end_date_params = compiler.compile(self.source_expressions[0])
+        days, days_params = compiler.compile(self.source_expressions[1])
+        return (
+            f"({end_date} - {days})",
+            (*end_date_params, *days_params),
+        )
 
 
 def add_bar_widths(rows: list[dict]) -> list[dict]:
@@ -1403,22 +1424,54 @@ def asset_transition(request, pk: int):
 @permission_required("inventory.view_returnworkitem", raise_exception=True)
 def return_work_queue(request):
     selected_status = request.GET.get("status", "").strip()
-    work_items = ReturnWorkItem.objects.select_related("asset")
+    work_items = ReturnWorkItem.objects.select_related("asset").prefetch_related(
+        "events__actor"
+    )
     valid_statuses = {value for value, _label in ReturnWorkItem.Status.choices}
     if selected_status in valid_statuses:
         work_items = work_items.filter(status=selected_status)
     elif selected_status != "all":
         selected_status = "open"
         work_items = work_items.filter(status=ReturnWorkItem.Status.OPEN)
+    page_items = list(work_items[:100])
+    if request.user.has_perm("inventory.change_returnworkitem"):
+        for item in page_items:
+            item.review_form = ReturnWorkItemReviewForm(work_item=item)
     return render(
         request,
         "inventory/return_work_queue.html",
         {
-            "work_items": work_items[:100],
+            "work_items": page_items,
             "statuses": ReturnWorkItem.Status.choices,
             "selected_status": selected_status,
         },
     )
+
+
+@login_required
+@permission_required(
+    ("inventory.change_returnworkitem", "inventory.view_returnworkitem"),
+    raise_exception=True,
+)
+@require_POST
+def return_work_item_update(request, pk: int):
+    work_item = get_object_or_404(ReturnWorkItem, pk=pk)
+    form = ReturnWorkItemReviewForm(request.POST, work_item=work_item)
+    if not form.is_valid():
+        messages.error(request, form.errors.as_text())
+        return redirect("inventory:return-work-queue")
+    try:
+        transition_return_work_item(
+            work_item_id=work_item.pk,
+            to_status=form.cleaned_data["status"],
+            actor=request.user,
+            note=form.cleaned_data["note"],
+        )
+    except ValidationError as error:
+        messages.error(request, str(error))
+    else:
+        messages.success(request, "Return-review item was updated.")
+    return redirect("inventory:return-work-queue")
 
 
 @login_required
@@ -1638,18 +1691,18 @@ def software_renewals(request):
             status=SoftwareContract.Status.ACTIVE,
             end_date__isnull=False,
         )
+        .annotate(
+            _renewal_notice_date=DateMinusDays(
+                F("end_date"),
+                F("renewal_notice_days"),
+            )
+        )
+        .filter(_renewal_notice_date__lte=today)
         .select_related("product")
         .prefetch_related("assignments")
+        .order_by("end_date", "product__name", "pk")
     )
-    due_contracts = [
-        contract
-        for contract in contracts
-        if contract.renewal_due
-    ]
-    due_contracts.sort(
-        key=lambda contract: (contract.end_date, contract.product.name)
-    )
-    page = Paginator(due_contracts, 50).get_page(request.GET.get("page"))
+    page = Paginator(contracts, 50).get_page(request.GET.get("page"))
     return render(
         request,
         "inventory/software_renewals.html",

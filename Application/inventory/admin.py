@@ -18,6 +18,7 @@ from .models import (
     ProcurementReceipt,
     ProcurementRequest,
     ReturnWorkItem,
+    ReturnWorkItemEvent,
     SoftwareContract,
     SoftwareLicenseAssignment,
     SoftwareProduct,
@@ -167,6 +168,30 @@ class ReturnWorkItemAdmin(admin.ModelAdmin):
     actions = None
 
     def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ReturnWorkItemEvent)
+class ReturnWorkItemEventAdmin(admin.ModelAdmin):
+    list_display = ("work_item", "from_status", "to_status", "actor", "created_at")
+    list_filter = ("from_status", "to_status", "created_at")
+    search_fields = ("work_item__asset__asset_id", "note", "actor__username")
+    readonly_fields = (
+        "work_item",
+        "from_status",
+        "to_status",
+        "note",
+        "actor",
+        "created_at",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):

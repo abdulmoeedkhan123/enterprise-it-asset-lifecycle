@@ -9,6 +9,8 @@ from .models import (
     DisposalEvent,
     LifecycleEvent,
     LifecycleStatus,
+    ReturnWorkItem,
+    ReturnWorkItemEvent,
     SanitisationResult,
 )
 
@@ -115,3 +117,45 @@ def transition_asset(
         actor=actor,
     )
     return asset
+
+
+@transaction.atomic
+def transition_return_work_item(
+    *,
+    work_item_id: int,
+    to_status: str,
+    actor,
+    note: str,
+) -> ReturnWorkItem:
+    work_item = ReturnWorkItem.objects.select_for_update().get(pk=work_item_id)
+    allowed = {
+        ReturnWorkItem.Status.OPEN: {ReturnWorkItem.Status.IN_PROGRESS},
+        ReturnWorkItem.Status.IN_PROGRESS: {
+            ReturnWorkItem.Status.OPEN,
+            ReturnWorkItem.Status.CLOSED,
+            ReturnWorkItem.Status.DISMISSED,
+        },
+        ReturnWorkItem.Status.CLOSED: {ReturnWorkItem.Status.OPEN},
+        ReturnWorkItem.Status.DISMISSED: {ReturnWorkItem.Status.OPEN},
+    }
+    if to_status not in allowed.get(work_item.status, set()):
+        raise ValidationError(
+            f"Transition from {work_item.status} to {to_status} is not allowed."
+        )
+
+    old_status = work_item.status
+    work_item.status = to_status
+    work_item.resolution_note = (
+        note
+        if to_status in {ReturnWorkItem.Status.CLOSED, ReturnWorkItem.Status.DISMISSED}
+        else ""
+    )
+    work_item.save(update_fields=("status", "resolution_note", "updated_at"))
+    ReturnWorkItemEvent.objects.create(
+        work_item=work_item,
+        from_status=old_status,
+        to_status=to_status,
+        note=note,
+        actor=actor,
+    )
+    return work_item

@@ -215,6 +215,35 @@ class ReturnWorkItem(models.Model):
         super().save(*args, **kwargs)
 
 
+class ReturnWorkItemEvent(models.Model):
+    work_item = models.ForeignKey(
+        ReturnWorkItem,
+        on_delete=models.PROTECT,
+        related_name="events",
+    )
+    from_status = models.CharField(
+        max_length=16, choices=ReturnWorkItem.Status.choices, blank=True
+    )
+    to_status = models.CharField(
+        max_length=16, choices=ReturnWorkItem.Status.choices
+    )
+    note = models.CharField(max_length=255)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="return_work_item_events",
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ("-created_at", "-pk")
+
+    def __str__(self) -> str:
+        return f"{self.work_item}: {self.get_to_status_display()}"
+
+
 class IntegrationRun(models.Model):
     class Status(models.TextChoices):
         RUNNING = "running", "Running"
