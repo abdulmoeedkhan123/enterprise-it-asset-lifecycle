@@ -185,7 +185,7 @@ def run_copilot_query(query: str, *, today=None) -> dict:
     assets = Asset.objects.all()
 
     if "intune" in normalized:
-        if any(term in normalized for term in ("last successful", "latest successful", "snapshot", "freshness", "last sync", "latest sync")):
+        if any(term in normalized for term in ("last successful", "latest successful", "snapshot status", "snapshot time", "freshness", "last sync", "latest sync", "when was")):
             return _intune_snapshot_result("intune_snapshot_status")
         if any(term in normalized for term in ("non-compliant", "non compliant", "noncompliant", "not compliant")):
             return _intune_snapshot_result("intune_noncompliant")
