@@ -106,7 +106,9 @@
         </tbody>
       </table>
     </div>
-  {% elif result.intent == "unsupported" %}
+  {% endif %}
+  {% if not result.assets and not result.intune_devices %}
+  {% if result.intent == "unsupported" %}
     <p class="muted">Try one of the example questions above. Unsupported questions do not cause changes.</p>
   {% elif result.intent == "invalid" %}
     <p class="muted">Shorten your question and try again.</p>
@@ -118,6 +120,7 @@
     {% if not result.metadata.snapshot_available %}<p class="muted">No snapshot records are available to answer from.</p>{% elif result.device_total == 0 %}<p class="muted">No devices matched these filters in the latest successful snapshot. This does not mean no devices exist in live Intune.</p>{% endif %}
   {% else %}
     <p class="muted">No matching records were found for this query.</p>
+  {% endif %}
   {% endif %}
 </section>
 {% endif %}
