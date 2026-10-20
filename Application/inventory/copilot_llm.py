@@ -157,7 +157,7 @@ def validate_asset_intent(value: object) -> dict | None:
         if value["status"] not in LifecycleStatus.values:
             raise CopilotLLMError("LLM returned an invalid lifecycle status.")
     elif intent == "intune_match_review":
-        if value["status"] not in {"unmatched", "duplicate"}:
+        if not isinstance(value["status"], str) or value["status"] not in {"unmatched", "duplicate"}:
             raise CopilotLLMError("Intune match review status must be unmatched or duplicate.")
     elif intent == "asset_search":
         term = value["term"]
