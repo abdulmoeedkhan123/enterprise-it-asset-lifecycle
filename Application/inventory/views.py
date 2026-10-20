@@ -63,7 +63,7 @@ from .models import (
     SoftwareLicenseAssignment,
     SoftwareProduct,
 )
-from .notifications import build_asset_notifications
+from .notifications import asset_notification_queryset, build_asset_notification
 from .reporting import build_asset_quality_report
 from .services import transition_asset
 
@@ -424,14 +424,18 @@ def asset_list(request):
 @login_required
 @permission_required("inventory.view_asset", raise_exception=True)
 def notifications(request):
-    page = Paginator(build_asset_notifications(), 50).get_page(
+    page = Paginator(asset_notification_queryset(), 50).get_page(
         request.GET.get("page")
     )
+    alerts = [
+        {"asset": asset, **build_asset_notification(asset)}
+        for asset in page.object_list
+    ]
     return render(
         request,
         "inventory/notifications.html",
         {
-            "notifications": page.object_list,
+            "notifications": alerts,
             "notification_page": page,
         },
     )
@@ -1202,6 +1206,7 @@ def disposal_complete(request, pk: int):
                     sanitisation_result=case.sanitisation_result,
                     sanitisation_evidence_ref=case.sanitisation_evidence_ref,
                     disposal_evidence_ref=evidence_ref,
+                    approved_disposal_case_id=case.pk,
                 )
             except (Asset.DoesNotExist, ValidationError) as error:
                 messages.error(request, str(error))

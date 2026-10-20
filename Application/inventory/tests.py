@@ -822,6 +822,27 @@ class AssetLifecycleTests(TestCase):
         self.assertEqual(asset.lifecycle_status, LifecycleStatus.ASSIGNED)
         self.assertFalse(LifecycleEvent.objects.filter(asset=asset).exists())
 
+    def test_ready_for_disposal_cannot_bypass_approved_disposal_workflow(self):
+        asset = self.create_asset(
+            lifecycle_status=LifecycleStatus.READY_FOR_DISPOSAL,
+            custodian_ref="",
+        )
+
+        with self.assertRaisesMessage(
+            ValidationError, "separately approved disposal case"
+        ):
+            transition_asset(
+                asset_id=asset.pk,
+                to_status=LifecycleStatus.DISPOSED,
+                actor=self.user,
+                reason="Attempted direct disposal",
+                disposal_evidence_ref="DISP-UNAPPROVED",
+            )
+
+        asset.refresh_from_db()
+        self.assertEqual(asset.lifecycle_status, LifecycleStatus.READY_FOR_DISPOSAL)
+        self.assertFalse(LifecycleEvent.objects.filter(asset=asset).exists())
+
     def test_disposal_requires_evidence(self):
         asset = self.create_asset()
         asset.lifecycle_status = LifecycleStatus.DISPOSED
@@ -1327,6 +1348,50 @@ class AssetImportPipelineTests(TestCase):
         run = ImportRun.objects.get()
         self.assertEqual(run.status, ImportRun.Status.FAILED)
         self.assertEqual(run.rows_rejected, 1)
+        self.assertFalse(Asset.objects.exists())
+
+    def test_import_rejects_model_field_violations_without_partial_load(self):
+        with TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "oversized-field.csv"
+            self.write_csv(path, asset_id="AST-ETL-GOOD")
+            with path.open("a", newline="", encoding="utf-8") as source_file:
+                writer = csv.DictWriter(source_file, fieldnames=self.headers)
+                writer.writerow(
+                    {
+                        **{
+                            "asset_id": "AST-ETL-BAD",
+                            "asset_type": "Laptop",
+                            "manufacturer": "Example",
+                            "model": "Business Laptop",
+                            "serial_ref": "SER-ETL-2",
+                            "site": "Sydney",
+                            "department": "IT",
+                            "custodian_ref": "",
+                            "lifecycle_status": LifecycleStatus.IN_STOCK,
+                            "purchase_date": "2024-01-01",
+                            "warranty_end": "2027-01-01",
+                            "return_due_date": "",
+                            "sanitisation_required": "false",
+                            "sanitisation_result": "",
+                            "sanitisation_evidence_ref": "",
+                            "disposal_evidence_ref": "",
+                            "last_updated": "2026-10-18",
+                        },
+                        "asset_type": "x" * 33,
+                    }
+                )
+
+            with self.assertRaisesMessage(CommandError, "asset_type"):
+                call_command(
+                    "import_assets",
+                    input=path,
+                    confirm_authorized_source=True,
+                    stdout=StringIO(),
+                )
+
+        run = ImportRun.objects.get()
+        self.assertEqual(run.status, ImportRun.Status.FAILED)
+        self.assertEqual(run.rows_rejected, 2)
         self.assertFalse(Asset.objects.exists())
 
     def test_import_requires_authorization_before_opening_source(self):

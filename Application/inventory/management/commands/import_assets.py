@@ -258,6 +258,7 @@ class Command(BaseCommand):
         seen_ids: set[str] = set()
         valid_statuses = {value for value, _label in LifecycleStatus.choices}
         for row_number, row in enumerate(rows, start=2):
+            initial_error_count = len(errors)
             asset_id = row.get("asset_id", "").strip()
             if not asset_id:
                 errors.append(f"Row {row_number}: asset_id is required.")
@@ -285,6 +286,16 @@ class Command(BaseCommand):
                     errors.append(
                         f"Row {row_number}: return_due_date must use ISO YYYY-MM-DD."
                     )
+            if len(errors) == initial_error_count:
+                asset = Asset(**Command._convert_row(row))
+                try:
+                    asset.clean_fields()
+                except ValidationError as error:
+                    for field, messages in error.message_dict.items():
+                        errors.extend(
+                            f"Row {row_number}: {field}: {message}"
+                            for message in messages
+                        )
         return errors
 
     @staticmethod

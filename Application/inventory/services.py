@@ -3,7 +3,14 @@ from __future__ import annotations
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from .models import Asset, LifecycleEvent, LifecycleStatus, SanitisationResult
+from .models import (
+    Asset,
+    DisposalCase,
+    DisposalEvent,
+    LifecycleEvent,
+    LifecycleStatus,
+    SanitisationResult,
+)
 
 
 ALLOWED_TRANSITIONS = {
@@ -32,7 +39,7 @@ ALLOWED_TRANSITIONS = {
         LifecycleStatus.READY_FOR_DISPOSAL,
         LifecycleStatus.IN_REPAIR,
     },
-    LifecycleStatus.READY_FOR_DISPOSAL: {LifecycleStatus.DISPOSED},
+    LifecycleStatus.READY_FOR_DISPOSAL: set(),
     LifecycleStatus.DISPOSED: set(),
     LifecycleStatus.LOST_STOLEN: {
         LifecycleStatus.RETURN_PENDING,
@@ -52,11 +59,36 @@ def transition_asset(
     sanitisation_result: str = "",
     sanitisation_evidence_ref: str = "",
     disposal_evidence_ref: str = "",
+    approved_disposal_case_id: int | None = None,
 ) -> Asset:
     """Apply an allowed status transition and write its audit event atomically."""
     asset = Asset.objects.select_for_update().get(pk=asset_id)
     allowed = ALLOWED_TRANSITIONS.get(asset.lifecycle_status, set())
-    if to_status not in allowed:
+    if to_status == LifecycleStatus.DISPOSED:
+        if (
+            asset.lifecycle_status != LifecycleStatus.READY_FOR_DISPOSAL
+            or approved_disposal_case_id is None
+        ):
+            raise ValidationError(
+                "Disposal requires a separately approved disposal case."
+            )
+        try:
+            disposal_case = DisposalCase.objects.select_for_update().get(
+                pk=approved_disposal_case_id,
+                asset=asset,
+                status=DisposalCase.Status.APPROVED,
+            )
+        except DisposalCase.DoesNotExist as error:
+            raise ValidationError(
+                "Disposal requires a separately approved disposal case."
+            ) from error
+        if not disposal_case.events.filter(
+            event_type=DisposalEvent.EventType.APPROVED
+        ).exclude(actor=actor).exists():
+            raise ValidationError(
+                "The disposal approver cannot also complete the disposal."
+            )
+    elif to_status not in allowed:
         raise ValidationError(
             f"Transition from {asset.lifecycle_status} to {to_status} is not allowed."
         )
