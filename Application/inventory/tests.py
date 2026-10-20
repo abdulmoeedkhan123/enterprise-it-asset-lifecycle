@@ -267,6 +267,40 @@ class AssetLifecycleTests(TestCase):
         self.assertContains(response, "You’re all caught up")
         self.assertEqual(response.context["asset_notification_count"], 0)
 
+    def test_soon_due_return_keeps_its_existing_alert_precedence(self):
+        today = timezone.localdate()
+        asset = self.create_asset(
+            asset_id="AST-RETURN-SOON",
+            lifecycle_status=LifecycleStatus.RETURN_PENDING,
+            return_due_date=today + timedelta(days=2),
+            warranty_end=today - timedelta(days=1),
+        )
+
+        alert = next(
+            item
+            for item in build_asset_notifications(as_of=today)
+            if item["asset"] == asset
+        )
+
+        self.assertEqual(alert["title"], "Return due soon")
+
+    def test_soon_expiring_warranty_keeps_its_existing_alert_precedence(self):
+        today = timezone.localdate()
+        asset = self.create_asset(
+            asset_id="AST-WARRANTY-PRECEDENCE",
+            lifecycle_status=LifecycleStatus.ASSIGNED,
+            custodian_ref="",
+            warranty_end=today + timedelta(days=10),
+        )
+
+        alert = next(
+            item
+            for item in build_asset_notifications(as_of=today)
+            if item["asset"] == asset
+        )
+
+        self.assertEqual(alert["title"], "Warranty expiring")
+
     def test_notifications_require_asset_view_permission(self):
         response = self.client.get(reverse("inventory:notifications"))
 

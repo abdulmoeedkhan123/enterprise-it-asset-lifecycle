@@ -1,0 +1,30 @@
+name: Portfolio checks
+
+on:
+  push:
+    paths:
+      - "ICT Business analysis/**"
+      - ".github/workflows/portfolio.yml"
+  pull_request:
+    paths:
+      - "ICT Business analysis/**"
+      - ".github/workflows/portfolio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Test analysis and dashboard
+        run: |
+          python -m unittest discover -s "ICT Business analysis/analysis" -p 'test_*.py' -v
+          python -m unittest discover -s "ICT Business analysis/dashboard" -p 'test_*.py' -v
+      - name: Validate synthetic asset data
+        run: python "ICT Business analysis/analysis/validate_assets.py"

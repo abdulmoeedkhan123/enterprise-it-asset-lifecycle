@@ -65,12 +65,13 @@ def asset_notification_queryset(*, as_of: date | None = None) -> QuerySet[Asset]
         .annotate(
             _notification_priority=Case(
                 When(conditions["return_overdue"], then=Value(0)),
+                When(conditions["return_soon"], then=Value(4)),
                 When(conditions["warranty_expired"], then=Value(1)),
+                When(conditions["warranty_soon"], then=Value(5)),
                 When(conditions["disposal_missing"], then=Value(2)),
                 When(conditions["sanitisation_missing"], then=Value(2)),
                 When(conditions["custodian_missing"], then=Value(3)),
                 When(conditions["return_due_missing"], then=Value(3)),
-                When(conditions["return_soon"], then=Value(4)),
                 default=Value(5),
                 output_field=IntegerField(),
             ),
@@ -107,6 +108,18 @@ def build_asset_notification(
             "priority": 0,
         }
     if (
+        asset.lifecycle_status == LifecycleStatus.RETURN_PENDING
+        and asset.return_due_date
+        and asset.return_due_date <= today + timedelta(days=7)
+    ):
+        return {
+            "severity": "warning",
+            "title": "Return due soon",
+            "message": f"Return is due {asset.return_due_date.isoformat()}.",
+            "sort_date": asset.return_due_date,
+            "priority": 4,
+        }
+    if (
         asset.lifecycle_status
         not in {LifecycleStatus.DISPOSED, LifecycleStatus.LOST_STOLEN}
         and asset.warranty_end < today
@@ -117,6 +130,18 @@ def build_asset_notification(
             "message": f"Warranty expired {asset.warranty_end.isoformat()}.",
             "sort_date": asset.warranty_end,
             "priority": 1,
+        }
+    if (
+        asset.lifecycle_status
+        not in {LifecycleStatus.DISPOSED, LifecycleStatus.LOST_STOLEN}
+        and asset.warranty_end <= today + timedelta(days=30)
+    ):
+        return {
+            "severity": "notice",
+            "title": "Warranty expiring",
+            "message": f"Warranty ends {asset.warranty_end.isoformat()}.",
+            "sort_date": asset.warranty_end,
+            "priority": 5,
         }
     if asset.lifecycle_status == LifecycleStatus.DISPOSED and not asset.disposal_evidence_ref:
         return {
@@ -163,14 +188,6 @@ def build_asset_notification(
             "message": "Add a due date for this pending return.",
             "sort_date": today,
             "priority": 3,
-        }
-    if asset.lifecycle_status == LifecycleStatus.RETURN_PENDING:
-        return {
-            "severity": "warning",
-            "title": "Return due soon",
-            "message": f"Return is due {asset.return_due_date.isoformat()}.",
-            "sort_date": asset.return_due_date,
-            "priority": 4,
         }
     return {
         "severity": "notice",

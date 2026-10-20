@@ -43,7 +43,6 @@ ALLOWED_TRANSITIONS = {
     LifecycleStatus.DISPOSED: set(),
     LifecycleStatus.LOST_STOLEN: {
         LifecycleStatus.RETURN_PENDING,
-        LifecycleStatus.DISPOSED,
     },
 }
 

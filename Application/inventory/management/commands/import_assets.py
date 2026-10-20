@@ -289,6 +289,7 @@ class Command(BaseCommand):
             if len(errors) == initial_error_count:
                 asset = Asset(**Command._convert_row(row))
                 try:
+                    # Keep source-quality exceptions available for profiling and review.
                     asset.clean_fields()
                 except ValidationError as error:
                     for field, messages in error.message_dict.items():
