@@ -4,9 +4,10 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
+from django.utils import timezone
 from django.urls import reverse
 
-from .models import Asset, LifecycleStatus
+from .models import Asset, IntuneDevice, IntuneSyncRun, LifecycleStatus
 from .copilot import run_copilot_query
 from .copilot_llm import CopilotLLMError
 
@@ -201,3 +202,87 @@ class CopilotQueryTests(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         propose_intent.assert_not_called()
+
+
+    def test_intune_copilot_requires_separate_read_permission(self):
+        self.user.user_permissions.add(self.view_permission)
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Show non-compliant Intune devices"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["result"]["intent"], "permission_denied")
+        self.assertEqual(response.context["result"]["intune_devices"], [])
+
+    def test_intune_copilot_uses_only_latest_successful_snapshot_and_shows_evidence(self):
+        self.user.user_permissions.add(
+            self.view_permission,
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_intunedevice",
+            ),
+        )
+        old_run = IntuneSyncRun.objects.create(
+            status=IntuneSyncRun.Status.SUCCEEDED,
+            records_received=1,
+            completed_at=timezone.now() - timedelta(days=2),
+        )
+        latest_run = IntuneSyncRun.objects.create(
+            status=IntuneSyncRun.Status.SUCCEEDED,
+            records_received=1,
+            completed_at=timezone.now(),
+        )
+        common = {
+            "device_name": "Test endpoint",
+            "serial_number": "SER-INTUNE-1",
+            "manufacturer": "Example",
+            "model": "Laptop",
+            "operating_system": "Windows",
+            "os_version": "11",
+            "compliance_state": "noncompliant",
+            "match_status": IntuneDevice.MatchStatus.UNMATCHED,
+            "match_detail": "No asset has this exact serial reference.",
+        }
+        IntuneDevice.objects.create(
+            managed_device_id="old-device",
+            last_seen_run=old_run,
+            **common,
+        )
+        IntuneDevice.objects.create(
+            managed_device_id="latest-device",
+            last_seen_run=latest_run,
+            **common,
+        )
+
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "Show non-compliant Intune devices"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        result = response.context["result"]
+        self.assertEqual(result["intent"], "intune_noncompliant")
+        self.assertEqual(result["device_total"], 1)
+        self.assertEqual(
+            [device.managed_device_id for device in result["intune_devices"]],
+            ["latest-device"],
+        )
+        self.assertEqual(result["metadata"]["snapshot_run_id"], latest_run.pk)
+        self.assertIn("Read-only Intune snapshot", result["metadata"]["evidence"]["sources"])
+
+    def test_intune_snapshot_status_does_not_trigger_a_sync(self):
+        self.user.user_permissions.add(
+            self.view_permission,
+            Permission.objects.get(
+                content_type__app_label="inventory",
+                codename="view_intunedevice",
+            ),
+        )
+        response = self.client.post(
+            reverse("inventory:copilot"),
+            {"query": "What is the latest successful Intune snapshot?"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["result"]["intent"], "intune_snapshot_status")
+        self.assertFalse(response.context["result"]["metadata"]["snapshot_available"])
+        self.assertFalse(IntuneSyncRun.objects.exists())
