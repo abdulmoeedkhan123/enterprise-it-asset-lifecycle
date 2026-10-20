@@ -48,6 +48,17 @@ ALLOWED_TRANSITIONS = {
     },
 }
 
+ALLOWED_RETURN_WORK_ITEM_TRANSITIONS = {
+    ReturnWorkItem.Status.OPEN: {ReturnWorkItem.Status.IN_PROGRESS},
+    ReturnWorkItem.Status.IN_PROGRESS: {
+        ReturnWorkItem.Status.OPEN,
+        ReturnWorkItem.Status.CLOSED,
+        ReturnWorkItem.Status.DISMISSED,
+    },
+    ReturnWorkItem.Status.CLOSED: {ReturnWorkItem.Status.OPEN},
+    ReturnWorkItem.Status.DISMISSED: {ReturnWorkItem.Status.OPEN},
+}
+
 
 @transaction.atomic
 def transition_asset(
@@ -127,18 +138,12 @@ def transition_return_work_item(
     actor,
     note: str,
 ) -> ReturnWorkItem:
+    if not note.strip():
+        raise ValidationError("A review note is required.")
     work_item = ReturnWorkItem.objects.select_for_update().get(pk=work_item_id)
-    allowed = {
-        ReturnWorkItem.Status.OPEN: {ReturnWorkItem.Status.IN_PROGRESS},
-        ReturnWorkItem.Status.IN_PROGRESS: {
-            ReturnWorkItem.Status.OPEN,
-            ReturnWorkItem.Status.CLOSED,
-            ReturnWorkItem.Status.DISMISSED,
-        },
-        ReturnWorkItem.Status.CLOSED: {ReturnWorkItem.Status.OPEN},
-        ReturnWorkItem.Status.DISMISSED: {ReturnWorkItem.Status.OPEN},
-    }
-    if to_status not in allowed.get(work_item.status, set()):
+    if to_status not in ALLOWED_RETURN_WORK_ITEM_TRANSITIONS.get(
+        work_item.status, set()
+    ):
         raise ValidationError(
             f"Transition from {work_item.status} to {to_status} is not allowed."
         )

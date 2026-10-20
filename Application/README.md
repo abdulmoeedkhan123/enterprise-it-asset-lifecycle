@@ -144,6 +144,7 @@ Create Django Groups and assign these permissions in Django Admin; grant only th
 | Licence administrator | `inventory.view_softwareproduct`, `inventory.view_softwarecontract`, `inventory.add_softwarelicenseassignment`, `inventory.change_softwarelicenseassignment` |
 | Software contract reviewer | `inventory.view_softwareproduct`, `inventory.view_softwarecontract` |
 | Intune device reviewer | `inventory.view_intunedevice` |
+| Return-work reviewer | `inventory.view_returnworkitem`, `inventory.change_returnworkitem` |
 
 The requester manages their own procurement draft. Managing another user's request requires both `inventory.change_procurementrequest` and `inventory.view_all_procurementrequests`; approval and buyer/receiver actions likewise require their action permission plus view-all access. Approval policies and Groups shown here are implementation controls, not company-specific delegated financial authorities. Test permission combinations using non-superuser accounts before deployment.
 
@@ -166,6 +167,12 @@ The software catalog records product name, publisher, version, category and end-
 Seat assignments use an operator-entered assignee reference and department. The application blocks assignments above the purchased seat count and blocks duplicate active assignments to the same assignee on a contract. Releasing a seat preserves the assignment history and records who released it; a released seat can be assigned again. Contract references are metadata only: do not enter passwords, full licence keys, payment details or other secrets. The prototype does not ingest device discovery/software usage, calculate publisher-specific compliance rules, upload contract documents, contact vendors, renew or pay subscriptions automatically, or integrate with a vendor marketplace. Licence measurement rules and true-up/overage terms must be validated against each supplier agreement.
 
 Pipeline execution is manual using the documented `import_assets` command; no schedule or freshness SLA has been configured. The SCIM connector is read-only and only generates return-review work items. Additional systems require provider-specific data contracts, authorization, and sandbox validation before their records can be mapped into these pipelines.
+
+Return-work reviewers can move SCIM-generated items through Open, In progress,
+Closed, and Dismissed using the return queue. Each action requires a note and
+records the actor, prior/new status, and timestamp; closed or dismissed items can
+be reopened with a new review note. These actions create local review records
+only and do not change identity-provider or asset lifecycle status.
 
 ## Integrations
 

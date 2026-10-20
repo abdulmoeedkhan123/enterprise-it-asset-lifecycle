@@ -15,19 +15,7 @@ from .models import (
     SoftwareLicenseAssignment,
     SoftwareProduct,
 )
-from .services import ALLOWED_TRANSITIONS
-
-
-ALLOWED_RETURN_WORK_ITEM_TRANSITIONS = {
-    ReturnWorkItem.Status.OPEN: {ReturnWorkItem.Status.IN_PROGRESS},
-    ReturnWorkItem.Status.IN_PROGRESS: {
-        ReturnWorkItem.Status.OPEN,
-        ReturnWorkItem.Status.CLOSED,
-        ReturnWorkItem.Status.DISMISSED,
-    },
-    ReturnWorkItem.Status.CLOSED: {ReturnWorkItem.Status.OPEN},
-    ReturnWorkItem.Status.DISMISSED: {ReturnWorkItem.Status.OPEN},
-}
+from .services import ALLOWED_RETURN_WORK_ITEM_TRANSITIONS, ALLOWED_TRANSITIONS
 
 
 class ReturnWorkItemReviewForm(forms.Form):
