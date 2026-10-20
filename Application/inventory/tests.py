@@ -286,11 +286,18 @@ class AssetLifecycleTests(TestCase):
 
     def test_soon_expiring_warranty_keeps_its_existing_alert_precedence(self):
         today = timezone.localdate()
-        asset = self.create_asset(
+        asset = Asset.objects.create(
             asset_id="AST-WARRANTY-PRECEDENCE",
             lifecycle_status=LifecycleStatus.ASSIGNED,
             custodian_ref="",
+            asset_type="Laptop",
+            manufacturer="Example",
+            model="Business Laptop",
+            site="Sydney",
+            department="IT",
+            purchase_date=date(2024, 1, 1),
             warranty_end=today + timedelta(days=10),
+            source_last_updated=today,
         )
 
         alert = next(
