@@ -1,9 +1,8 @@
-"""Safe, read-only natural-language query handling for the asset copilot MVP.
+"""Safe, evidence-backed read-only queries for the asset register and Intune snapshot.
 
-This first iteration deliberately uses deterministic intent matching rather than an
-external LLM. It returns records only; it never changes assets or starts workflows.
-An LLM can later propose a structured intent, but this module/backend must remain
-the source of truth for validation and data access.
+Deterministic matching handles common questions; an optional LLM may propose only
+a bounded structured intent. This module remains the source of truth for query
+validation and data access. It never changes records or starts workflows.
 """
 from __future__ import annotations
 
