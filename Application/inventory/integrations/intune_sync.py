@@ -107,9 +107,10 @@ def run_intune_sync(*, client: IntuneGraphClient | None = None) -> IntuneSyncRun
         graph_client = client or IntuneGraphClient.from_environment()
         devices = graph_client.list_managed_devices()
         sync_managed_devices(devices, run=run)
-    except (IntuneError, DatabaseError) as error:
+    except Exception as error:
         run.status = IntuneSyncRun.Status.FAILED
-        run.error_summary = f"{type(error).__name__}: {error}"[:500]
+        detail = str(error) if isinstance(error, IntuneError) else "Unexpected sync failure; previous successful snapshot remains authoritative."
+        run.error_summary = f"{type(error).__name__}: {detail}"[:500]
         run.completed_at = timezone.now()
         run.save(update_fields=("status", "error_summary", "completed_at"))
         raise

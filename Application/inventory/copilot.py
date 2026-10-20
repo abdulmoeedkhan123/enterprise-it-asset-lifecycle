@@ -1,9 +1,8 @@
-"""Safe, read-only natural-language query handling for the asset copilot MVP.
+"""Safe, evidence-backed read-only queries for the asset register and Intune snapshot.
 
-This first iteration deliberately uses deterministic intent matching rather than an
-external LLM. It returns records only; it never changes assets or starts workflows.
-An LLM can later propose a structured intent, but this module/backend must remain
-the source of truth for validation and data access.
+Deterministic matching handles common questions; an optional LLM may propose only
+a bounded structured intent. This module remains the source of truth for query
+validation and data access. It never changes records or starts workflows.
 """
 from __future__ import annotations
 
@@ -13,7 +12,7 @@ from datetime import date, timedelta
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import Asset, LifecycleStatus
+from .models import Asset, IntuneDevice, IntuneSyncRun, LifecycleStatus
 
 
 MAX_QUERY_LENGTH = 500
@@ -34,20 +33,123 @@ STATUS_PHRASES = (
 )
 
 
-def _result(intent: str, message: str, queryset=None, *, metadata=None) -> dict:
+def _result(
+    intent: str,
+    message: str,
+    queryset=None,
+    *,
+    metadata=None,
+    intune_devices=None,
+) -> dict:
     assets = list(queryset[: MAX_RESULTS + 1]) if queryset is not None else []
-    total = len(assets)
+    total = queryset.count() if queryset is not None else 0
     truncated = total > MAX_RESULTS
     assets = assets[:MAX_RESULTS]
+    devices = (
+        list(intune_devices[: MAX_RESULTS + 1])
+        if intune_devices is not None
+        else []
+    )
+    device_total = intune_devices.count() if intune_devices is not None else 0
+    devices_truncated = device_total > MAX_RESULTS
+    devices = devices[:MAX_RESULTS]
+    evidence = {
+        "queried_at": timezone.now().isoformat(),
+        "sources": (
+            ["Local asset register", "Read-only Intune snapshot"]
+            if intune_devices is not None
+            else ["Local asset register"]
+        ),
+        "record_basis": "Stored records returned by read-only database queries.",
+    }
+    result_metadata = dict(metadata or {})
+    result_metadata.setdefault("evidence", evidence)
     return {
         "intent": intent,
         "message": message,
         "assets": assets,
-        "total": total if not truncated else f"at least {MAX_RESULTS + 1}",
+        "intune_devices": devices,
+        "total": total,
         "truncated": truncated,
-        "metadata": metadata or {},
+        "device_total": device_total,
+        "devices_truncated": devices_truncated,
+        "metadata": result_metadata,
         "read_only": True,
     }
+
+
+def _latest_intune_snapshot():
+    return (
+        IntuneSyncRun.objects.filter(status=IntuneSyncRun.Status.SUCCEEDED)
+        .order_by("-completed_at", "-pk")
+        .first()
+    )
+
+
+def _intune_snapshot_result(intent: str, *, match_status=None, noncompliant=False) -> dict:
+    latest = _latest_intune_snapshot()
+    if latest is None:
+        return _result(
+            intent,
+            "No successful Intune snapshot is available. No live Intune query was run.",
+            intune_devices=IntuneDevice.objects.none(),
+            metadata={
+                "snapshot_available": False,
+                "evidence": {
+                    "queried_at": timezone.now().isoformat(),
+                    "sources": ["Intune sync history"],
+                    "record_basis": "No successful snapshot exists in the local database.",
+                },
+            },
+        )
+    devices = IntuneDevice.objects.filter(last_seen_run=latest).select_related(
+        "matched_asset", "last_seen_run"
+    )
+    if match_status:
+        devices = devices.filter(match_status=match_status)
+    if noncompliant:
+        devices = devices.filter(
+            Q(compliance_state__iexact="noncompliant")
+            | Q(compliance_state__iexact="non-compliant")
+            | Q(compliance_state__iexact="notcompliant")
+            | Q(compliance_state__iexact="not compliant")
+        )
+    if intent == "intune_snapshot_status":
+        return _result(
+            intent,
+            "Showing the latest successful Intune snapshot metadata; this is not a live Graph query.",
+            intune_devices=IntuneDevice.objects.none(),
+            metadata={
+                "snapshot_available": True,
+                "snapshot_completed_at": latest.completed_at.isoformat() if latest.completed_at else None,
+                "snapshot_records_received": latest.records_received,
+                "snapshot_run_id": latest.pk,
+                "snapshot_status": latest.get_status_display(),
+                "evidence": {
+                    "queried_at": timezone.now().isoformat(),
+                    "sources": ["Intune sync history"],
+                    "record_basis": "Latest successful local snapshot run.",
+                    "snapshot_completed_at": latest.completed_at.isoformat() if latest.completed_at else None,
+                },
+            },
+        )
+    return _result(
+        intent,
+        "Results are limited to devices present in the latest successful Intune snapshot. Compliance and matching values are observations, not an approval to act.",
+        intune_devices=devices.order_by("device_name", "managed_device_id"),
+        metadata={
+            "snapshot_available": True,
+            "snapshot_completed_at": latest.completed_at.isoformat() if latest.completed_at else None,
+            "snapshot_records_received": latest.records_received,
+            "snapshot_run_id": latest.pk,
+            "evidence": {
+                "queried_at": timezone.now().isoformat(),
+                "sources": ["Read-only Intune snapshot", "Local asset register for exact-serial match references"],
+                "record_basis": "Only records whose last_seen_run is the latest successful sync are included.",
+                "snapshot_completed_at": latest.completed_at.isoformat() if latest.completed_at else None,
+            },
+        },
+    )
 
 
 def run_copilot_query(query: str, *, today=None) -> dict:
@@ -81,6 +183,34 @@ def run_copilot_query(query: str, *, today=None) -> dict:
     normalized = " ".join(raw_query.casefold().split())
     today = today or timezone.localdate()
     assets = Asset.objects.all()
+
+    if "intune" in normalized:
+        if any(term in normalized for term in ("last successful", "latest successful", "snapshot status", "snapshot time", "freshness", "last sync", "latest sync", "when was")):
+            return _intune_snapshot_result("intune_snapshot_status")
+        if any(term in normalized for term in ("non-compliant", "non compliant", "noncompliant", "not compliant")):
+            return _intune_snapshot_result("intune_noncompliant")
+        if "duplicate" in normalized or "ambiguous" in normalized:
+            return _intune_snapshot_result(
+                "intune_match_review", match_status=IntuneDevice.MatchStatus.DUPLICATE
+            )
+        if "unmatched" in normalized or "no match" in normalized or "not matched" in normalized:
+            return _intune_snapshot_result(
+                "intune_match_review", match_status=IntuneDevice.MatchStatus.UNMATCHED
+            )
+        if any(term in normalized for term in ("device", "devices", "inventory", "list", "show", "find")):
+            return _intune_snapshot_result("intune_devices")
+        return {
+            "intent": "unsupported",
+            "message": "For Intune, ask for devices in the latest snapshot, non-compliant devices, unmatched/duplicate matches, or the latest successful snapshot time.",
+            "assets": [],
+            "intune_devices": [],
+            "total": 0,
+            "truncated": False,
+            "device_total": 0,
+            "devices_truncated": False,
+            "metadata": {},
+            "read_only": True,
+        }
 
     if "overdue" in normalized and ("return" in normalized or "asset" in normalized):
         queryset = assets.filter(
@@ -159,6 +289,14 @@ def run_copilot_intent(intent_document: dict, *, today: date | None = None) -> d
     today = today or timezone.localdate()
     assets = Asset.objects.all()
     intent_name = intent["intent"]
+    if intent_name == "intune_snapshot_status":
+        return _intune_snapshot_result(intent_name)
+    if intent_name == "intune_devices":
+        return _intune_snapshot_result(intent_name)
+    if intent_name == "intune_noncompliant":
+        return _intune_snapshot_result(intent_name, noncompliant=True)
+    if intent_name == "intune_match_review":
+        return _intune_snapshot_result(intent_name, match_status=intent["status"])
     if intent_name == "overdue_returns":
         return _result(
             "overdue_returns",

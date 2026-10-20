@@ -41,7 +41,10 @@ class CopilotIntentValidationTests(SimpleTestCase):
             {"intent": "lifecycle_status", "status": "Unknown"},
             {"intent": "asset_search", "term": "laptop", "field": "password"},
             {"intent": "asset_search", "term": "", "field": "any"},
+            {"intent": "intune_match_review", "status": []},
+            {"intent": "intune_match_review", "status": "all"},
             [],
+
         )
         for intent in invalid_intents:
             with self.subTest(intent=intent), self.assertRaises(CopilotLLMError):
@@ -134,3 +137,29 @@ class CopilotIntentValidationTests(SimpleTestCase):
         ):
             with self.assertRaisesMessage(CopilotLLMError, "invalid intent document"):
                 propose_asset_intent("Find laptops")
+
+
+    @patch("inventory.copilot_llm.urlopen")
+    def test_provider_rejects_oversized_response(self, mocked_urlopen):
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = b"x" * 65537
+        mocked_urlopen.return_value = response
+        with patch.dict("os.environ", {"GROQ_API_KEY": "test-api-key"}):
+            with self.assertRaisesMessage(CopilotLLMError, "64 KiB safety limit"):
+                propose_asset_intent("Find laptops")
+
+    def test_accepts_only_supported_intune_read_only_intents(self):
+        self.assertEqual(
+            validate_asset_intent({"intent": "intune_noncompliant"}),
+            {"intent": "intune_noncompliant"},
+        )
+        self.assertEqual(
+            validate_asset_intent(
+                {"intent": "intune_match_review", "status": "unmatched"}
+            ),
+            {"intent": "intune_match_review", "status": "unmatched"},
+        )
+        with self.assertRaises(CopilotLLMError):
+            validate_asset_intent(
+                {"intent": "intune_match_review", "status": ["unmatched"]}
+            )

@@ -150,26 +150,59 @@ def copilot(request):
     result = None
     if request.method == "POST":
         query = request.POST.get("query", "")
-        result = run_copilot_query(query)
-        result["source"] = "deterministic"
-        if result["intent"] == "unsupported":
-            try:
-                proposed_intent = propose_asset_intent(query)
-            except CopilotLLMNotConfigured:
-                result["llm_status"] = "not_configured"
-            except CopilotLLMError as error:
-                result["llm_status"] = "failed"
-                result["llm_error"] = str(error)
-                result["message"] = (
-                    "AI assistance could not interpret this question. "
-                    "No inventory records were sent back or changed."
-                )
-            else:
-                if proposed_intent is not None:
-                    result = run_copilot_intent(proposed_intent)
-                    result["source"] = "llm"
+        can_view_intune = request.user.has_perm("inventory.view_intunedevice")
+        # Enforce the Intune permission before querying the saved snapshot.
+        if len(query) <= 500 and "intune" in query.casefold() and not can_view_intune:
+            result = {
+                "intent": "permission_denied",
+                "message": "Your account needs the inventory.view_intunedevice permission to ask questions about Intune data.",
+                "assets": [],
+                "intune_devices": [],
+                "total": 0,
+                "truncated": False,
+                "device_total": 0,
+                "devices_truncated": False,
+                "metadata": {},
+                "read_only": True,
+                "source": "policy",
+            }
+        else:
+            result = run_copilot_query(query)
+            result["source"] = "deterministic"
+            if result["intent"] == "unsupported":
+                try:
+                    proposed_intent = propose_asset_intent(query)
+                except CopilotLLMNotConfigured:
+                    result["llm_status"] = "not_configured"
+                except CopilotLLMError as error:
+                    result["llm_status"] = "failed"
+                    result["llm_error"] = str(error)
+                    result["message"] = (
+                        "AI assistance could not interpret this question. "
+                        "No inventory records were sent back or changed."
+                    )
                 else:
-                    result["llm_status"] = "unsupported"
+                    if proposed_intent is not None:
+                        proposed_name = proposed_intent.get("intent")
+                        if proposed_name and proposed_name.startswith("intune_") and not can_view_intune:
+                            result = {
+                                "intent": "permission_denied",
+                                "message": "Your account needs the inventory.view_intunedevice permission to ask questions about Intune data.",
+                                "assets": [],
+                                "intune_devices": [],
+                                "total": 0,
+                                "truncated": False,
+                                "device_total": 0,
+                                "devices_truncated": False,
+                                "metadata": {},
+                                "read_only": True,
+                                "source": "policy",
+                            }
+                        else:
+                            result = run_copilot_intent(proposed_intent)
+                            result["source"] = "llm"
+                    else:
+                        result["llm_status"] = "unsupported"
     return render(
         request,
         "inventory/copilot.html",

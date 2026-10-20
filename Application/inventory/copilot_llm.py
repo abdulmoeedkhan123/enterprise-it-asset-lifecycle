@@ -73,7 +73,14 @@ def propose_asset_intent(query: str, *, timeout: float = 15) -> dict | None:
                     "\"field\":\"model\"}. Search fields are asset_id, asset_type, "
                     "manufacturer, model, serial_ref, site, department, custodian_ref, "
                     "or any. Lifecycle status must be one of the stored application "
-                    "statuses. Use a default 60 days for unspecified warranty windows."
+                    "statuses. Use a default 60 days for unspecified warranty windows. "
+                    "Read-only Intune intents are also allowed: "
+                    "{\"intent\":\"intune_devices\"}; "
+                    "{\"intent\":\"intune_noncompliant\"}; "
+                    "{\"intent\":\"intune_match_review\",\"status\":\"unmatched\"} "
+                    "or status duplicate; {\"intent\":\"intune_snapshot_status\"}. "
+                    "Do not infer or invent device data. These intents only query the saved "
+                    "local Intune snapshot, never Microsoft Graph live."
                 ),
             },
             {"role": "user", "content": query.strip()},
@@ -91,14 +98,17 @@ def propose_asset_intent(query: str, *, timeout: float = 15) -> dict | None:
     )
     try:
         with urlopen(request, timeout=timeout) as response:
-            response_payload = json.loads(response.read())
+            raw_response = response.read(65537)
+        if len(raw_response) > 65536:
+            raise CopilotLLMError("LLM provider response exceeded the 64 KiB safety limit.")
+        response_payload = json.loads(raw_response)
     except HTTPError as error:
         raise CopilotLLMError(
             f"LLM provider request failed with HTTP {error.code}."
         ) from error
     except (URLError, TimeoutError, OSError) as error:
-        reason = error.reason if isinstance(error, URLError) else error
-        raise CopilotLLMError(f"LLM provider request failed: {reason}.") from error
+        # Do not surface provider URLs, request details, or transport internals to users.
+        raise CopilotLLMError("LLM provider request failed due to a network or timeout error.") from error
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise CopilotLLMError("LLM provider returned invalid JSON.") from error
 
@@ -128,6 +138,10 @@ def validate_asset_intent(value: object) -> dict | None:
         "warranty_expiry": {"intent", "days"},
         "lifecycle_status": {"intent", "status"},
         "asset_search": {"intent", "term", "field"},
+        "intune_devices": {"intent"},
+        "intune_noncompliant": {"intent"},
+        "intune_snapshot_status": {"intent"},
+        "intune_match_review": {"intent", "status"},
     }
     if (
         not isinstance(intent, str)
@@ -142,6 +156,9 @@ def validate_asset_intent(value: object) -> dict | None:
     elif intent == "lifecycle_status":
         if value["status"] not in LifecycleStatus.values:
             raise CopilotLLMError("LLM returned an invalid lifecycle status.")
+    elif intent == "intune_match_review":
+        if not isinstance(value["status"], str) or value["status"] not in {"unmatched", "duplicate"}:
+            raise CopilotLLMError("Intune match review status must be unmatched or duplicate.")
     elif intent == "asset_search":
         term = value["term"]
         field = value["field"]

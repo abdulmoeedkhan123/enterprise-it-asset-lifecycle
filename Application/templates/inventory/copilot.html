@@ -5,7 +5,7 @@
   <div>
     <p class="eyebrow">ASSISTED OPERATIONS</p>
     <h1>Asset copilot</h1>
-    <p class="muted">Ask questions about asset records using plain language.</p>
+    <p class="muted">Ask questions about local asset records and the latest successful, read-only Intune snapshot. Answers show their evidence source and snapshot freshness.</p>
   </div>
   <span class="status-pill">Read-only beta</span>
 </section>
@@ -38,6 +38,9 @@
       <button class="prompt-chip" type="button" data-prompt="Show warranties expiring in the next 30 days">Warranties expiring in 30 days</button>
       <button class="prompt-chip" type="button" data-prompt="List assigned assets">List assigned assets</button>
       <button class="prompt-chip" type="button" data-prompt="Find asset AST-1001">Find an asset by ID</button>
+      <button class="prompt-chip" type="button" data-prompt="Show non-compliant Intune devices">Non-compliant Intune devices</button>
+      <button class="prompt-chip" type="button" data-prompt="Show unmatched Intune devices">Unmatched Intune devices</button>
+      <button class="prompt-chip" type="button" data-prompt="What is the latest successful Intune snapshot?">Intune snapshot freshness</button>
     </div>
   </div>
 </section>
@@ -49,13 +52,25 @@
     <span class="status-pill">Read-only</span>
   </div>
   <p>{{ result.message }}</p>
-  {% if result.source %}<p class="muted">Interpreted by {% if result.source == "llm" %}validated AI intent{% else %}deterministic query rules{% endif %}. Results are read-only.</p>{% endif %}
+  {% if result.source %}<p class="muted">Interpreted by {% if result.source == "llm" %}validated AI intent{% elif result.source == "policy" %}server-side permission policy{% else %}deterministic query rules{% endif %}. Results are read-only.</p>{% endif %}
+  {% if result.metadata.evidence %}
+    <div class="notice" role="note">
+      <strong>Evidence and freshness</strong>
+      <p class="muted">Sources: {{ result.metadata.evidence.sources|join:", " }}.</p>
+      <p class="muted">{{ result.metadata.evidence.record_basis }}</p>
+      {% if result.metadata.evidence.queried_at %}<p class="muted">Queried at: {{ result.metadata.evidence.queried_at }}</p>{% endif %}
+      {% if result.metadata.evidence.snapshot_completed_at %}<p class="muted">Latest successful Intune snapshot completed at: {{ result.metadata.evidence.snapshot_completed_at }} (stored snapshot only; not live Graph data).</p>{% endif %}
+    </div>
+  {% endif %}
+  {% if result.intent == "intune_snapshot_status" and result.metadata.snapshot_available %}
+    <p class="muted">Latest successful snapshot: run #{{ result.metadata.snapshot_run_id }}, {{ result.metadata.snapshot_records_received }} device records, completed {{ result.metadata.snapshot_completed_at }}. The copilot does not trigger a sync.</p>
+  {% endif %}
   {% if result.llm_status == "failed" %}<p class="error-message" role="alert">AI interpretation failed: {{ result.llm_error }} No data changes were made.</p>{% elif result.llm_status == "not_configured" %}<p class="muted">AI interpretation is not configured; deterministic examples remain available.</p>{% endif %}
   {% if result.assets %}
-    <p class="muted">{% if result.truncated %}Showing the first 10 records; there are more matches.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
+    <p class="muted">{% if result.truncated %}Showing the first 10 of {{ result.total }} matching records.{% else %}{{ result.total }} matching record{% if result.total != 1 %}s{% endif %}.{% endif %}</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Asset</th><th>Type / model</th><th>Site</th><th>Status</th><th>Warranty</th><th>Return due</th></tr></thead>
+        <thead><tr><th>Asset</th><th>Type / model</th><th>Site</th><th>Status</th><th>Warranty</th><th>Return due</th><th>Source updated</th></tr></thead>
         <tbody>
         {% for asset in result.assets %}
           <tr>
@@ -65,17 +80,47 @@
             <td>{{ asset.lifecycle_status }}</td>
             <td>{{ asset.warranty_end|date:"j M Y" }}</td>
             <td>{% if asset.return_due_date %}{{ asset.return_due_date|date:"j M Y" }}{% else %}—{% endif %}</td>
+            <td>{{ asset.source_last_updated|date:"j M Y"|default:"—" }}</td>
           </tr>
         {% endfor %}
         </tbody>
       </table>
     </div>
-  {% elif result.intent == "unsupported" %}
+  {% endif %}
+  {% if result.intune_devices %}
+    <p class="muted">{% if result.devices_truncated %}Showing the first 10 current-snapshot devices; {{ result.device_total }} records match.{% else %}{{ result.device_total }} device record{% if result.device_total != 1 %}s{% endif %} in the latest successful snapshot match.{% endif %}</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Intune device</th><th>Serial</th><th>OS / model</th><th>Compliance</th><th>Asset match</th><th>Last device sync</th></tr></thead>
+        <tbody>
+          {% for device in result.intune_devices %}
+            <tr>
+              <td><strong>{{ device.device_name|default:"Unnamed device" }}</strong><small class="table-subtext">ID {{ device.managed_device_id }}</small></td>
+              <td>{{ device.serial_number|default:"—" }}</td>
+              <td>{{ device.operating_system }} {{ device.os_version }} · {{ device.model }}</td>
+              <td>{{ device.compliance_state|default:"Unknown" }}</td>
+              <td>{% if device.matched_asset %}<a href="{% url 'inventory:asset-detail' device.matched_asset_id %}">{{ device.matched_asset.asset_id }}</a>{% else %}{{ device.get_match_status_display }}{% endif %}<small class="table-subtext">{{ device.match_detail }}</small></td>
+              <td>{{ device.last_sync_at|date:"j M Y H:i"|default:"—" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+  {% if not result.assets and not result.intune_devices %}
+  {% if result.intent == "unsupported" %}
     <p class="muted">Try one of the example questions above. Unsupported questions do not cause changes.</p>
   {% elif result.intent == "invalid" %}
     <p class="muted">Shorten your question and try again.</p>
+  {% elif result.intent == "permission_denied" %}
+    <p class="muted">No data was queried. Ask an administrator for the appropriate Intune read permission.</p>
+  {% elif result.intent == "intune_snapshot_status" %}
+    {% if not result.metadata.snapshot_available %}<p class="muted">There is no successful snapshot to cite. Run the separately authorized read-only sync first.</p>{% endif %}
+  {% elif result.intent == "intune_devices" or result.intent == "intune_noncompliant" or result.intent == "intune_match_review" %}
+    {% if not result.metadata.snapshot_available %}<p class="muted">No snapshot records are available to answer from.</p>{% elif result.device_total == 0 %}<p class="muted">No devices matched these filters in the latest successful snapshot. This does not mean no devices exist in live Intune.</p>{% endif %}
   {% else %}
-    <p class="muted">No matching asset records were found for this query.</p>
+    <p class="muted">No matching records were found for this query.</p>
+  {% endif %}
   {% endif %}
 </section>
 {% endif %}
@@ -83,8 +128,8 @@
 <section class="panel">
   <p class="eyebrow">SAFETY BOUNDARIES</p>
   <ul>
-    <li>All results use the application's existing <code>inventory.view_asset</code> permission.</li>
-    <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, or certify sanitisation.</li>
+    <li>Asset-register results require <code>inventory.view_asset</code>; Intune snapshot questions also require <code>inventory.view_intunedevice</code>.</li>
+    <li>The copilot is read-only in this release; it cannot reassign assets, approve disposal, certify sanitisation, or trigger an Intune sync.</li>
     <li>LLM output is limited to validated search intents. It cannot access SQL, tools, application credentials, or remote device actions.</li>
     <li>Only enable an LLM endpoint after organizational data-sharing approval. Do not include secrets or sensitive personal details in questions.</li>
     <li>Any future write action must go through a server-side policy check and an authorised human approval workflow.</li>
